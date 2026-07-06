@@ -1,0 +1,32 @@
+{
+  "commands": [
+    {
+      "command": "npx tsc --noEmit",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "Zero type errors repo-wide on the final, stabilized F008 diff (superseded an earlier snapshot mid-collision with a concurrent duplicate takumi run — see clarifications.md).",
+      "ts": "2026-07-06T17:49:00Z"
+    },
+    {
+      "command": "npx vitest run",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "73/73 test files, 426/426 tests passed repo-wide on the final (session-only persistence) diff, including every F006/F007 kudos suite — zero regressions.",
+      "ts": "2026-07-06T17:59:01Z"
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "next build compiled successfully, all 8 routes generated with no errors.",
+      "ts": "2026-07-06T17:59:30Z"
+    },
+    {
+      "command": "npx eslint <every F008-touched source file>",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "Zero lint errors/warnings on kudos-card.tsx, kudos-board.tsx, all-kudos-feed.tsx, highlight-kudos-carousel.tsx, kudos-page-client.tsx, kudos-selectors.ts (scoped run — full-repo `npm run lint` has large pre-existing, unrelated debt across tests/unit/* and coverage/*, not touched by this feature).",
+      "ts": "2026-07-06T17:52:00Z"
+    }
+  ]
+}

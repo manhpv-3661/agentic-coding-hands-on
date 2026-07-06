@@ -1,0 +1,27 @@
+{
+  "score": 8,
+  "criticalCount": 0,
+  "decision": "SEALED",
+  "acceptanceCovered": [
+    "FR-1: clicking the heart on a Kudos card (highlight or feed variant) toggles the liked state for that card — verified via kudos-card.test.tsx, kudos-board.test.tsx, and the end-to-end kudos-page-client.test.tsx like-toggle test",
+    "FR-2: displayed heart count is post.hearts plus 1 when liked by the current user, updated in the same render as the click — verified via kudos-card.test.tsx liked-state assertions and the end-to-end test",
+    "FR-3: liked state is session-only React state owned by KudosPageClient, lost on page refresh, mirroring the F007 posts precedent — verified by reading kudos-page-client.tsx (plain useState<Set<string>>, no localStorage). Flagged for human review: this is an accepted deviation from the literal original task brief (\"giữ trạng thái persist qua reload\"), see clarifications.md \"Session 2026-07-07, continued\".",
+    "FR-4: a post authored by the current user (sender.name === currentUser.name) cannot be liked — heart renders disabled — verified via kudos-card.test.tsx, kudos-board.test.tsx, all-kudos-feed.test.tsx, highlight-kudos-carousel.test.tsx disabled-heart cases",
+    "FR-5: the toggle is idempotent per click with no separate pending/loading state (no network call) — verified by reading the synchronous toggleLike implementation, no pending flag anywhere in the diff",
+    "FR-6: the liked heart reuses the existing #FFEA9E accent color, no new design token — verified by reading kudos-card.tsx's liked-state class",
+    "Backward compatible: KudosCard with no like props renders the original static span heart unchanged — verified via kudos-card.test.tsx and all-kudos-feed.test.tsx backward-compat cases",
+    "kudos-card.tsx stays under 200 lines — verified, 198 lines",
+    "Zero regressions in pre-existing F006/F007 kudos test suites caused by this change — verified via a full `npx vitest run`: 73/73 test files, 426/426 tests passing repo-wide"
+  ],
+  "regressionChecked": [
+    "kudos-card.test.tsx: hashtag/title/copy-link/name/content assertions from F006/F007 pass unchanged",
+    "kudos-board.test.tsx: hashtag/department filter tests (FR-15/16/17) and spotlight/sidebar slot rendering pass unchanged",
+    "all-kudos-feed.test.tsx and highlight-kudos-carousel.test.tsx: heading/empty-state/pagination/hashtag-forwarding tests pass unchanged",
+    "kudos-page-client.test.tsx: compose dialog open/close, submit, filter-selectability tests (F007) all pass alongside the new like-toggle test",
+    "full repo `npx vitest run`: 73/73 files, 426/426 tests pass; `npx tsc --noEmit` and `npm run build` both exit 0; `npx eslint` clean on every touched source file"
+  ],
+  "contractStatus": "VERIFIED",
+  "refuted": [],
+  "unproven": [],
+  "reachableRegressions": []
+}
