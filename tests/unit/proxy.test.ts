@@ -36,7 +36,7 @@ describe("proxy.ts", () => {
     expect(response.status).toBe(200);
   });
 
-  it("redirects authenticated user from /login to /todo", async () => {
+  it("redirects authenticated user from /login to /", async () => {
     process.env.NEXT_PUBLIC_SUPABASE_URL = "https://example.supabase.co";
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = "test-key";
 
@@ -52,7 +52,7 @@ describe("proxy.ts", () => {
     const response = await proxy(request);
 
     expect(response.status).toBe(307); // Redirect status
-    expect(response.headers.get("location")).toContain("/todo");
+    expect(response.headers.get("location")).toBe("http://localhost:3000/");
   });
 
   it("redirects unauthenticated user from /todo to /login", async () => {
@@ -124,10 +124,85 @@ describe("proxy.ts", () => {
       },
     } as any);
 
-    const request = new NextRequest(new URL("http://localhost:3000/"));
+    const request = new NextRequest(new URL("http://localhost:3000/some-public"));
     const response = await proxy(request);
 
     // No redirect for routes not matched
+    expect(response.status).toBe(200);
+  });
+
+  it("redirects unauthenticated user from / to /login", async () => {
+    process.env.NEXT_PUBLIC_SUPABASE_URL = "https://example.supabase.co";
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = "test-key";
+
+    vi.mocked(createServerClient).mockReturnValue({
+      auth: {
+        getUser: vi.fn().mockResolvedValue({
+          data: { user: null },
+        }),
+      },
+    } as any);
+
+    const request = new NextRequest(new URL("http://localhost:3000/"));
+    const response = await proxy(request);
+
+    expect(response.status).toBe(307);
+    expect(response.headers.get("location")).toContain("/login");
+  });
+
+  it("redirects unauthenticated user from /awards to /login", async () => {
+    process.env.NEXT_PUBLIC_SUPABASE_URL = "https://example.supabase.co";
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = "test-key";
+
+    vi.mocked(createServerClient).mockReturnValue({
+      auth: {
+        getUser: vi.fn().mockResolvedValue({
+          data: { user: null },
+        }),
+      },
+    } as any);
+
+    const request = new NextRequest(new URL("http://localhost:3000/awards"));
+    const response = await proxy(request);
+
+    expect(response.status).toBe(307);
+    expect(response.headers.get("location")).toContain("/login");
+  });
+
+  it("redirects unauthenticated user from /kudos to /login", async () => {
+    process.env.NEXT_PUBLIC_SUPABASE_URL = "https://example.supabase.co";
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = "test-key";
+
+    vi.mocked(createServerClient).mockReturnValue({
+      auth: {
+        getUser: vi.fn().mockResolvedValue({
+          data: { user: null },
+        }),
+      },
+    } as any);
+
+    const request = new NextRequest(new URL("http://localhost:3000/kudos"));
+    const response = await proxy(request);
+
+    expect(response.status).toBe(307);
+    expect(response.headers.get("location")).toContain("/login");
+  });
+
+  it("allows authenticated user to access /", async () => {
+    process.env.NEXT_PUBLIC_SUPABASE_URL = "https://example.supabase.co";
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = "test-key";
+
+    vi.mocked(createServerClient).mockReturnValue({
+      auth: {
+        getUser: vi.fn().mockResolvedValue({
+          data: { user: { id: "user-123", email: "test@example.com" } },
+        }),
+      },
+    } as any);
+
+    const request = new NextRequest(new URL("http://localhost:3000/"));
+    const response = await proxy(request);
+
     expect(response.status).toBe(200);
   });
 

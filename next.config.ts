@@ -9,7 +9,11 @@ const nextConfig: NextConfig = {
   },
   // Use a fresh build dir (already gitignored) instead of the default .next.
   // Avoids a corrupted .next manifest when build + dev outputs get mixed.
-  distDir: "build",
+  // Overridable via NEXT_DIST_DIR so E2E can produce a second, independent
+  // build with different NEXT_PUBLIC_* values baked in (see playwright.config.ts —
+  // those vars are inlined at build time, so two servers sharing one build
+  // cannot actually differ on them at runtime).
+  distDir: process.env.NEXT_DIST_DIR || "build",
 };
 
 export default nextConfig;

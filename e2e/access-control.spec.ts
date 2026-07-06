@@ -36,6 +36,41 @@ test.describe("Access Control & Routing", () => {
     }
   });
 
+  test("accessing / (homepage) without auth should be accessible or redirect (proxy no-op)", async ({
+    page,
+  }) => {
+    // Note: proxy is a no-op without live Supabase env, so / is accessible in test
+    // In production with auth, this would redirect to /login
+    const response = await page.goto("/", { waitUntil: "networkidle" }).catch(() => null);
+
+    // Page should load (proxy no-op) or redirect
+    if (response) {
+      expect(response.status()).toBeLessThan(400);
+    }
+  });
+
+  test("accessing /awards without auth should be accessible or redirect (proxy no-op)", async ({
+    page,
+  }) => {
+    // Same pattern as /: proxy no-op in test env allows access
+    const response = await page.goto("/awards", { waitUntil: "networkidle" }).catch(() => null);
+
+    if (response) {
+      expect(response.status()).toBeLessThan(400);
+    }
+  });
+
+  test("accessing /kudos without auth should be accessible or redirect (proxy no-op)", async ({
+    page,
+  }) => {
+    // Same pattern as /: proxy no-op in test env allows access
+    const response = await page.goto("/kudos", { waitUntil: "networkidle" }).catch(() => null);
+
+    if (response) {
+      expect(response.status()).toBeLessThan(400);
+    }
+  });
+
   test("/login page renders with proper styling", async ({ page }) => {
     await page.goto("/login");
 

@@ -1,0 +1,125 @@
+import Image from "next/image";
+import Link from "next/link";
+import { Montserrat } from "next/font/google";
+
+const montserrat = Montserrat({
+  subsets: ["latin", "vietnamese"],
+  weight: ["700"],
+  display: "swap",
+});
+
+const DESCRIPTION =
+  "ĐIỂM MỚI CỦA SAA 2025\nHoạt động ghi nhận và cảm ơn đồng nghiệp - lần đầu tiên được diễn ra dành cho tất cả Sunner. Hoạt động sẽ được triển khai vào tháng 11/2025, khuyến khích người Sun* chia sẻ những lời ghi nhận, cảm ơn đồng nghiệp trên hệ thống do BTC công bố. Đây sẽ là chất liệu để Hội đồng Heads tham khảo trong quá trình lựa chọn người đạt giải.";
+
+/**
+ * "Chi tiết" CTA arrow — MoMorph node `I3390:10349;313:8426;186:1766`
+ * (MM_MEDIA_Up). Figma's exported asset ships with a hardcoded `fill`, so it
+ * is inlined here with `currentColor` and picks up the button's dark
+ * (`#00101A`) text color instead.
+ */
+function UpArrowIcon() {
+  return (
+    // mm:I3390:10349;313:8426;186:1766
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <path
+        d="M8.49945 18.3104L5.68945 15.5004L12.0595 9.12043H7.10945V5.69043H18.3095V16.8904H14.8895V11.9404L8.49945 18.3104Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+/**
+ * "Sun* Kudos" promo block — Homepage SAA. MoMorph node `3390:10349`
+ * (mms_D1_Sunkudos).
+ * https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/screens/i87tDx10uM
+ *
+ * The header nav's "Sun* Kudos" link (`site-header.tsx` -> `NavLink`)
+ * anchors to this section's `id="kudos-section"`. The "Chi tiết" CTA routes
+ * to `/kudos` (FR-24), same destination as the header/footer/hero links.
+ *
+ * Copy sourced verbatim from Figma via MoMorph MCP. Font is scoped locally
+ * (not the shared `/login` route `fonts.ts`) so this file stays
+ * self-contained per file-ownership rules for parallel section agents
+ * working on the same screen — same pattern as `root-further-content.tsx`.
+ *
+ * Layout note: Figma models this as an absolute overlay (background image +
+ * text block + logo mark) inside a 1120x500 card, itself centered in a
+ * 1224px frame. Reproduced with percentage-based absolute positioning + a
+ * fixed `aspect-ratio` so the card keeps the design's proportions at any
+ * viewport width instead of a hardcoded design-px size (code-rules.md rule
+ * 3, Sizing). `Frame 367` (`I3390:10349;313:8417`) is an empty layout frame
+ * in the design (no children, no fill) and is intentionally not rendered.
+ */
+export function SunKudosSection() {
+  return (
+    // mm:3390:10349
+    <section
+      id="kudos-section"
+      className="mx-auto flex w-full max-w-[1224px] items-center justify-center px-4"
+    >
+      {/* mm:I3390:10349;313:8415 */}
+      <div
+        className="relative w-full max-w-[1120px] overflow-hidden rounded-2xl"
+        style={{ aspectRatio: "1120 / 500" }}
+      >
+        {/* mm:I3390:10349;313:8416 */}
+        <Image
+          src="/homepage-saa/Kudos-Background.png"
+          alt=""
+          fill
+          sizes="(max-width: 1120px) 100vw, 1120px"
+          className="object-cover"
+        />
+
+        {/* mm:I3390:10349;313:8419 */}
+        <div
+          className={`${montserrat.className} absolute top-1/2 left-[5.71%] flex w-[40.8%] -translate-y-1/2 flex-col items-start gap-8`}
+        >
+          {/* mm:I3390:10349;313:8420 */}
+          <div className="flex flex-col items-start gap-4">
+            {/* mm:I3390:10349;313:8421 */}
+            <p className="text-2xl leading-8 font-bold text-white">
+              Phong trào ghi nhận
+            </p>
+            {/* mm:I3390:10349;313:8422 */}
+            <p className="text-[57px] leading-[64px] font-bold tracking-[-0.25px] text-[#FFEA9E]">
+              Sun* Kudos
+            </p>
+            {/* mm:I3390:10349;313:8423 */}
+            <p className="text-justify text-base leading-6 font-bold tracking-[0.5px] whitespace-pre-line text-white">
+              {DESCRIPTION}
+            </p>
+          </div>
+
+          {/* mm:I3390:10349;313:8424 */}
+          {/* mm:I3390:10349;313:8426 */}
+          <Link
+            href="/kudos"
+            className="flex items-center gap-2 rounded-[4px] bg-[#FFEA9E] px-4 py-4 text-[#00101A] transition-shadow duration-200 ease-out hover:shadow-[0_8px_24px_rgba(255,234,158,0.35)]"
+          >
+            {/* mm:I3390:10349;313:8426;186:1568 */}
+            <span className="text-base leading-6 font-bold tracking-[0.15px]">
+              Chi tiết
+            </span>
+            <UpArrowIcon />
+          </Link>
+        </div>
+
+        {/* mm:I3390:10349;329:2948 */}
+        <img
+          src="/homepage-saa/Kudos-Logo.svg"
+          alt=""
+          className="absolute top-[43%] left-[60%] w-[32.5%]"
+        />
+      </div>
+    </section>
+  );
+}

@@ -18,7 +18,7 @@ describe("/app/auth/callback/route.ts", () => {
     vi.clearAllMocks();
   });
 
-  it("redirects to /todo on successful code exchange", async () => {
+  it("redirects to / on successful code exchange", async () => {
     const mockExchange = vi.fn().mockResolvedValue({ error: null });
     vi.mocked(createClient).mockResolvedValueOnce({
       auth: { exchangeCodeForSession: mockExchange },
@@ -31,7 +31,7 @@ describe("/app/auth/callback/route.ts", () => {
     const response = await GET(request);
 
     expect(response.status).toBe(307); // Redirect status
-    expect(response.headers.get("location")).toContain("/todo");
+    expect(response.headers.get("location")).toBe("http://localhost:3000/");
   });
 
   it("redirects to /login?error=auth_callback_failed on exchange error", async () => {
@@ -98,7 +98,43 @@ describe("/app/auth/callback/route.ts", () => {
     expect(response.headers.get("location")).toContain("/custom-page");
   });
 
-  it("defaults to /todo when next param is not provided", async () => {
+  it("falls back to / when next is a protocol-relative URL (//evil.com)", async () => {
+    const mockExchange = vi.fn().mockResolvedValue({ error: null });
+    vi.mocked(createClient).mockResolvedValueOnce({
+      auth: { exchangeCodeForSession: mockExchange },
+    } as unknown as Awaited<ReturnType<typeof createClient>>);
+
+    const request = new NextRequest(
+      new URL(
+        "http://localhost:3000/auth/callback?code=test-code&next=//evil.com"
+      )
+    );
+
+    const response = await GET(request);
+
+    expect(response.status).toBe(307);
+    expect(response.headers.get("location")).toBe("http://localhost:3000/");
+  });
+
+  it("falls back to / when next is an absolute external URL (https://evil.com)", async () => {
+    const mockExchange = vi.fn().mockResolvedValue({ error: null });
+    vi.mocked(createClient).mockResolvedValueOnce({
+      auth: { exchangeCodeForSession: mockExchange },
+    } as unknown as Awaited<ReturnType<typeof createClient>>);
+
+    const request = new NextRequest(
+      new URL(
+        "http://localhost:3000/auth/callback?code=test-code&next=https://evil.com"
+      )
+    );
+
+    const response = await GET(request);
+
+    expect(response.status).toBe(307);
+    expect(response.headers.get("location")).toBe("http://localhost:3000/");
+  });
+
+  it("defaults to / when next param is not provided", async () => {
     const mockExchange = vi.fn().mockResolvedValue({ error: null });
     vi.mocked(createClient).mockResolvedValueOnce({
       auth: { exchangeCodeForSession: mockExchange },
@@ -111,7 +147,7 @@ describe("/app/auth/callback/route.ts", () => {
     const response = await GET(request);
 
     expect(response.status).toBe(307);
-    expect(response.headers.get("location")).toContain("/todo");
+    expect(response.headers.get("location")).toBe("http://localhost:3000/");
   });
 
   it("calls exchangeCodeForSession with the code from params", async () => {

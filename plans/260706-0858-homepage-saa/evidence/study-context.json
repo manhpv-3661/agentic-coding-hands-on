@@ -1,0 +1,31 @@
+{
+  "task": "Build Homepage SAA (F002) — protected post-login screen from MoMorph screenId i87tDx10uM, reusing F001 header/language-selector/Supabase-auth patterns",
+  "mode": "feature",
+  "acceptanceCriteria": [
+    "FR-1..FR-5: unauthenticated access to /, /awards, /kudos redirects to /login; authenticated access renders; post-login and OAuth callback default target is /",
+    "FR-6..FR-10: header nav (About SAA 2025/Awards Information/Sun* Kudos), notification bell stub panel, language selector (cookie-only), account menu with real Supabase sign-out, no Admin Dashboard item",
+    "FR-11..FR-17: hero countdown reads NEXT_PUBLIC_EVENT_START_AT, 2-digit zero-padded units, zero-state hides Coming soon, invalid/missing env fails safe without crash, CTA buttons link to /awards and /kudos",
+    "FR-18: Root Further static content block renders verbatim Figma copy",
+    "FR-19..FR-23: 6 award cards link to /awards#<slug>, responsive grid (3-col desktop, 2-col tablet/mobile)",
+    "FR-24: Sun* Kudos promo block links to /kudos",
+    "FR-25: floating widget button renders a stub quick-actions panel on click",
+    "FR-26: footer logo/nav mirrors header states, including scroll-to-top on home link/logo click",
+    "Unit + E2E suite fully green, mapped to the 62 MoMorph test cases for screenId i87tDx10uM (ID-0 excluded per clarification — outdated vs. the protected-route access model)"
+  ],
+  "touchpoints": [
+    "proxy.ts", "app/auth/callback/route.ts", "lib/auth/require-user.ts",
+    "app/page.tsx", "app/components/home/*", "app/awards/page.tsx", "app/kudos/page.tsx",
+    "lib/event-countdown.ts", "hooks/use-event-countdown.ts", "hooks/use-dismissable-menu.ts",
+    "hooks/use-scroll-to-top-on-home-click.ts", "app/actions/sign-out.ts", "lib/awards/award-categories.ts",
+    "next.config.ts", "playwright.config.ts", "e2e/*"
+  ],
+  "blastRadius": [
+    "F001 login: post-login/callback redirect target changed from /todo to / (docs/system/permissions.md, docs/system/architecture.md updated to match)",
+    "proxy.ts route-protection matcher extended to /, /awards, /kudos alongside existing /todo",
+    "playwright.config.ts + next.config.ts: authless E2E project now builds into an independent NEXT_DIST_DIR (build-authless) instead of sharing port 3000's build — fixes a real bug where NEXT_PUBLIC_SUPABASE_* (build-time-inlined by Next.js) made the authless server permanently auth-gated"
+  ],
+  "contracts": [
+    "docs/system/permissions.md route matrix (/ , /awards, /kudos protected; post-login target /)",
+    "docs/features/f002-homepage/feature.md FR-1..FR-26"
+  ]
+}

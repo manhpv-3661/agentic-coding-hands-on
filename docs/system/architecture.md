@@ -14,13 +14,15 @@ backend do Supabase quản lý (managed auth), không tự viết server auth.
 ## Thành phần chính (liên quan Login)
 - **App Router routes**
   - `app/login/page.tsx` — màn hình đăng nhập (server component check session → redirect nếu đã auth; render UI client).
-  - `app/todo/page.tsx` — trang chính sau đăng nhập (placeholder ở giai đoạn này; được bảo vệ).
-  - `app/auth/callback/route.ts` — route handler đổi OAuth code lấy session, rồi redirect `/todo`.
+  - `app/page.tsx` — Trang chủ (Homepage SAA, F002); đích sau đăng nhập; được bảo vệ.
+  - `app/awards/page.tsx`, `app/kudos/page.tsx` — placeholder, được bảo vệ (liên kết từ trang chủ).
+  - `app/todo/page.tsx` — trang phụ (placeholder ở giai đoạn này; được bảo vệ; không còn là đích sau đăng nhập kể từ F002).
+  - `app/auth/callback/route.ts` — route handler đổi OAuth code lấy session, rồi redirect `/` (F002 cập nhật từ `/todo`).
 - **Supabase client layer** (`lib/supabase/`)
   - `client.ts` — browser client (`createBrowserClient` từ `@supabase/ssr`).
   - `server.ts` — server client đọc/ghi cookie (`createServerClient`), dùng trong server component & route handler.
   - `env.ts` — `isSupabaseConfigured()`, kiểm tra duy nhất một chỗ có đủ 2 env var Supabase hay không (dùng chung bởi client + server).
-- **proxy.ts** (root) — refresh session + điều hướng theo trạng thái auth (`matcher: ["/todo/:path*", "/login"]`). Next.js 16 đổi tên `middleware.ts`/`middleware()` → `proxy.ts`/`proxy()`; runtime `nodejs` bắt buộc. Không cấu hình env Supabase → fail-open (no-op, log warning), không chặn build/dev.
+- **proxy.ts** (root) — refresh session + điều hướng theo trạng thái auth (`matcher: ["/", "/awards", "/kudos", "/todo/:path*", "/login"]`). Next.js 16 đổi tên `middleware.ts`/`middleware()` → `proxy.ts`/`proxy()`; runtime `nodejs` bắt buộc. Không cấu hình env Supabase → fail-open (no-op, log warning), không chặn build/dev.
 - **i18n (giới hạn)** — cookie `NEXT_LOCALE` do language selector ghi; hạ tầng dịch đầy đủ hoãn sang màn 12.
 
 ## Luồng dữ liệu xác thực
@@ -29,8 +31,8 @@ Browser (Login page)
   -> supabase.auth.signInWithOAuth({ provider:'google', redirectTo:/auth/callback })
   -> Google OAuth consent
   -> /auth/callback?code=... (route handler) -> exchangeCodeForSession -> set cookie session
-  -> redirect /todo (hoặc ?next=... nếu là relative path cùng-origin; mặc định /todo, chặn open-redirect)
-proxy.ts: mỗi request refresh session; đã-auth ở /login -> /todo ; chưa-auth ở /todo -> /login
+  -> redirect / (hoặc ?next=... nếu là relative path cùng-origin; mặc định / — F002 cập nhật từ /todo; chặn open-redirect)
+proxy.ts: mỗi request refresh session; đã-auth ở /login -> / ; chưa-auth ở route bảo vệ (/, /awards, /kudos, /todo) -> /login
 ```
 
 ## Quyết định kỹ thuật
@@ -40,4 +42,4 @@ proxy.ts: mỗi request refresh session; đã-auth ở /login -> /todo ; chưa-a
 - **Next.js 16**: `cookies()` luôn async (`await cookies()`); `middleware.ts` → `proxy.ts`/`export function proxy()`.
 
 ## Câu hỏi mở
-- Nội dung thực của `/todo` (ngoài placeholder) thuộc màn hình khác.
+- Nội dung thực của `/todo`, `/awards`, `/kudos` (ngoài placeholder) thuộc màn hình khác.

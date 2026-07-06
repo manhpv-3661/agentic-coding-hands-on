@@ -1,0 +1,46 @@
+{
+  "commands": [
+    {
+      "command": "npx tsc --noEmit",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "Type-check clean across the full project, no errors",
+      "ts": "2026-07-06T07:53:00Z"
+    },
+    {
+      "command": "npx eslint <41 new F002 files under app/actions,app/awards,app/kudos,app/components/home,hooks,lib/auth,lib/awards,lib/event-countdown.ts,e2e/homepage-*.spec.ts,app/page.test.tsx,tests/unit/{award-categories,awards-page,event-countdown,kudos-page,use-dismissable-menu,use-event-countdown}.test.ts>",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "0 errors, 1 pre-existing-acceptable warning (no-img-element on a multi-color decorative SVG in sun-kudos-section.tsx, documented in-file)",
+      "ts": "2026-07-06T07:54:00Z"
+    },
+    {
+      "command": "npx eslint app/auth/callback/route.ts app/page.tsx proxy.ts playwright.config.ts e2e/access-control.spec.ts next.config.ts e2e/homepage-content.spec.ts",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "0 errors, 0 warnings on every pre-existing file this feature modified",
+      "ts": "2026-07-06T08:19:00Z"
+    },
+    {
+      "command": "npx vitest run",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "151/151 tests passed across 24 files, 0 regressions",
+      "ts": "2026-07-06T08:17:00Z"
+    },
+    {
+      "command": "npx next build",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "Production build compiles cleanly, all routes generated (/, /login, /awards, /kudos, /todo, /auth/callback)",
+      "ts": "2026-07-06T15:10:00Z"
+    },
+    {
+      "command": "npx playwright test",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "43/43 E2E tests passed (access-control 12/12, homepage-access 4/4, login 16/16, homepage-content authless-build 11/11) — includes fixing a real bug found during this gate: the authless E2E project shared port 3000's build, so its build-time-inlined NEXT_PUBLIC_SUPABASE_* vars were never actually empty, permanently redirecting / to /login; fixed by giving it an independent NEXT_DIST_DIR build",
+      "ts": "2026-07-06T15:17:00Z"
+    }
+  ]
+}

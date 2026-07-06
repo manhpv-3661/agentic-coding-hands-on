@@ -22,6 +22,7 @@
 
 # production
 /build
+/build-authless
 
 # misc
 .DS_Store

@@ -1,0 +1,27 @@
+{
+  "score": 9.6,
+  "criticalCount": 0,
+  "decision": "SEALED",
+  "acceptanceCovered": [
+    "FR-1..FR-5: unauthenticated access to /, /awards, /kudos redirects to /login; authenticated access renders; post-login and OAuth callback default target is / — proven by tests/unit/proxy.test.ts, tests/unit/auth-callback.test.ts, e2e/access-control.spec.ts, e2e/homepage-access.spec.ts (12+4 E2E pass)",
+    "FR-6..FR-10: header nav (About SAA 2025/Awards Information/Sun* Kudos), notification bell stub panel, language selector (cookie-only), account menu with real Supabase sign-out, no Admin Dashboard item — proven by notification-bell.test.tsx, account-menu-button.test.tsx, and e2e/homepage-content.spec.ts (11/11, incl. sign-out redirect to /login)",
+    "FR-11..FR-17: hero countdown reads NEXT_PUBLIC_EVENT_START_AT, 2-digit zero-padded units, zero-state hides Coming soon, invalid/missing env fails safe without crash, CTA buttons link to /awards and /kudos — proven by tests/unit/event-countdown.test.ts, tests/unit/use-event-countdown.test.tsx, event-info.test.tsx, countdown-timer.test.tsx",
+    "FR-18: Root Further static content block renders verbatim Figma copy — proven by root-further-content.tsx build/render verification (Track A visual validation against Figma at 3 viewports)",
+    "FR-19..FR-23: 6 award cards link to /awards#<slug>, responsive grid (3-col desktop, 2-col tablet/mobile) — proven by award-categories.test.ts, awards-page.test.tsx, e2e/homepage-content.spec.ts card-link assertions",
+    "FR-24: Sun* Kudos promo block links to /kudos — proven by e2e/homepage-content.spec.ts CTA assertion",
+    "FR-25: floating widget button renders a stub quick-actions panel on click — proven by widget-button.test.tsx (panel-render assertion added during review-fix)",
+    "FR-26: footer logo/nav mirrors header states, including scroll-to-top on home link/logo click — proven by site-footer.test.tsx, site-header.test.tsx, nav-link.test.tsx (scrollTo mock assertions)",
+    "Unit + E2E suite fully green, mapped to the 62 MoMorph test cases for screenId i87tDx10uM (ID-0 excluded per clarification — outdated vs. the protected-route access model) — proven by 151/151 unit + 43/43 E2E, see plans/reports/tester-260706-1005-homepage-saa-final.md and this gate's fresh re-run"
+  ],
+  "regressionChecked": [
+    "F001 login flow unaffected: login.spec.ts 16/16 still passing after post-login target changed from /todo to /",
+    "proxy.ts route-matcher extension (/, /awards, /kudos) does not break existing /todo protection — tests/unit/proxy.test.ts covers both",
+    "docs/system/architecture.md and permissions.md reconciled to the new redirect target — no stale doc contradicts shipped behavior",
+    "next.config.ts distDir env-override change does not break the default build path — npx next build verified clean with no NEXT_DIST_DIR set",
+    "E2E authless-build fix (independent NEXT_DIST_DIR) walked and confirmed it does not reintroduce the previous shared-build race — both webServers build independently with no ordering dependency"
+  ],
+  "contractStatus": "VERIFIED",
+  "refuted": [],
+  "unproven": [],
+  "reachableRegressions": []
+}

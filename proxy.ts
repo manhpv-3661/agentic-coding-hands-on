@@ -5,13 +5,25 @@ import { createServerClient } from "@supabase/ssr";
  * Next.js 16 renamed `middleware` → `proxy` (root file `proxy.ts`, function
  * `proxy`, forced `nodejs` runtime). This refreshes the Supabase session and
  * enforces auth-based routing:
- *   - authenticated user hitting /login  → /todo
- *   - unauthenticated user hitting /todo → /login
+ *   - authenticated user hitting /login              → /
+ *   - unauthenticated user hitting a protected route → /login
+ *
+ * Protected routes: `/` (home), `/awards`, `/kudos`, `/todo` (+ subpaths).
  *
  * Mock/training repo: with no Supabase env configured, this is a no-op
  * passthrough so the app still builds and runs.
  */
 let warnedMissingEnv = false;
+
+/** Routes that require an authenticated session. */
+function isProtectedPath(pathname: string): boolean {
+  return (
+    pathname === "/" ||
+    pathname.startsWith("/awards") ||
+    pathname.startsWith("/kudos") ||
+    pathname.startsWith("/todo")
+  );
+}
 
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
@@ -57,10 +69,10 @@ export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (user && pathname === "/login") {
-    return NextResponse.redirect(new URL("/todo", request.url));
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
-  if (!user && pathname.startsWith("/todo")) {
+  if (!user && isProtectedPath(pathname)) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
@@ -68,5 +80,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/todo/:path*", "/login"],
+  matcher: ["/", "/awards", "/kudos", "/todo/:path*", "/login"],
 };
