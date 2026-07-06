@@ -1,7 +1,7 @@
 ---
 title: "F008 — Like Kudos (thả tim) heart toggle"
 description: "Turn the static heart icon+count on KudosCard into a two-way, session-only like toggle keyed by CURRENT_USER."
-status: pending
+status: completed
 priority: P2
 effort: 6h
 branch: main
@@ -43,10 +43,19 @@ card renders (Highlight carousel + All Kudos feed), and a user cannot like their
 ## Phases
 | # | Phase | Status | Depends on |
 |---|-------|--------|------------|
-| 01 | [Foundation: selector + i18n + card-labels type](phase-01-foundation-selector-i18n.md) | pending | — |
-| 02 | [KudosCard interactive heart toggle](phase-02-kudos-card-heart-toggle.md) | pending | 01 |
-| 03 | [State ownership + prop drilling](phase-03-state-ownership-prop-drilling.md) | pending | 02 |
-| 04 | [Tests hardening + docs + DoD gate](phase-04-tests-docs-dod.md) | pending | 01,02,03 |
+| 01 | [Foundation: selector + i18n + card-labels type](phase-01-foundation-selector-i18n.md) | completed | — |
+| 02 | [KudosCard interactive heart toggle](phase-02-kudos-card-heart-toggle.md) | completed | 01 |
+| 03 | [State ownership + prop drilling](phase-03-state-ownership-prop-drilling.md) | completed | 02 |
+| 04 | [Tests hardening + docs + DoD gate](phase-04-tests-docs-dod.md) | completed | 01,02,03 |
+
+## Delivery
+
+Committed at `7d7d3c5` on `main` (2026-07-07). Full DoD green: 426/426 tests, `tsc --noEmit`
+clean, eslint clean. Reviewed (`plans/reports/reviewer-260707-0052-f008-like-kudos-review.md`)
+and validated (`plans/reports/tester-260707-0047-f008-like-kudos-validation.md`). A concurrent
+session's incompatible localStorage-based implementation of the same feature
+(`plans/260707-0008-kudos-like-toggle/`) was superseded by this plan per the user's live
+in-session decision — see `SUPERSEDED.md` in this folder for the resolution record.
 
 ## Data Flow (after change)
 ```

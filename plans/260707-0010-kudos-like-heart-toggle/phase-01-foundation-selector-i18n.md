@@ -8,7 +8,7 @@
 
 ## Overview
 - **Priority:** P2 (must land first — Phase 02/03 depend on these types/labels)
-- **Status:** pending
+- **Status:** completed
 - **Description:** Add the pure own-post selector and the two new i18n aria-labels
   (`like`/`unlike`) plus their `KudosCardLabels` type slot. No UI change yet.
 
@@ -52,11 +52,11 @@
 5. Run `npx tsc --noEmit` (via build) — parity + type must be clean.
 
 ## Todo List
-- [ ] Add `canLikeKudos` to `kudos-selectors.ts`
-- [ ] Add `like`/`unlike` to vi.ts `card`
-- [ ] Add `like`/`unlike` to en.ts `card`
-- [ ] Add `canLikeKudos` unit tests
-- [ ] `npx vitest run lib/kudos lib/i18n` green; `tsc --noEmit` clean
+- [x] Add `canLikeKudos` to `kudos-selectors.ts`
+- [x] Add `like`/`unlike` to vi.ts `card`
+- [x] Add `like`/`unlike` to en.ts `card`
+- [x] Add `canLikeKudos` unit tests
+- [x] `npx vitest run lib/kudos lib/i18n` green; `tsc --noEmit` clean
 
 ## Success Criteria
 - `canLikeKudos(ownPost, user) === false`, `canLikeKudos(otherPost, user) === true`.

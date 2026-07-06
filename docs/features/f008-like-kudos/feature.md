@@ -70,3 +70,19 @@ Live board layout, không có backend/API thật lưu lượt tim.
 - `KudosCard` nhận 3 prop mới, đều optional (additive, backward-compatible): `liked?`,
   `canLike?`, `onToggleLike?`. Không truyền `onToggleLike` → icon tim giữ nguyên
   `<span>` tĩnh như F006 (không có regression cho các call site chưa wire).
+
+## 5. Kiểm thử (Definition of Done)
+
+- `npx vitest run`: 426/426 tests xanh (73 test files), gồm unit cho `canLikeKudos`,
+  component test cho 3 nhánh heart (interactive/disabled/static-fallback) ở cả
+  `KudosCard`/`AllKudosFeed`/`HighlightKudosCarousel`, và 1 integration test ở
+  `KudosPageClient` xác nhận like/unlike đồng bộ qua cả 2 nơi hiển thị.
+- `npx tsc --noEmit`: 0 lỗi (bao gồm parity dictionary vi/en).
+- `npx eslint` trên các file đã đổi: clean.
+- Review: `plans/reports/reviewer-260707-0052-f008-like-kudos-review.md`.
+
+## Unresolved Questions
+
+- Rule "không cho tự thích Kudos của chính mình" là một giả định được thêm vào ngoài
+  4 câu hỏi clarification ban đầu (persist/toggle-direction/tracking/scope) — hợp lý về
+  UX nhưng chưa được user xác nhận trực tiếp. Dễ revert (chỉ cần bỏ nhánh `canLike`).

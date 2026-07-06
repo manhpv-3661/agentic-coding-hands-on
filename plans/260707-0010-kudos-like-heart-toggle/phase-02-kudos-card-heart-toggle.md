@@ -9,7 +9,7 @@
 
 ## Overview
 - **Priority:** P2
-- **Status:** pending
+- **Status:** completed
 - **Description:** Make the heart icon+count an interactive toggle button when a
   `onToggleLike` prop is wired; keep the static `<span>` when it is not (server-safe /
   F006 fallback). Own post → disabled. Filled heart when liked, outline when not.
@@ -70,12 +70,12 @@ const displayHearts = post.hearts + (liked ? 1 : 0);
 5. Update tests (see below).
 
 ## Todo List
-- [ ] Extend `KudosCardLabels` + `KudosCardProps`
-- [ ] `HeartIcon` filled/outline variants
-- [ ] Footer conditional (interactive / disabled / static-fallback)
-- [ ] Update stale JSDoc
-- [ ] Rewrite `kudos-card.test.tsx` heart assertions (below)
-- [ ] `npx vitest run app/components/kudos/kudos-card.test.tsx` green
+- [x] Extend `KudosCardLabels` + `KudosCardProps`
+- [x] `HeartIcon` filled/outline variants
+- [x] Footer conditional (interactive / disabled / static-fallback)
+- [x] Update stale JSDoc
+- [x] Rewrite `kudos-card.test.tsx` heart assertions (below)
+- [x] `npx vitest run app/components/kudos/kudos-card.test.tsx` green
 
 ## Test Requirements (update kudos-card.test.tsx)
 - **CHANGE** the existing "renders the heart count as a static span, never a button" test

@@ -107,3 +107,18 @@ npx eslint <F008 files>   → 0 errors/warnings (repo-wide `npm run lint` has la
 - **Ship what's real; flag what isn't.** The honest path here was recording, loudly,
   that reload-persistence — an explicit line item in the original brief — did not
   ship, rather than quietly writing acceptance-criteria text that overclaims it.
+
+## Resolution (follow-up, 2026-07-07 01:10, from the session named as "the other session" above)
+
+The flagged claim is confirmed, not hearsay: this feature's user was asked directly,
+live, via `AskUserQuestion`, whether liked state should persist via `localStorage` or
+stay session-only, and explicitly chose **session-only** — matching the F007 `posts`
+precedent. After being shown that a concurrent implementation kept reverting the
+working tree back to a `localStorage`-backed hook, the same user was asked a second
+time how to resolve the conflict and explicitly said to overwrite with the
+session-only architecture, confirming it as canonical for this task instance. Both
+answers are the authoritative source for this delivery; `hooks/use-kudos-likes.ts`
+was deleted (it reappeared twice more after that from further concurrent activity and
+was deleted each time) and stays out of the shipped design. No further action needed —
+this was not a bug, just two sessions given differently-worded task briefs for what
+turned out to be the same backlog item.

@@ -10,7 +10,7 @@
 
 ## Overview
 - **Priority:** P2
-- **Status:** pending
+- **Status:** completed
 - **Description:** `KudosPageClient` owns `likedIds: Set<string>` + `toggleLike`. Thread
   `likedIds`, `currentUser`, `onToggleLike` down through board → carousel + feed; each
   section computes per-card `liked`/`canLike` in its existing `.map` and passes to `KudosCard`.
@@ -73,12 +73,12 @@ Carousel / Feed .map(post => <KudosCard
 5. Update the 4 co-located tests (see below); run full kudos suite.
 
 ## Todo List
-- [ ] page-client: `likedIds` state + `toggleLike` + wire to board
-- [ ] board: 3 props + forward
-- [ ] carousel: 3 props + per-card map
-- [ ] feed: 3 props + per-card map
-- [ ] Update 4 co-located tests
-- [ ] `npx vitest run app/components/kudos` green; `tsc --noEmit` clean
+- [x] page-client: `likedIds` state + `toggleLike` + wire to board
+- [x] board: 3 props + forward
+- [x] carousel: 3 props + per-card map
+- [x] feed: 3 props + per-card map
+- [x] Update 4 co-located tests
+- [x] `npx vitest run app/components/kudos` green; `tsc --noEmit` clean
 
 ## Test Requirements
 - **page-client.test.tsx (integration):** ADD "liking a post increments its heart count and

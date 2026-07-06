@@ -9,7 +9,7 @@
 
 ## Overview
 - **Priority:** P2
-- **Status:** pending
+- **Status:** completed
 - **Description:** Author the F008 feature spec, update changelog/roadmap, and run the full
   Definition-of-Done gate (vitest + tsc + eslint) matching F006/F007.
 
@@ -53,12 +53,12 @@
 3. Run the DoD gate (see below); fix + re-run until green.
 
 ## Todo List
-- [ ] Author `docs/features/f008-like-kudos/feature.md`
-- [ ] Update changelog / roadmap (only if files exist)
-- [ ] `npx vitest run` → 100% green
-- [ ] `npm run build` (or `npx tsc --noEmit`) → 0 type errors
-- [ ] `npx eslint` on changed files → clean
-- [ ] Hand off to reviewer
+- [x] Author `docs/features/f008-like-kudos/feature.md`
+- [x] Update changelog / roadmap (only if files exist) — neither file exists in this repo (confirmed); skipped, consistent with F006/F007 not creating them either
+- [x] `npx vitest run` → 100% green (426/426, 73 files)
+- [x] `npm run build` (or `npx tsc --noEmit`) → 0 type errors
+- [x] `npx eslint` on changed files → clean
+- [x] Hand off to reviewer (`plans/reports/reviewer-260707-0052-f008-like-kudos-review.md`)
 
 ## Success Criteria (Definition of Done)
 - `npx vitest run`: all green (new like tests + no regressions).
