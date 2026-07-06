@@ -10,6 +10,10 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  /* Scoped to /login (see app/login/fonts.ts) — these variables only exist
+     on pages that apply that route's font className. */
+  --font-montserrat: var(--font-montserrat);
+  --font-montserrat-alternates: var(--font-montserrat-alternates);
 }
 
 @media (prefers-color-scheme: dark) {
