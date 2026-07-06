@@ -36,9 +36,12 @@ test.describe("Countdown Prelaunch — site-wide time-gate", () => {
   test("/prelaunch renders the static title and three countdown units", async ({
     page,
   }) => {
+    await page.context().addCookies([
+      { name: "NEXT_LOCALE", value: "en", url: "http://localhost:3200" },
+    ]);
     await page.goto("/prelaunch");
 
-    await expect(page.getByText("Sự kiện sẽ bắt đầu sau")).toBeVisible();
+    await expect(page.getByText("The event will begin in")).toBeVisible();
     await expect(page.getByText("DAYS", { exact: true })).toBeVisible();
     await expect(page.getByText("HOURS", { exact: true })).toBeVisible();
     await expect(page.getByText("MINUTES", { exact: true })).toBeVisible();

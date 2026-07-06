@@ -17,21 +17,38 @@ const montserrat = Montserrat({
  * decision, not a data bug (see `award-card.tsx` docstring precedent). */
 const AWARD_BACKGROUND_SRC = "/homepage-saa/Award-BG.png";
 
-export interface AwardDetailCardProps {
+/**
+ * One locale-agnostic award entry — the shape `buildAwardDetailEntries`
+ * (`award-detail-data.ts`) produces per category. Kept separate from
+ * `AwardDetailCardProps` because the quantity/value label prefixes
+ * (`awards.detail.quantityLabel`/`valueLabel`) are shared across all 6
+ * entries and threaded in once by `AwardsCatalog`, not stored per-entry.
+ */
+export interface AwardDetailEntry {
   /** Stable hash-anchor slug (from `AWARD_CATEGORIES`) — not rendered as an
    * `id` here (the catalog/`<section>` wrapper owns that, Phase 05); kept on
    * the DOM as `data-award-slug` for traceability/testing. */
   slug: string;
-  /** Award title, rendered as the card heading (`<h3>`). */
+  /** Award title, rendered as the card heading (`<h3>`). Hardcoded English
+   * brand/category name — NOT translated (locked decision). */
   title: string;
-  /** Full, untruncated award description (verbatim MoMorph copy). */
+  /** Full, untruncated award description (verbatim MoMorph copy, per locale). */
   description: string;
-  /** "Số lượng giải thưởng" value, e.g. "10 Đơn vị". */
+  /** "Số lượng giải thưởng" value, e.g. "10 Đơn vị" (per locale). */
   quantity: string;
-  /** "Giá trị giải thưởng" value, e.g. "7.000.000 VNĐ cho mỗi giải thưởng". */
+  /** "Giá trị giải thưởng" value, e.g. "7.000.000 VNĐ cho mỗi giải thưởng" (per locale). */
   value: string;
   /** Stylized title graphic overlaid on the shared background photo. */
   titleImageSrc: string;
+}
+
+export interface AwardDetailCardProps extends AwardDetailEntry {
+  /** "Số lượng giải thưởng: " / English equivalent label prefix, already
+   * including its own trailing separator (`awards.detail.quantityLabel`). */
+  quantityLabel: string;
+  /** "Giá trị giải thưởng: " / English equivalent label prefix, already
+   * including its own trailing separator (`awards.detail.valueLabel`). */
+  valueLabel: string;
 }
 
 /**
@@ -50,6 +67,8 @@ export function AwardDetailCard({
   quantity,
   value,
   titleImageSrc,
+  quantityLabel,
+  valueLabel,
 }: AwardDetailCardProps) {
   return (
     <div
@@ -106,7 +125,7 @@ export function AwardDetailCard({
             className="h-6 w-6 shrink-0"
           />
           <p className="font-montserrat text-[16px] leading-[24px] font-normal text-white">
-            {`Số lượng giải thưởng: ${quantity}`}
+            {`${quantityLabel}${quantity}`}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -117,7 +136,7 @@ export function AwardDetailCard({
             className="h-6 w-6 shrink-0"
           />
           <p className="font-montserrat text-[16px] leading-[24px] font-normal text-white">
-            {`Giá trị giải thưởng: ${value}`}
+            {`${valueLabel}${value}`}
           </p>
         </div>
       </div>

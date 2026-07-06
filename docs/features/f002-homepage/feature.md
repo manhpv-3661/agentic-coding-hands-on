@@ -95,3 +95,5 @@ Sun* Kudos → footer. Widget button nổi cố định góc phải dưới.
 ## 5. Unresolved Questions
 - Nội dung thật của trang Awards Information / Sun* Kudos (screen sau) — placeholder tạm.
 - Notification backend + role system (Admin Dashboard) — hoãn, chưa có hạng mục.
+- **Đã shipped**: FR-9 "không dịch nội dung" nay đã superseded bởi F005 (dịch nội dung thật) —
+  xem `docs/features/f005-i18n-translation/feature.md`.

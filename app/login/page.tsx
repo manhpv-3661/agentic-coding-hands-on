@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { getLocale } from "@/lib/i18n/get-locale";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import { LoginButtonContainer } from "./components/login-button-container";
 import { LoginFooter } from "./components/login-footer";
@@ -7,12 +9,17 @@ import { LoginHeader } from "./components/login-header";
 import { LoginHeroContent } from "./components/login-hero-content";
 import { montserrat, montserratAlternates } from "./fonts";
 
-export const metadata: Metadata = {
-  title: "Đăng nhập | Sun* Annual Awards 2025",
-  description: "Đăng nhập để khám phá Sun* Annual Awards 2025.",
-};
+/** Locale-aware `<title>`/description — reads the `NEXT_LOCALE` cookie via
+ * `getLocale()`, same source of truth the page body uses below. */
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  const d = getDictionary(locale);
 
-const LOGIN_ERROR = "Đăng nhập không thành công. Vui lòng thử lại.";
+  return {
+    title: d.login.meta.title,
+    description: d.login.meta.description,
+  };
+}
 
 /** Already-authenticated users skip the login screen (defense-in-depth
  * alongside proxy.ts). No-op when Supabase env is absent. */
@@ -47,20 +54,29 @@ export default async function LoginPage({
 }) {
   await redirectIfAuthenticated();
 
+  const locale = await getLocale();
+  const d = getDictionary(locale);
+
   const { error } = await searchParams;
-  const initialError = error === "auth_callback_failed" ? LOGIN_ERROR : null;
+  const initialError = error === "auth_callback_failed" ? d.login.error.oauthFailed : null;
 
   return (
     <div
       className={`${montserrat.variable} ${montserratAlternates.variable} relative flex min-h-screen w-full flex-col bg-[#00101A] bg-cover bg-right bg-no-repeat [background-image:linear-gradient(to_right,rgba(0,16,26,0.95),rgba(0,16,26,0.6)_40%,rgba(0,16,26,0.15)_70%,transparent_100%),url('/login/hero-waves.jpg')]`}
     >
-      <LoginHeader />
+      <LoginHeader initialLocale={locale} />
       <main className="flex flex-1 items-center px-6 py-12 sm:px-10 lg:px-36">
-        <LoginHeroContent>
-          <LoginButtonContainer initialError={initialError} />
+        <LoginHeroContent subtitle={d.login.hero.subtitle}>
+          <LoginButtonContainer
+            initialError={initialError}
+            oauthFailed={d.login.error.oauthFailed}
+            notConfigured={d.login.error.notConfigured}
+            loading={d.login.button.loading}
+            google={d.login.button.google}
+          />
         </LoginHeroContent>
       </main>
-      <LoginFooter />
+      <LoginFooter copyright={d.shared.footer.copyright} />
     </div>
   );
 }

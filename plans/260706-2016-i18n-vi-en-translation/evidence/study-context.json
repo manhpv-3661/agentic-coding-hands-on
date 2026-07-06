@@ -1,0 +1,36 @@
+{
+  "task": "F005 — Đa ngôn ngữ: replace the NEXT_LOCALE cookie-only stub with real VI/EN translation across every built screen (Login, Homepage, Prelaunch Countdown, Awards Information)",
+  "mode": "feature",
+  "acceptanceCriteria": [
+    "lib/i18n/ dictionary module with compile-time EN/VI key-parity guard (satisfies Dictionary)",
+    "getLocale() reads NEXT_LOCALE cookie server-side, validates, defaults to vi",
+    "LanguageSelector reload bug fixed: seeded from initialLocale prop, not always vi after reload",
+    "Selecting a locale calls router.refresh() so the whole Server-rendered tree updates without full page reload",
+    "Every screen (Login, Homepage, Prelaunch, Awards) renders translated content server-side on first paint, no FOUC",
+    "2 DRY duplicate strings (login.error.oauthFailed, shared.footer.copyright) collapsed to single dictionary keys",
+    "Full unit test suite passes with no regressions",
+    "Full Playwright E2E suite passes with no regressions, including 7 pre-existing specs that hardcoded accidentally-English strings"
+  ],
+  "touchpoints": [
+    "lib/i18n/**",
+    "app/login/**",
+    "app/page.tsx",
+    "app/components/home/**",
+    "app/prelaunch/**",
+    "app/awards/page.tsx",
+    "app/components/awards/**",
+    "e2e/i18n.spec.ts",
+    "e2e/i18n-content.spec.ts",
+    "playwright.config.ts"
+  ],
+  "blastRadius": [
+    "Every previously-shipped screen (F001-F004) — default rendering locale changes from implicit hardcoded strings to explicit dictionary lookups",
+    "Existing E2E specs relying on incidentally-English default content (homepage-content.spec.ts, prelaunch-countdown.spec.ts)",
+    "lib/awards/award-categories.ts slugs (read-only dependency, not modified) — award-detail-data.ts factory refactor must preserve order/slugs exactly"
+  ],
+  "contracts": [
+    "Dictionary = typeof vi (compile-time shape contract between vi.ts and en.ts)",
+    "lib/awards/award-categories.ts slugs (frozen, consumed by buildAwardDetailEntries)",
+    "NEXT_LOCALE cookie format (unchanged from F001 stub — value is vi|en, path=/, 1yr max-age)"
+  ]
+}

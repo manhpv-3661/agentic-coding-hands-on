@@ -16,6 +16,19 @@ vi.mock("@/lib/auth/require-user", () => ({
   requireUser: vi.fn(),
 }));
 
+vi.mock("next/headers", () => ({
+  cookies: vi.fn(() =>
+    Promise.resolve({
+      get: vi.fn(() => undefined),
+    }),
+  ),
+}));
+
+vi.mock("next/navigation", () => ({
+  usePathname: vi.fn(() => "/"),
+  useRouter: vi.fn(() => ({ refresh: vi.fn() })),
+}));
+
 import { requireUser } from "@/lib/auth/require-user";
 import { AWARD_CATEGORIES } from "@/lib/awards/award-categories";
 import AwardsPage from "@/app/awards/page";

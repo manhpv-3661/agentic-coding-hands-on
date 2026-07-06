@@ -78,3 +78,6 @@ nguyên trạng logic countdown đã có từ F002. Không có nút bấm hay h�
 ## 5. Unresolved Questions
 _Không còn — auto-unlock UX và redirect target đã chốt 2026-07-06, xem
 `plans/260706-1543-countdown-prelaunch/clarifications.md`._
+
+**Đã shipped**: FR-6 "không dịch theo cookie NEXT_LOCALE — tiền lệ F001/F002" nay đã superseded
+bởi F005 (dịch nội dung thật) — xem `docs/features/f005-i18n-translation/feature.md`.

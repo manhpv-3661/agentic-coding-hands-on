@@ -12,6 +12,7 @@ vi.mock("next/font/google", () => ({
   Montserrat_Alternates: vi.fn(() => ({ className: "font-montserrat-alternates" })),
 }));
 
+import { vi as viDictionary } from "@/lib/i18n/dictionaries/vi";
 import { SiteFooter } from "./site-footer";
 
 describe("SiteFooter", () => {
@@ -23,7 +24,12 @@ describe("SiteFooter", () => {
   it("scrolls to top when the logo is clicked while already on / (FR-26)", async () => {
     mockUsePathname.mockReturnValue("/");
     const user = userEvent.setup();
-    render(<SiteFooter />);
+    render(
+      <SiteFooter
+        nav={viDictionary.shared.nav}
+        footer={viDictionary.shared.footer}
+      />,
+    );
 
     await user.click(
       screen.getByRole("link", { name: "Sun* Annual Awards 2025 — home" }),
@@ -35,7 +41,12 @@ describe("SiteFooter", () => {
   it("does not scroll when the logo is clicked from another page", async () => {
     mockUsePathname.mockReturnValue("/awards");
     const user = userEvent.setup();
-    render(<SiteFooter />);
+    render(
+      <SiteFooter
+        nav={viDictionary.shared.nav}
+        footer={viDictionary.shared.footer}
+      />,
+    );
 
     await user.click(
       screen.getByRole("link", { name: "Sun* Annual Awards 2025 — home" }),

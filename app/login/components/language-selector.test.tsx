@@ -1,10 +1,22 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { useRouter } from "next/navigation";
 import { LanguageSelector } from "./language-selector";
 
+vi.mock("next/navigation", () => ({
+  useRouter: vi.fn(),
+}));
+
 describe("LanguageSelector", () => {
+  const refresh = vi.fn();
+
   beforeEach(() => {
+    refresh.mockClear();
+    vi.mocked(useRouter).mockReturnValue({
+      refresh,
+    } as unknown as ReturnType<typeof useRouter>);
+
     // Clear document.cookie before each test
     document.cookie.split(";").forEach((c) => {
       document.cookie = c
@@ -13,20 +25,25 @@ describe("LanguageSelector", () => {
     });
   });
 
-  it("renders with default VN locale", () => {
-    render(<LanguageSelector />);
+  it("renders seeded from initialLocale='vi'", () => {
+    render(<LanguageSelector initialLocale="vi" />);
     expect(screen.getByText("VN")).toBeInTheDocument();
   });
 
+  it("renders seeded from initialLocale='en'", () => {
+    render(<LanguageSelector initialLocale="en" />);
+    expect(screen.getByText("EN")).toBeInTheDocument();
+  });
+
   it("displays Vietnamese flag image", () => {
-    render(<LanguageSelector />);
+    render(<LanguageSelector initialLocale="vi" />);
     const img = screen.getByAltText("") as HTMLImageElement;
     expect(img.src).toContain("VN.svg");
   });
 
   it("opens dropdown when trigger button is clicked", async () => {
     const user = userEvent.setup();
-    render(<LanguageSelector />);
+    render(<LanguageSelector initialLocale="vi" />);
 
     const trigger = screen.getByRole("button", { expanded: false });
     await user.click(trigger);
@@ -37,7 +54,7 @@ describe("LanguageSelector", () => {
 
   it("displays VN and EN options in dropdown", async () => {
     const user = userEvent.setup();
-    render(<LanguageSelector />);
+    render(<LanguageSelector initialLocale="vi" />);
 
     const trigger = screen.getByRole("button");
     await user.click(trigger);
@@ -48,7 +65,7 @@ describe("LanguageSelector", () => {
 
   it("closes dropdown when option is selected", async () => {
     const user = userEvent.setup();
-    render(<LanguageSelector />);
+    render(<LanguageSelector initialLocale="vi" />);
 
     const trigger = screen.getByRole("button");
     await user.click(trigger);
@@ -63,7 +80,7 @@ describe("LanguageSelector", () => {
 
   it("sets NEXT_LOCALE cookie to 'en' when EN is selected", async () => {
     const user = userEvent.setup();
-    render(<LanguageSelector />);
+    render(<LanguageSelector initialLocale="vi" />);
 
     const trigger = screen.getByRole("button");
     await user.click(trigger);
@@ -76,7 +93,7 @@ describe("LanguageSelector", () => {
 
   it("sets NEXT_LOCALE cookie to 'vi' when VN is selected", async () => {
     const user = userEvent.setup();
-    render(<LanguageSelector />);
+    render(<LanguageSelector initialLocale="en" />);
 
     // First select EN
     const trigger = screen.getByRole("button");
@@ -92,9 +109,36 @@ describe("LanguageSelector", () => {
     expect(document.cookie).toContain("NEXT_LOCALE=vi");
   });
 
+  it("calls router.refresh() after selecting a locale", async () => {
+    const user = userEvent.setup();
+    render(<LanguageSelector initialLocale="vi" />);
+
+    const trigger = screen.getByRole("button");
+    await user.click(trigger);
+
+    const enOption = screen.getByText(/English/);
+    await user.click(enOption);
+
+    expect(refresh).toHaveBeenCalledTimes(1);
+  });
+
+  it("calls router.refresh() on every locale selection", async () => {
+    const user = userEvent.setup();
+    render(<LanguageSelector initialLocale="vi" />);
+
+    const trigger = screen.getByRole("button");
+    await user.click(trigger);
+    await user.click(screen.getByText(/English/));
+
+    await user.click(trigger);
+    await user.click(screen.getByText(/Tiếng Việt/));
+
+    expect(refresh).toHaveBeenCalledTimes(2);
+  });
+
   it("closes dropdown when Escape key is pressed", async () => {
     const user = userEvent.setup();
-    render(<LanguageSelector />);
+    render(<LanguageSelector initialLocale="vi" />);
 
     const trigger = screen.getByRole("button");
     await user.click(trigger);
@@ -106,10 +150,10 @@ describe("LanguageSelector", () => {
 
   it("closes dropdown when clicking outside", async () => {
     const user = userEvent.setup();
-    const { container } = render(
+    render(
       <div>
         <button>Outside button</button>
-        <LanguageSelector />
+        <LanguageSelector initialLocale="vi" />
       </div>
     );
 
@@ -125,7 +169,7 @@ describe("LanguageSelector", () => {
 
   it("shows chevron icon rotated when dropdown is open", async () => {
     const user = userEvent.setup();
-    const { container } = render(<LanguageSelector />);
+    render(<LanguageSelector initialLocale="vi" />);
 
     const trigger = screen.getByRole("button");
     const chevron = trigger.querySelector("svg");
@@ -138,7 +182,7 @@ describe("LanguageSelector", () => {
 
   it("marks selected option with aria-selected", async () => {
     const user = userEvent.setup();
-    render(<LanguageSelector />);
+    render(<LanguageSelector initialLocale="vi" />);
 
     const trigger = screen.getByRole("button");
     await user.click(trigger);
@@ -152,7 +196,7 @@ describe("LanguageSelector", () => {
 
   it("updates aria-selected when selection changes", async () => {
     const user = userEvent.setup();
-    render(<LanguageSelector />);
+    render(<LanguageSelector initialLocale="vi" />);
 
     let trigger = screen.getByRole("button");
     await user.click(trigger);

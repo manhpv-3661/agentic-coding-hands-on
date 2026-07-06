@@ -2,6 +2,7 @@
 
 import { Orbitron } from "next/font/google";
 import { useEventCountdown } from "@/hooks/use-event-countdown";
+import type { Dictionary } from "@/lib/i18n/dictionary";
 
 /**
  * Countdown timer for the Homepage SAA hero — MoMorph node `2167:9035`
@@ -11,7 +12,7 @@ import { useEventCountdown } from "@/hooks/use-event-countdown";
  *
  * Driven by `useEventCountdown` (FR-12..FR-15): the hook ticks at minute
  * resolution and resolves the target from `eventStartAt`, defaulting to
- * `NEXT_PUBLIC_EVENT_START_AT` (FR-13). The "Comming soon" subtitle only
+ * `NEXT_PUBLIC_EVENT_START_AT` (FR-13). The "coming soon" subtitle only
  * renders while `showComingSoon` is true — hidden once the countdown hits
  * zero/past or the env var is missing/invalid (FR-14/FR-15).
  *
@@ -31,6 +32,13 @@ export interface CountdownTimerProps {
    * `useEventCountdown`) to `process.env.NEXT_PUBLIC_EVENT_START_AT`.
    */
   eventStartAt?: string | Date | null;
+  /** Days/Hours/Minutes unit labels — shared verbatim with the Prelaunch
+   * countdown (`shared.countdown`, F005). */
+  labels: Dictionary["shared"]["countdown"];
+  /** "Coming soon" subtitle, rendered while `showComingSoon` is true
+   * (`homepage.hero.comingSoon` — fixes the "Comming soon" typo that used
+   * to be hardcoded here). */
+  comingSoon: string;
 }
 
 /**
@@ -72,7 +80,7 @@ function CountdownUnit({ value, label }: { value: string; label: string }) {
   );
 }
 
-export function CountdownTimer({ eventStartAt }: CountdownTimerProps) {
+export function CountdownTimer({ eventStartAt, labels, comingSoon }: CountdownTimerProps) {
   const { days, hours, minutes, showComingSoon } = useEventCountdown(eventStartAt);
 
   return (
@@ -81,17 +89,17 @@ export function CountdownTimer({ eventStartAt }: CountdownTimerProps) {
       {showComingSoon && (
         // mm:2167:9036
         <p className="font-montserrat text-2xl leading-8 font-bold text-white">
-          Comming soon
+          {comingSoon}
         </p>
       )}
       {/* mm:2167:9037 */}
       <div className="flex flex-row flex-wrap items-center gap-4 sm:gap-6 lg:gap-10">
         {/* mm:2167:9038 */}
-        <CountdownUnit value={days} label="DAYS" />
+        <CountdownUnit value={days} label={labels.days} />
         {/* mm:2167:9043 */}
-        <CountdownUnit value={hours} label="HOURS" />
+        <CountdownUnit value={hours} label={labels.hours} />
         {/* mm:2167:9048 */}
-        <CountdownUnit value={minutes} label="MINUTES" />
+        <CountdownUnit value={minutes} label={labels.minutes} />
       </div>
     </div>
   );

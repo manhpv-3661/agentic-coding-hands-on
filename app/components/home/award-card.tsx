@@ -14,6 +14,9 @@ export interface AwardCardProps {
   description: string;
   /** "Chi tiết" (details) link target. */
   detailsHref: string;
+  /** "Chi tiết" / "Details" CTA label, shared with `sun-kudos-section.tsx`
+   * (`shared.detailsCta`). */
+  detailsCta: string;
 }
 
 /**
@@ -63,6 +66,7 @@ export function AwardCard({
   titleAlt,
   description,
   detailsHref,
+  detailsCta,
 }: AwardCardProps) {
   return (
     // mm:214:1032
@@ -111,7 +115,7 @@ export function AwardCard({
         <span className="flex items-center gap-1 py-4 text-white transition-opacity duration-200 ease-out hover:opacity-70">
           {/* mm:186:1439 */}
           <span className="font-montserrat text-center text-[16px] leading-[24px] font-medium tracking-[0.15px]">
-            Chi tiết
+            {detailsCta}
           </span>
           <IconUp className="h-6 w-6" />
         </span>

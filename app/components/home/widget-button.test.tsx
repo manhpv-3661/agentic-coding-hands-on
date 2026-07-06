@@ -6,7 +6,7 @@ import { WidgetButton } from "./widget-button";
 describe("WidgetButton", () => {
   it("toggles aria-expanded via the shared dismissable-menu hook", async () => {
     const user = userEvent.setup();
-    render(<WidgetButton />);
+    render(<WidgetButton comingSoon="Coming soon" />);
 
     const trigger = screen.getByRole("button", { name: "Quick actions" });
     expect(trigger).toHaveAttribute("aria-expanded", "false");
@@ -20,7 +20,7 @@ describe("WidgetButton", () => {
 
   it("closes on Escape", async () => {
     const user = userEvent.setup();
-    render(<WidgetButton />);
+    render(<WidgetButton comingSoon="Coming soon" />);
 
     const trigger = screen.getByRole("button", { name: "Quick actions" });
     await user.click(trigger);
@@ -30,9 +30,9 @@ describe("WidgetButton", () => {
     expect(trigger).toHaveAttribute("aria-expanded", "false");
   });
 
-  it("renders the stub panel when open", async () => {
+  it("renders the comingSoon prop inside the stub panel when open (F005)", async () => {
     const user = userEvent.setup();
-    render(<WidgetButton />);
+    render(<WidgetButton comingSoon="Sắp ra mắt" />);
 
     expect(screen.queryByRole("status")).not.toBeInTheDocument();
 

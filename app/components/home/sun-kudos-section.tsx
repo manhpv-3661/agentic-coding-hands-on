@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Montserrat } from "next/font/google";
+import type { Dictionary } from "@/lib/i18n/dictionary";
 
 const montserrat = Montserrat({
   subsets: ["latin", "vietnamese"],
@@ -8,8 +9,12 @@ const montserrat = Montserrat({
   display: "swap",
 });
 
-const DESCRIPTION =
-  "ĐIỂM MỚI CỦA SAA 2025\nHoạt động ghi nhận và cảm ơn đồng nghiệp - lần đầu tiên được diễn ra dành cho tất cả Sunner. Hoạt động sẽ được triển khai vào tháng 11/2025, khuyến khích người Sun* chia sẻ những lời ghi nhận, cảm ơn đồng nghiệp trên hệ thống do BTC công bố. Đây sẽ là chất liệu để Hội đồng Heads tham khảo trong quá trình lựa chọn người đạt giải.";
+interface SunKudosSectionProps {
+  /** Eyebrow + body copy for the promo block (`homepage.kudos`). */
+  kudos: Dictionary["homepage"]["kudos"];
+  /** "Chi tiết" CTA label, shared with `award-card.tsx` (`shared.detailsCta`). */
+  detailsCta: Dictionary["shared"]["detailsCta"];
+}
 
 /**
  * "Chi tiết" CTA arrow — MoMorph node `I3390:10349;313:8426;186:1766`
@@ -58,7 +63,7 @@ function UpArrowIcon() {
  * 3, Sizing). `Frame 367` (`I3390:10349;313:8417`) is an empty layout frame
  * in the design (no children, no fill) and is intentionally not rendered.
  */
-export function SunKudosSection() {
+export function SunKudosSection({ kudos, detailsCta }: SunKudosSectionProps) {
   return (
     // mm:3390:10349
     <section
@@ -87,15 +92,15 @@ export function SunKudosSection() {
           <div className="flex flex-col items-start gap-4">
             {/* mm:I3390:10349;313:8421 */}
             <p className="text-2xl leading-8 font-bold text-white">
-              Phong trào ghi nhận
+              {kudos.eyebrow}
             </p>
-            {/* mm:I3390:10349;313:8422 */}
+            {/* mm:I3390:10349;313:8422 — brand name, untranslated (clarifications.md Q4) */}
             <p className="text-[57px] leading-[64px] font-bold tracking-[-0.25px] text-[#FFEA9E]">
               Sun* Kudos
             </p>
             {/* mm:I3390:10349;313:8423 */}
             <p className="text-justify text-base leading-6 font-bold tracking-[0.5px] whitespace-pre-line text-white">
-              {DESCRIPTION}
+              {kudos.description}
             </p>
           </div>
 
@@ -107,7 +112,7 @@ export function SunKudosSection() {
           >
             {/* mm:I3390:10349;313:8426;186:1568 */}
             <span className="text-base leading-6 font-bold tracking-[0.15px]">
-              Chi tiết
+              {detailsCta}
             </span>
             <UpArrowIcon />
           </Link>

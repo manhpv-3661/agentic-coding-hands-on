@@ -80,6 +80,8 @@ middleware: refresh session; /login + đã-auth -> /todo ; /todo + chưa-auth ->
 
 ## 7. Câu hỏi chưa giải quyết
 - Phạm vi i18n: đã default "chỉ selector + cookie" (câu trả lời của user không đề cập rõ) — cần user xác nhận.
+- **Đã shipped**: hạng mục "hoãn sang màn hình 12" nói ở FR-13 nay đã triển khai đầy đủ ở F005 —
+  xem `docs/features/f005-i18n-translation/feature.md`.
 
 ## 8. Thiết lập môi trường (đã triển khai)
 - Copy `.env.local.example` → `.env.local`, điền `NEXT_PUBLIC_SUPABASE_URL` +

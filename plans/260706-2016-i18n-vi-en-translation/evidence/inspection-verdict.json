@@ -1,0 +1,25 @@
+{
+  "score": 9.5,
+  "criticalCount": 0,
+  "decision": "SEALED",
+  "acceptanceCovered": [
+    "lib/i18n/ dictionary module with compile-time EN/VI key-parity guard (satisfies Dictionary) — verified: en.ts uses satisfies Dictionary, reviewer confirmed the guard is load-bearing via a mutation test in parity.test.ts",
+    "getLocale() reads NEXT_LOCALE cookie server-side, validates, defaults to vi — verified: get-locale.test.ts covers valid/missing/invalid cookie cases, reviewer confirmed isLocale() validation prevents unvalidated cookie values from reaching the dictionary lookup",
+    "LanguageSelector reload bug fixed: seeded from initialLocale prop, not always vi after reload — verified: language-selector.test.tsx asserts seed-from-prop behavior, e2e/i18n-content.spec.ts Test D proves reload persistence (the exact FR-5 regression)",
+    "Selecting a locale calls router.refresh() so the whole Server-rendered tree updates without full page reload — verified: language-selector.test.tsx mocks next/navigation and asserts refresh() fires, e2e tests confirm content actually switches",
+    "Every screen (Login, Homepage, Prelaunch, Awards) renders translated content server-side on first paint, no FOUC — verified: e2e/i18n-content.spec.ts Test B asserts EN content visible immediately after context.addCookies() + goto(), no wait-for-hydration",
+    "2 DRY duplicate strings (login.error.oauthFailed, shared.footer.copyright) collapsed to single dictionary keys — verified: reviewer confirmed both call sites for each key read from the single dictionary source",
+    "Full unit test suite passes with no regressions — verified: npx vitest run reports 254 passed (254), 42 test files",
+    "Full Playwright E2E suite passes with no regressions, including 7 pre-existing specs that hardcoded accidentally-English strings — verified: npx playwright test reports 63 passed (63) across 3 projects"
+  ],
+  "regressionChecked": [
+    "e2e/homepage-content.spec.ts — 6 tests initially broke on incidentally-English defaults, fixed via explicit EN cookie, now pass",
+    "e2e/prelaunch-countdown.spec.ts — 1 test initially broke on DAYS/HOURS/MINUTES defaulting to VI, fixed via explicit EN cookie, now passes",
+    "e2e/access-control.spec.ts, homepage-access.spec.ts, login.spec.ts, awards-content.spec.ts — all still pass, no i18n-related regression",
+    "full vitest unit suite — 254/254 across 42 files, no regressions in F001-F004 code paths"
+  ],
+  "contractStatus": "COMPATIBLE",
+  "refuted": [],
+  "unproven": [],
+  "reachableRegressions": []
+}

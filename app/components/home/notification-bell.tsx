@@ -2,6 +2,11 @@
 
 import { useDismissableMenu } from "@/hooks/use-dismissable-menu";
 
+interface NotificationBellProps {
+  /** Empty-state copy shown in the notification panel (`shared.notifications.empty`). */
+  empty: string;
+}
+
 /**
  * Bell icon — MoMorph node `I2167:9091;186:2101;186:2020;186:1420`
  * (MM_MEDIA_Noti?=True), fill `white` in Figma → inlined with `currentColor`
@@ -41,7 +46,7 @@ function BellIcon() {
  * `role="status"` rather than `role="menu"` — `menu` implies `menuitem`
  * children for assistive tech to navigate, which this empty state has none of.
  */
-export function NotificationBell() {
+export function NotificationBell({ empty }: NotificationBellProps) {
   const { open, containerRef, triggerProps } = useDismissableMenu();
 
   return (
@@ -62,7 +67,7 @@ export function NotificationBell() {
           aria-label="Notifications"
           className="absolute top-12 right-0 z-30 w-64 rounded-lg border border-[#2E3940] bg-[#101317] p-4 text-sm text-white shadow-lg"
         >
-          Chưa có thông báo
+          {empty}
         </div>
       )}
     </div>

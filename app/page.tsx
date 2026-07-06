@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { requireUser } from "@/lib/auth/require-user";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { getLocale } from "@/lib/i18n/get-locale";
 import { AwardsSection } from "./components/home/awards-section";
 import { HeroSection } from "./components/home/hero-section";
 import { RootFurtherContent } from "./components/home/root-further-content";
@@ -55,9 +57,18 @@ export const metadata: Metadata = {
  * Widget button" requirement — Figma parks it as an absolutely-positioned
  * overlay near the hero instead, which is a design-file placement, not a
  * scroll-behavior spec.
+ *
+ * i18n (F005): resolves the `NEXT_LOCALE` cookie once via `getLocale()` and
+ * threads the resulting `Dictionary` slice into every child that needs
+ * translated copy — see `plans/260706-2016-i18n-vi-en-translation/`. The
+ * static `metadata` export above stays as-is (no `homepage.meta.*` key
+ * exists in the dictionary; this page's `<title>`/description are English
+ * marketing copy by design, not per-locale content).
  */
 export default async function HomePage() {
   await requireUser();
+  const locale = await getLocale();
+  const dictionary = getDictionary(locale);
 
   return (
     <div
@@ -84,17 +95,22 @@ export default async function HomePage() {
         />
       </div>
 
-      <SiteHeader />
+      <SiteHeader
+        locale={locale}
+        nav={dictionary.shared.nav}
+        account={dictionary.shared.account}
+        notifications={dictionary.shared.notifications}
+      />
 
       <main className="flex flex-1 flex-col gap-12 py-12 sm:gap-16 sm:py-16 lg:gap-[120px] lg:py-24">
-        <HeroSection />
-        <RootFurtherContent />
-        <AwardsSection />
-        <SunKudosSection />
+        <HeroSection hero={dictionary.homepage.hero} countdown={dictionary.shared.countdown} />
+        <RootFurtherContent content={dictionary.homepage.rootFurther} />
+        <AwardsSection awards={dictionary.homepage.awards} detailsCta={dictionary.shared.detailsCta} />
+        <SunKudosSection kudos={dictionary.homepage.kudos} detailsCta={dictionary.shared.detailsCta} />
       </main>
 
-      <SiteFooter />
-      <WidgetButton />
+      <SiteFooter nav={dictionary.shared.nav} footer={dictionary.shared.footer} />
+      <WidgetButton comingSoon={dictionary.shared.widget.comingSoon} />
     </div>
   );
 }

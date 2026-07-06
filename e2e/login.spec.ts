@@ -31,7 +31,7 @@ test.describe("Login Page (GUI & Interaction Tests)", () => {
     await expect(page.locator("main")).toContainText("Đăng nhập để khám phá");
 
     // Login button
-    const loginButton = page.locator("button:has-text('LOGIN With Google')");
+    const loginButton = page.locator("button:has-text('Đăng nhập với Google')");
     await expect(loginButton).toBeVisible();
 
     // Google icon
@@ -121,7 +121,7 @@ test.describe("Login Page (GUI & Interaction Tests)", () => {
   });
 
   test("login button has hover shadow effect", async ({ page }) => {
-    const loginButton = page.locator("button:has-text('LOGIN With Google')");
+    const loginButton = page.locator("button:has-text('Đăng nhập với Google')");
 
     // Check that the button element exists and has the hover shadow class
     const classList = await loginButton.evaluate(
@@ -139,7 +139,7 @@ test.describe("Login Page (GUI & Interaction Tests)", () => {
       await route.abort();
     });
 
-    await page.locator("button:has-text('LOGIN With Google')").click();
+    await page.locator("button:has-text('Đăng nhập với Google')").click();
 
     await expect
       .poll(() => authorizeUrl, { timeout: 5000 })
@@ -164,7 +164,7 @@ test.describe("Login Page (GUI & Interaction Tests)", () => {
       await page.goto("/login");
 
       // Check that main elements are still visible
-      const loginButton = page.locator("button:has-text('LOGIN With Google')");
+      const loginButton = page.locator("button:has-text('Đăng nhập với Google')");
       await expect(loginButton).toBeVisible();
 
       const header = page.locator("header");

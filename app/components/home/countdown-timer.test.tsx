@@ -12,12 +12,15 @@ vi.mock("@/hooks/use-event-countdown", () => ({
 import { useEventCountdown } from "@/hooks/use-event-countdown";
 import { CountdownTimer } from "./countdown-timer";
 
+const LABELS = { days: "DAYS", hours: "HOURS", minutes: "MINUTES" };
+const COMING_SOON = "Coming soon";
+
 describe("CountdownTimer", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("shows the 'Comming soon' subtitle when showComingSoon is true", () => {
+  it("shows the comingSoon subtitle when showComingSoon is true", () => {
     vi.mocked(useEventCountdown).mockReturnValue({
       days: "05",
       hours: "03",
@@ -25,12 +28,12 @@ describe("CountdownTimer", () => {
       showComingSoon: true,
     });
 
-    render(<CountdownTimer />);
+    render(<CountdownTimer labels={LABELS} comingSoon={COMING_SOON} />);
 
-    expect(screen.getByText("Comming soon")).toBeInTheDocument();
+    expect(screen.getByText("Coming soon")).toBeInTheDocument();
   });
 
-  it("hides the 'Comming soon' subtitle when showComingSoon is false (FR-14/FR-15)", () => {
+  it("hides the comingSoon subtitle when showComingSoon is false (FR-14/FR-15)", () => {
     vi.mocked(useEventCountdown).mockReturnValue({
       days: "00",
       hours: "00",
@@ -38,12 +41,32 @@ describe("CountdownTimer", () => {
       showComingSoon: false,
     });
 
-    render(<CountdownTimer />);
+    render(<CountdownTimer labels={LABELS} comingSoon={COMING_SOON} />);
 
-    expect(screen.queryByText("Comming soon")).not.toBeInTheDocument();
+    expect(screen.queryByText("Coming soon")).not.toBeInTheDocument();
     expect(screen.getByText("DAYS")).toBeInTheDocument();
     expect(screen.getByText("HOURS")).toBeInTheDocument();
     expect(screen.getByText("MINUTES")).toBeInTheDocument();
+  });
+
+  it("renders locale-specific unit labels passed via the `labels` prop (F005)", () => {
+    vi.mocked(useEventCountdown).mockReturnValue({
+      days: "00",
+      hours: "00",
+      minutes: "00",
+      showComingSoon: false,
+    });
+
+    render(
+      <CountdownTimer
+        labels={{ days: "NGÀY", hours: "GIỜ", minutes: "PHÚT" }}
+        comingSoon="Sắp diễn ra"
+      />,
+    );
+
+    expect(screen.getByText("NGÀY")).toBeInTheDocument();
+    expect(screen.getByText("GIỜ")).toBeInTheDocument();
+    expect(screen.getByText("PHÚT")).toBeInTheDocument();
   });
 
   it("passes eventStartAt through to useEventCountdown (env override support)", () => {
@@ -54,7 +77,13 @@ describe("CountdownTimer", () => {
       showComingSoon: false,
     });
 
-    render(<CountdownTimer eventStartAt="2030-01-01T00:00:00Z" />);
+    render(
+      <CountdownTimer
+        eventStartAt="2030-01-01T00:00:00Z"
+        labels={LABELS}
+        comingSoon={COMING_SOON}
+      />,
+    );
 
     expect(useEventCountdown).toHaveBeenCalledWith("2030-01-01T00:00:00Z");
   });
@@ -67,7 +96,7 @@ describe("CountdownTimer", () => {
       showComingSoon: true,
     });
 
-    render(<CountdownTimer />);
+    render(<CountdownTimer labels={LABELS} comingSoon={COMING_SOON} />);
 
     expect(screen.getByText("1")).toBeInTheDocument();
     expect(screen.getByText("2")).toBeInTheDocument();

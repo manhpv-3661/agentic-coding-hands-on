@@ -4,9 +4,23 @@ import Image from "next/image";
 import Link from "next/link";
 import { LanguageSelector } from "@/app/login/components/language-selector";
 import { useScrollToTopOnHomeClick } from "@/hooks/use-scroll-to-top-on-home-click";
+import type { Dictionary } from "@/lib/i18n/dictionary";
+import type { Locale } from "@/lib/i18n/locale";
 import { AccountMenuButton } from "./account-menu-button";
 import { NavLink } from "./nav-link";
 import { NotificationBell } from "./notification-bell";
+
+interface SiteHeaderProps {
+  /** Current locale — forwarded to `LanguageSelector` so it seeds correctly
+   * on every render (no cookie flash on reload, see FR-5). */
+  locale: Locale;
+  /** Nav link labels (`shared.nav`). */
+  nav: Dictionary["shared"]["nav"];
+  /** Account menu labels (`shared.account`). */
+  account: Dictionary["shared"]["account"];
+  /** Notification panel copy (`shared.notifications`). */
+  notifications: Dictionary["shared"]["notifications"];
+}
 
 /**
  * Homepage SAA sticky header — MoMorph node `2167:9091` (mms_A1_Header).
@@ -23,7 +37,7 @@ import { NotificationBell } from "./notification-bell";
  * Information" routes to `/awards`, "Sun* Kudos" routes to `/kudos`
  * (FR-7) — both are real, protected placeholder pages.
  */
-export function SiteHeader() {
+export function SiteHeader({ locale, nav, account, notifications }: SiteHeaderProps) {
   const handleLogoClick = useScrollToTopOnHomeClick("/");
 
   return (
@@ -48,16 +62,16 @@ export function SiteHeader() {
         </Link>
         {/* mm:I2167:9091;178:653 */}
         <nav className="flex flex-wrap items-center gap-1 sm:gap-3 lg:gap-6">
-          <NavLink href="/" label="About SAA 2025" selected />
-          <NavLink href="/awards" label="Award Information" />
-          <NavLink href="/kudos" label="Sun* Kudos" />
+          <NavLink href="/" label={nav.aboutSaa} selected />
+          <NavLink href="/awards" label={nav.awardInfo} />
+          <NavLink href="/kudos" label={nav.kudos} />
         </nav>
       </div>
       {/* mm:I2167:9091;186:1601 */}
       <div className="flex items-center gap-4">
-        <LanguageSelector />
-        <NotificationBell />
-        <AccountMenuButton />
+        <LanguageSelector initialLocale={locale} />
+        <NotificationBell empty={notifications.empty} />
+        <AccountMenuButton profile={account.profile} signOut={account.signOut} />
       </div>
     </header>
   );

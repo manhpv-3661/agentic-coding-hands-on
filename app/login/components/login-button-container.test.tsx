@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { LoginButtonContainer } from "./login-button-container";
@@ -15,6 +15,19 @@ vi.mock("@/lib/supabase/client", () => ({
 
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
 
+const OAUTH_FAILED = "Đăng nhập không thành công. Vui lòng thử lại.";
+const NOT_CONFIGURED =
+  "Chưa cấu hình đăng nhập. Vui lòng thiết lập Supabase trong .env.local (xem .env.local.example).";
+const LOADING_LABEL = "Đang đăng nhập...";
+const GOOGLE_LABEL = "Login with Google";
+
+const dictProps = {
+  oauthFailed: OAUTH_FAILED,
+  notConfigured: NOT_CONFIGURED,
+  loading: LOADING_LABEL,
+  google: GOOGLE_LABEL,
+};
+
 describe("LoginButtonContainer", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -22,15 +35,14 @@ describe("LoginButtonContainer", () => {
   });
 
   it("renders LoginButton with no initial error", () => {
-    render(<LoginButtonContainer />);
-    expect(screen.getByRole("button", { name: /LOGIN With Google/i })).toBeInTheDocument();
+    render(<LoginButtonContainer {...dictProps} />);
+    expect(screen.getByRole("button", { name: new RegExp(GOOGLE_LABEL, "i") })).toBeInTheDocument();
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   });
 
   it("displays initial error when initialError prop is set", () => {
-    const errorMsg = "Đăng nhập không thành công. Vui lòng thử lại.";
-    render(<LoginButtonContainer initialError={errorMsg} />);
-    expect(screen.getByRole("alert")).toHaveTextContent(errorMsg);
+    render(<LoginButtonContainer {...dictProps} initialError={OAUTH_FAILED} />);
+    expect(screen.getByRole("alert")).toHaveTextContent(OAUTH_FAILED);
   });
 
   it("shows a config message and skips OAuth when Supabase is not configured", async () => {
@@ -41,11 +53,11 @@ describe("LoginButtonContainer", () => {
       auth: { signInWithOAuth: mockSignIn },
     } as any);
 
-    render(<LoginButtonContainer />);
-    await user.click(screen.getByRole("button", { name: /LOGIN With Google/i }));
+    render(<LoginButtonContainer {...dictProps} />);
+    await user.click(screen.getByRole("button", { name: new RegExp(GOOGLE_LABEL, "i") }));
 
     expect(mockSignIn).not.toHaveBeenCalled();
-    expect(screen.getByRole("alert")).toHaveTextContent(/Chưa cấu hình đăng nhập/);
+    expect(screen.getByRole("alert")).toHaveTextContent(NOT_CONFIGURED);
   });
 
   it("sets loading state when login button is clicked", async () => {
@@ -55,8 +67,8 @@ describe("LoginButtonContainer", () => {
       auth: { signInWithOAuth: mockSignIn },
     } as any);
 
-    render(<LoginButtonContainer />);
-    const button = screen.getByRole("button", { name: /LOGIN With Google/i });
+    render(<LoginButtonContainer {...dictProps} />);
+    const button = screen.getByRole("button", { name: new RegExp(GOOGLE_LABEL, "i") });
 
     // Button is initially not disabled
     expect(button).not.toBeDisabled();
@@ -78,8 +90,8 @@ describe("LoginButtonContainer", () => {
       auth: { signInWithOAuth: mockSignIn },
     } as any);
 
-    render(<LoginButtonContainer />);
-    await user.click(screen.getByRole("button", { name: /LOGIN With Google/i }));
+    render(<LoginButtonContainer {...dictProps} />);
+    await user.click(screen.getByRole("button", { name: new RegExp(GOOGLE_LABEL, "i") }));
 
     expect(mockSignIn).toHaveBeenCalledWith({
       provider: "google",
@@ -98,13 +110,11 @@ describe("LoginButtonContainer", () => {
       auth: { signInWithOAuth: mockSignIn },
     } as any);
 
-    render(<LoginButtonContainer />);
-    await user.click(screen.getByRole("button", { name: /LOGIN With Google/i }));
+    render(<LoginButtonContainer {...dictProps} />);
+    await user.click(screen.getByRole("button", { name: new RegExp(GOOGLE_LABEL, "i") }));
 
     await waitFor(() => {
-      expect(screen.getByRole("alert")).toHaveTextContent(
-        "Đăng nhập không thành công. Vui lòng thử lại."
-      );
+      expect(screen.getByRole("alert")).toHaveTextContent(OAUTH_FAILED);
     });
   });
 
@@ -115,13 +125,11 @@ describe("LoginButtonContainer", () => {
       auth: { signInWithOAuth: mockSignIn },
     } as any);
 
-    render(<LoginButtonContainer />);
-    await user.click(screen.getByRole("button", { name: /LOGIN With Google/i }));
+    render(<LoginButtonContainer {...dictProps} />);
+    await user.click(screen.getByRole("button", { name: new RegExp(GOOGLE_LABEL, "i") }));
 
     await waitFor(() => {
-      expect(screen.getByRole("alert")).toHaveTextContent(
-        "Đăng nhập không thành công. Vui lòng thử lại."
-      );
+      expect(screen.getByRole("alert")).toHaveTextContent(OAUTH_FAILED);
     });
   });
 
@@ -134,12 +142,12 @@ describe("LoginButtonContainer", () => {
       auth: { signInWithOAuth: mockSignIn },
     } as any);
 
-    render(<LoginButtonContainer initialError="Initial error" />);
+    render(<LoginButtonContainer {...dictProps} initialError="Initial error" />);
     expect(screen.getByRole("alert")).toHaveTextContent("Initial error");
 
     // Click again
     mockSignIn.mockResolvedValueOnce({ error: null });
-    await user.click(screen.getByRole("button", { name: /LOGIN With Google/i }));
+    await user.click(screen.getByRole("button", { name: new RegExp(GOOGLE_LABEL, "i") }));
 
     // Initial error should be cleared immediately
     await waitFor(() => {
@@ -157,8 +165,8 @@ describe("LoginButtonContainer", () => {
       auth: { signInWithOAuth: mockSignIn },
     } as any);
 
-    render(<LoginButtonContainer />);
-    const button = screen.getByRole("button", { name: /LOGIN With Google/i });
+    render(<LoginButtonContainer {...dictProps} />);
+    const button = screen.getByRole("button", { name: new RegExp(GOOGLE_LABEL, "i") });
 
     await user.click(button);
 
@@ -166,5 +174,18 @@ describe("LoginButtonContainer", () => {
       // Button should be enabled again after error
       expect(button).not.toBeDisabled();
     });
+  });
+
+  it("renders the loading label passed via the loading prop", async () => {
+    const user = userEvent.setup();
+    const mockSignIn = vi.fn(() => new Promise(() => {})); // never resolves
+    vi.mocked(createClient).mockReturnValue({
+      auth: { signInWithOAuth: mockSignIn },
+    } as any);
+
+    render(<LoginButtonContainer {...dictProps} />);
+    await user.click(screen.getByRole("button", { name: new RegExp(GOOGLE_LABEL, "i") }));
+
+    expect(screen.getByText(LOADING_LABEL)).toBeInTheDocument();
   });
 });

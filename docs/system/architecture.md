@@ -32,7 +32,23 @@ backend do Supabase quản lý (managed auth), không tự viết server auth.
   `proxy.ts`/`proxy()`; runtime `nodejs` bắt buộc. Không cấu hình env Supabase → fail-open (no-op, log
   warning), không chặn build/dev; thiếu/không hợp lệ env `NEXT_PUBLIC_EVENT_START_AT` cũng fail-open
   tương tự (time-gate tự mở).
-- **i18n (giới hạn)** — cookie `NEXT_LOCALE` do language selector ghi; hạ tầng dịch đầy đủ hoãn sang màn 12.
+- **i18n** (`lib/i18n/`, F005) — dictionary tự viết (không next-intl/react-i18next), cookie-only
+  (`NEXT_LOCALE`), không đổi route theo locale.
+  - `locale.ts` — `Locale = "vi" | "en"`, `DEFAULT_LOCALE = "vi"`, `isLocale()` type guard.
+  - `dictionaries/vi.ts` + `en.ts` — TS object literal lồng namespace theo màn (`shared`, `login`,
+    `homepage`, `prelaunch`, `awards`); `dictionary.ts` xuất `type Dictionary = typeof vi`, `en.ts`
+    được compile-check khớp shape này (`satisfies Dictionary`) — thiếu key bắt lỗi lúc
+    `tsc --noEmit`, không phải runtime.
+  - `get-locale.ts` — `async function getLocale(): Promise<Locale>`, server-only, đọc cookie qua
+    `await cookies()` (Next.js 16); `get-dictionary.ts` — `function getDictionary(locale):
+    Dictionary`, pure/đồng bộ.
+  - Mỗi page bảo vệ + `app/login/page.tsx` + `app/prelaunch/page.tsx` (Server Component) gọi
+    `getLocale()` + `getDictionary()`, truyền dictionary xuống làm props cho component con (kể cả
+    Client Component) — Client Component không tự đọc cookie/dictionary.
+  - `LanguageSelector` (`app/login/components/language-selector.tsx`): nhận `initialLocale` làm
+    prop (sửa bug hiển thị sai locale sau reload, trước đây state khởi tạo cứng `"vi"`); chọn
+    locale mới → ghi cookie `NEXT_LOCALE` → `router.refresh()` (không full page reload) → Server
+    Component cha re-fetch với dictionary mới.
 
 ## Luồng dữ liệu xác thực
 ```

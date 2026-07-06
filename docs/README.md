@@ -14,6 +14,8 @@ auth via Supabase (Google OAuth). Spec language: **vi**.
   F003 Countdown Prelaunch (site-wide time-gate) spec.
 - [`features/f004-awards-information/feature.md`](features/f004-awards-information/feature.md) —
   F004 Awards Information (`/awards` full content, replaces F002 placeholder) spec.
+- [`features/f005-i18n-translation/feature.md`](features/f005-i18n-translation/feature.md) —
+  F005 Đa ngôn ngữ (real VI/EN dictionary i18n, replaces cookie-only stub; translates F001-F004) spec.
 
 ## Local setup
 1. Copy `.env.local.example` → `.env.local`; fill `NEXT_PUBLIC_SUPABASE_URL` and

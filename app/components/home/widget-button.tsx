@@ -122,6 +122,11 @@ function KudosLogoSmallIcon() {
   );
 }
 
+export interface WidgetButtonProps {
+  /** "Coming soon" stub-panel copy (`shared.widget.comingSoon`, F005). */
+  comingSoon: string;
+}
+
 /**
  * Floating "Widget Button" — MoMorph node `5022:15169`
  * (mms_6_Widget Button, spec item "6"): a fixed pill, bottom-right of the
@@ -131,12 +136,12 @@ function KudosLogoSmallIcon() {
  * Open/close state comes from `useDismissableMenu` (shared with the
  * notification bell and account menu, for consistent outside-click/Escape
  * dismissal). The design defines the trigger + separator glyph but no menu
- * content, so the open panel is a minimal "Sắp ra mắt" (Coming soon) stub —
- * same empty-state pattern as `notification-bell.tsx`'s "Chưa có thông báo"
- * panel — rather than inventing menu items (clarifications.md, F002 session
- * 2026-07-06: "widget mở menu stub").
+ * content, so the open panel is a minimal "Coming soon" stub (`comingSoon`
+ * prop) — same empty-state pattern as `notification-bell.tsx`'s "no
+ * notifications" panel — rather than inventing menu items (clarifications.md,
+ * F002 session 2026-07-06: "widget mở menu stub").
  */
-export function WidgetButton() {
+export function WidgetButton({ comingSoon }: WidgetButtonProps) {
   const { open, containerRef, triggerProps } = useDismissableMenu();
 
   return (
@@ -173,7 +178,7 @@ export function WidgetButton() {
           aria-label="Quick actions"
           className="absolute right-0 bottom-20 z-40 w-64 rounded-lg border border-[#2E3940] bg-[#101317] p-4 text-sm text-white shadow-lg"
         >
-          Sắp ra mắt
+          {comingSoon}
         </div>
       )}
     </div>

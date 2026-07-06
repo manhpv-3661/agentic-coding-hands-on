@@ -26,9 +26,19 @@ vi.mock("@/lib/supabase/server", () => ({
   isSupabaseConfigured: vi.fn(),
 }));
 
-import LoginPage from "./page";
+// Mock the cookie-reading locale resolver (avoids needing a real
+// next/headers request context in tests) — getDictionary itself stays real
+// so assertions exercise the actual vi/en dictionaries.
+vi.mock("@/lib/i18n/get-locale", () => ({
+  getLocale: vi.fn(async () => "vi"),
+}));
+
+import LoginPage, { generateMetadata } from "./page";
 
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
+import { getLocale } from "@/lib/i18n/get-locale";
+import { vi as viDict } from "@/lib/i18n/dictionaries/vi";
+import { en as enDict } from "@/lib/i18n/dictionaries/en";
 
 describe("/app/login/page.tsx", () => {
   const originalEnv = process.env;
@@ -36,6 +46,7 @@ describe("/app/login/page.tsx", () => {
   beforeEach(() => {
     process.env = { ...originalEnv };
     vi.clearAllMocks();
+    vi.mocked(getLocale).mockResolvedValue("vi");
   });
 
   afterEach(() => {
@@ -108,7 +119,7 @@ describe("/app/login/page.tsx", () => {
     expect(element.type || element.$$typeof).toBeDefined();
   });
 
-  it("passes initialError to LoginButtonContainer when error=auth_callback_failed", async () => {
+  it("passes initialError sourced from the vi dict when error=auth_callback_failed", async () => {
     vi.mocked(isSupabaseConfigured).mockReturnValue(true);
     vi.mocked(createClient).mockResolvedValueOnce({
       auth: {
@@ -122,10 +133,18 @@ describe("/app/login/page.tsx", () => {
       searchParams: Promise.resolve({ error: "auth_callback_failed" }),
     });
 
-    // Verify that the component was rendered (JSX component created)
-    expect(result).toBeDefined();
-    const element = result as { type?: unknown; $$typeof?: symbol };
-    expect(element.type || element.$$typeof).toBeDefined();
+    // Walk down to LoginButtonContainer's initialError prop to confirm it
+    // reads the single dict key instead of a hardcoded duplicate.
+    // div > [LoginHeader, main, LoginFooter] > main > LoginHeroContent > LoginButtonContainer
+    const element = result as {
+      props: { children: Array<{ props?: { children?: unknown } }> };
+    };
+    const main = element.props.children[1] as { props: { children: unknown } };
+    const loginHeroContent = main.props.children as { props: { children: unknown } };
+    const loginButtonContainer = loginHeroContent.props.children as {
+      props: { initialError: string };
+    };
+    expect(loginButtonContainer.props.initialError).toBe(viDict.login.error.oauthFailed);
   });
 
   it("does not pass error when error param is not auth_callback_failed", async () => {
@@ -147,8 +166,21 @@ describe("/app/login/page.tsx", () => {
     expect(element.type || element.$$typeof).toBeDefined();
   });
 
-  it("uses metadata title and description", () => {
-    // This is more of a compile-time check
-    expect(LoginPage).toBeDefined();
+  it("generateMetadata resolves title/description from the vi dict by default", async () => {
+    vi.mocked(getLocale).mockResolvedValue("vi");
+
+    const metadata = await generateMetadata();
+
+    expect(metadata.title).toBe(viDict.login.meta.title);
+    expect(metadata.description).toBe(viDict.login.meta.description);
+  });
+
+  it("generateMetadata resolves title/description from the en dict when locale=en", async () => {
+    vi.mocked(getLocale).mockResolvedValue("en");
+
+    const metadata = await generateMetadata();
+
+    expect(metadata.title).toBe(enDict.login.meta.title);
+    expect(metadata.description).toBe(enDict.login.meta.description);
   });
 });

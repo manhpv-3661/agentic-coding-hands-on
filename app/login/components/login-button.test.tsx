@@ -3,14 +3,23 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { LoginButton } from "./login-button";
 
+const LOADING_LABEL = "Đang đăng nhập...";
+const GOOGLE_LABEL = "Login with Google";
+
 describe("LoginButton", () => {
   it("renders default state with label and Google icon", () => {
     const onLogin = vi.fn();
     render(
-      <LoginButton onLogin={onLogin} loading={false} disabled={false} />
+      <LoginButton
+        onLogin={onLogin}
+        loading={false}
+        disabled={false}
+        loadingLabel={LOADING_LABEL}
+        google={GOOGLE_LABEL}
+      />
     );
 
-    expect(screen.getByRole("button", { name: /LOGIN With Google/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: new RegExp(GOOGLE_LABEL, "i") })).toBeInTheDocument();
     expect(screen.getByAltText("")).toBeInTheDocument(); // Google icon has empty alt
   });
 
@@ -18,10 +27,16 @@ describe("LoginButton", () => {
     const onLogin = vi.fn();
     const user = userEvent.setup();
     render(
-      <LoginButton onLogin={onLogin} loading={false} disabled={false} />
+      <LoginButton
+        onLogin={onLogin}
+        loading={false}
+        disabled={false}
+        loadingLabel={LOADING_LABEL}
+        google={GOOGLE_LABEL}
+      />
     );
 
-    const button = screen.getByRole("button", { name: /LOGIN With Google/i });
+    const button = screen.getByRole("button", { name: new RegExp(GOOGLE_LABEL, "i") });
     await user.click(button);
 
     expect(onLogin).toHaveBeenCalledOnce();
@@ -30,10 +45,16 @@ describe("LoginButton", () => {
   it("shows loading spinner and disabled state when loading=true", () => {
     const onLogin = vi.fn();
     render(
-      <LoginButton onLogin={onLogin} loading={true} disabled={false} />
+      <LoginButton
+        onLogin={onLogin}
+        loading={true}
+        disabled={false}
+        loadingLabel={LOADING_LABEL}
+        google={GOOGLE_LABEL}
+      />
     );
 
-    expect(screen.getByText("Đang đăng nhập...")).toBeInTheDocument();
+    expect(screen.getByText(LOADING_LABEL)).toBeInTheDocument();
     const button = screen.getByRole("button");
     expect(button).toBeDisabled();
     expect(button).toHaveAttribute("aria-busy", "true");
@@ -42,7 +63,13 @@ describe("LoginButton", () => {
   it("disables button when disabled=true", () => {
     const onLogin = vi.fn();
     render(
-      <LoginButton onLogin={onLogin} loading={false} disabled={true} />
+      <LoginButton
+        onLogin={onLogin}
+        loading={false}
+        disabled={true}
+        loadingLabel={LOADING_LABEL}
+        google={GOOGLE_LABEL}
+      />
     );
 
     const button = screen.getByRole("button");
@@ -52,7 +79,13 @@ describe("LoginButton", () => {
   it("disables button when both loading and disabled are true", () => {
     const onLogin = vi.fn();
     render(
-      <LoginButton onLogin={onLogin} loading={true} disabled={true} />
+      <LoginButton
+        onLogin={onLogin}
+        loading={true}
+        disabled={true}
+        loadingLabel={LOADING_LABEL}
+        google={GOOGLE_LABEL}
+      />
     );
 
     const button = screen.getByRole("button");
@@ -63,7 +96,13 @@ describe("LoginButton", () => {
     const onLogin = vi.fn();
     const errorMsg = "Đăng nhập không thành công. Vui lòng thử lại.";
     render(
-      <LoginButton onLogin={onLogin} loading={false} error={errorMsg} />
+      <LoginButton
+        onLogin={onLogin}
+        loading={false}
+        error={errorMsg}
+        loadingLabel={LOADING_LABEL}
+        google={GOOGLE_LABEL}
+      />
     );
 
     expect(screen.getByRole("alert")).toHaveTextContent(errorMsg);
@@ -72,7 +111,13 @@ describe("LoginButton", () => {
   it("does not render error when error is null", () => {
     const onLogin = vi.fn();
     render(
-      <LoginButton onLogin={onLogin} loading={false} error={null} />
+      <LoginButton
+        onLogin={onLogin}
+        loading={false}
+        error={null}
+        loadingLabel={LOADING_LABEL}
+        google={GOOGLE_LABEL}
+      />
     );
 
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
@@ -81,7 +126,13 @@ describe("LoginButton", () => {
   it("has hover shadow class present in className", () => {
     const onLogin = vi.fn();
     const { container } = render(
-      <LoginButton onLogin={onLogin} loading={false} disabled={false} />
+      <LoginButton
+        onLogin={onLogin}
+        loading={false}
+        disabled={false}
+        loadingLabel={LOADING_LABEL}
+        google={GOOGLE_LABEL}
+      />
     );
 
     const button = container.querySelector("button");
@@ -90,7 +141,13 @@ describe("LoginButton", () => {
 
   it("spinner is visible and animated when loading", () => {
     render(
-      <LoginButton onLogin={onLogin} loading={true} disabled={false} />
+      <LoginButton
+        onLogin={() => {}}
+        loading={true}
+        disabled={false}
+        loadingLabel={LOADING_LABEL}
+        google={GOOGLE_LABEL}
+      />
     );
 
     const spinner = screen.getByRole("button").querySelector("[aria-hidden='true']");
@@ -98,5 +155,16 @@ describe("LoginButton", () => {
     expect(spinner).toHaveClass("rounded-full");
   });
 
-  function onLogin() {}
+  it("renders the google label passed via props (not hardcoded)", () => {
+    render(
+      <LoginButton
+        onLogin={() => {}}
+        loading={false}
+        loadingLabel={LOADING_LABEL}
+        google="Some Other Label"
+      />
+    );
+
+    expect(screen.getByText("Some Other Label")).toBeInTheDocument();
+  });
 });

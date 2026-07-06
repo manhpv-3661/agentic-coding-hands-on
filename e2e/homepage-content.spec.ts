@@ -31,6 +31,9 @@ async function readCountdownUnitDigits(
 
 test.describe("Homepage content (authless)", () => {
   test("renders all primary sections", async ({ page }) => {
+    await page.context().addCookies([
+      { name: "NEXT_LOCALE", value: "en", url: "http://localhost:3100" },
+    ]);
     await page.goto("/");
 
     await expect(page.locator("header")).toBeVisible();
@@ -52,6 +55,9 @@ test.describe("Homepage content (authless)", () => {
   test("countdown shows zero-padded zero state, no 'Comming soon'", async ({
     page,
   }) => {
+    await page.context().addCookies([
+      { name: "NEXT_LOCALE", value: "en", url: "http://localhost:3100" },
+    ]);
     await page.goto("/");
 
     // NEXT_PUBLIC_EVENT_START_AT is in the PAST for this build (see
@@ -126,6 +132,9 @@ test.describe("Homepage content (authless)", () => {
   test("header nav links route to the awards and kudos pages", async ({
     page,
   }) => {
+    await page.context().addCookies([
+      { name: "NEXT_LOCALE", value: "en", url: "http://localhost:3100" },
+    ]);
     await page.goto("/");
     await page
       .locator("header nav")
@@ -144,6 +153,9 @@ test.describe("Homepage content (authless)", () => {
   test("footer links point to the correct destinations and navigate correctly", async ({
     page,
   }) => {
+    await page.context().addCookies([
+      { name: "NEXT_LOCALE", value: "en", url: "http://localhost:3100" },
+    ]);
     await page.goto("/");
     const footer = page.locator("footer");
 
@@ -154,7 +166,7 @@ test.describe("Homepage content (authless)", () => {
       footer.getByRole("link", { name: "About SAA 2025" }),
     ).toHaveAttribute("href", "/");
     await expect(
-      footer.getByRole("link", { name: "Tiêu chuẩn chung" }),
+      footer.getByRole("link", { name: "General Standards" }),
     ).toHaveAttribute("href", "#");
 
     await footer.getByRole("link", { name: "Award Information" }).click();
@@ -171,6 +183,9 @@ test.describe("Homepage content (authless)", () => {
   test("hero CTA buttons route to the awards and kudos pages", async ({
     page,
   }) => {
+    await page.context().addCookies([
+      { name: "NEXT_LOCALE", value: "en", url: "http://localhost:3100" },
+    ]);
     await page.goto("/");
     await page.getByRole("link", { name: /ABOUT AWARDS/ }).click();
     await expect(page).toHaveURL(/\/awards$/);
@@ -199,6 +214,9 @@ test.describe("Homepage content (authless)", () => {
   test("account menu shows Profile/Sign out (no Admin Dashboard) and sign out redirects to /login", async ({
     page,
   }) => {
+    await page.context().addCookies([
+      { name: "NEXT_LOCALE", value: "en", url: "http://localhost:3100" },
+    ]);
     await page.goto("/");
 
     const accountButton = page.getByRole("button", { name: "Account menu" });

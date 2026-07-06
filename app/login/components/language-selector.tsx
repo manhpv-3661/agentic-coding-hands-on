@@ -1,10 +1,16 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import type { Locale } from "@/lib/i18n/locale";
 import { ChevronDownIcon } from "./chevron-down-icon";
 
-type Locale = "vi" | "en";
+interface LanguageSelectorProps {
+  /** Locale resolved server-side from the `NEXT_LOCALE` cookie — seeds the
+   * trigger so a reload never flashes the wrong language (see FR-5). */
+  initialLocale: Locale;
+}
 
 const LOCALE_LABEL: Record<Locale, string> = {
   vi: "VN",
@@ -36,10 +42,11 @@ function setLocaleCookie(locale: Locale) {
  * trigger keeps showing the VN flag regardless of selection rather than
  * inventing an EN flag icon that isn't part of the design.
  */
-export function LanguageSelector() {
-  const [locale, setLocale] = useState<Locale>("vi");
+export function LanguageSelector({ initialLocale }: LanguageSelectorProps) {
+  const [locale, setLocale] = useState<Locale>(initialLocale);
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     if (!open) return;
@@ -65,9 +72,10 @@ export function LanguageSelector() {
   }, [open]);
 
   function handleSelect(next: Locale) {
-    setLocale(next);
     setLocaleCookie(next);
+    setLocale(next);
     setOpen(false);
+    router.refresh();
   }
 
   return (

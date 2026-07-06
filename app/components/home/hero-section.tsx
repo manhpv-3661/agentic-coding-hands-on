@@ -1,7 +1,17 @@
 import Image from "next/image";
+import type { Dictionary } from "@/lib/i18n/dictionary";
 import { CountdownTimer } from "./countdown-timer";
 import { EventInfo } from "./event-info";
 import { HeroCtaButtons } from "./hero-cta-buttons";
+
+export interface HeroSectionProps {
+  /** Hero copy — event info, comingSoon subtitle, CTA labels
+   * (`homepage.hero`). */
+  hero: Dictionary["homepage"]["hero"];
+  /** Days/Hours/Minutes unit labels, shared with the Prelaunch countdown
+   * (`shared.countdown`). */
+  countdown: Dictionary["shared"]["countdown"];
+}
 
 /**
  * Homepage SAA hero ("Bìa") section — MoMorph nodes:
@@ -24,7 +34,7 @@ import { HeroCtaButtons } from "./hero-cta-buttons";
  * padding, not a hardcoded 1512px-wide wrapper, so the section fills the
  * real viewport at any width.
  */
-export function HeroSection() {
+export function HeroSection({ hero, countdown }: HeroSectionProps) {
   return (
     // mm:2167:9030
     <section className="relative flex w-full items-center justify-center px-6 py-12 sm:px-10 lg:px-36 lg:py-24">
@@ -44,10 +54,15 @@ export function HeroSection() {
         </div>
         {/* mm:2167:9034 */}
         <div className="flex flex-col items-start gap-4">
-          <CountdownTimer />
-          <EventInfo />
+          <CountdownTimer labels={countdown} comingSoon={hero.comingSoon} />
+          <EventInfo
+            timeLabel={hero.eventInfo.timeLabel}
+            venueLabel={hero.eventInfo.venueLabel}
+            livestreamNote={hero.eventInfo.livestreamNote}
+            eventDate={hero.eventDate}
+          />
         </div>
-        <HeroCtaButtons />
+        <HeroCtaButtons aboutAwards={hero.cta.aboutAwards} aboutKudos={hero.cta.aboutKudos} />
       </div>
     </section>
   );

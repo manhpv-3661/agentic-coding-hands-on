@@ -1,85 +1,90 @@
 import { AWARD_CATEGORIES } from "@/lib/awards/award-categories";
-import type { AwardDetailCardProps } from "./award-detail-card";
+import type { Dictionary } from "@/lib/i18n/dictionary";
+import type { AwardDetailEntry } from "./award-detail-card";
 
-export type AwardDetailEntry = AwardDetailCardProps;
+export type { AwardDetailEntry };
 
-/**
- * Verbatim description shared by Top Talent, Top Project, Top Project
- * Leader, Best Manager and MVP — the Figma source design has not yet
- * finished writing per-category copy for these 5 categories, so they all
- * carry the exact same paragraph (mirrors the precedent already documented
- * on the homepage grid, `award-card.tsx`: "descriptions ... identical in
- * the source design ... reproduced as-is"). Source: `spec/awards-page/
- * feature.md` §2.5 (FR-12). Do not shorten, paraphrase, or invent copy.
- */
-const SHARED_UNFINISHED_DESCRIPTION =
-  "Giải thưởng Top Talent vinh danh những cá nhân xuất sắc toàn diện – những người không ngừng khẳng định năng lực chuyên môn vững vàng, hiệu suất công việc vượt trội, luôn mang lại giá trị vượt kỳ vọng, được đánh giá cao bởi khách hàng và đồng đội. Với tinh thần sẵn sàng nhận mọi nhiệm vụ tổ chức giao phó, họ luôn là nguồn cảm hứng, thúc đẩy động lực và tạo ảnh hưởng tích cực đến cả tập thể.";
+type AwardDetailDict = Dictionary["awards"]["detail"];
+type AwardDetailEntryKey = keyof AwardDetailDict["entries"];
 
 /**
- * Signature 2025 - Creator is the only category with its own distinct
- * verbatim copy in the source design. Source: `spec/awards-page/
- * feature.md` §2.5 (FR-12).
+ * Per-category static metadata that never changes with locale: the
+ * hardcoded English title (brand/category name, not translated — locked
+ * decision), the title graphic, and which `awards.detail.entries.<key>`
+ * slice of the dictionary supplies the quantity/value strings. Ordered to
+ * match `AWARD_CATEGORIES` 1:1 — index `i` here describes
+ * `AWARD_CATEGORIES[i]`. Source: `spec/awards-page/feature.md` §2.5 (FR-12)
+ * — note the MVP title includes its long form ("MVP (Most Valuable
+ * Person)"), matching the FR-12 table and the homepage precedent
+ * (`awards-section.tsx`'s `titleAlt`), even though `AWARD_CATEGORIES`
+ * stores the short "MVP".
  */
-const SIGNATURE_2025_CREATOR_DESCRIPTION =
-  'Giải thưởng Signature vinh danh cá nhân hoặc tập thể thể hiện tinh thần đặc trưng mà Sun* hướng tới trong từng thời kỳ. Trong năm 2025, giải thưởng Signature vinh danh Creator - cá nhân/tập thể mang tư duy chủ động và nhạy bén, luôn nhìn thấy cơ hội trong thách thức và tiên phong trong hành động. Họ là những người nhạy bén với vấn đề, nhanh chóng nhận diện và đưa ra những giải pháp thực tiễn, mang lại giá trị rõ rệt cho dự án, khách hàng hoặc tổ chức. Với tư duy kiến tạo và tinh thần "Creator" đặc trưng của Sun*, họ không chỉ phản ứng tích cực trước sự thay đổi mà còn chủ động tạo ra cải tiến, góp phần định hình chuẩn mực mới cho cách mà người Sun* tạo giá trị.';
-
-/**
- * The 6 award detail entries for the `/awards` catalog (Phase 05 wraps each
- * one in `<section id={slug}>`). Order and slugs MUST match
- * `AWARD_CATEGORIES` (`lib/awards/award-categories.ts`) — asserted by
- * `award-detail-card.test.tsx`. Title/quantity/value are the FR-12 table
- * values from `spec/awards-page/feature.md` §2.5 — note the MVP title
- * includes its long form ("MVP (Most Valuable Person)"), matching the
- * FR-12 table and the homepage precedent (`awards-section.tsx`'s
- * `titleAlt`), even though `AWARD_CATEGORIES` stores the short "MVP".
- */
-export const AWARD_DETAIL_ENTRIES: AwardDetailEntry[] = [
+const STATIC_ENTRY_META: ReadonlyArray<{
+  title: string;
+  titleImageSrc: string;
+  dictEntryKey: AwardDetailEntryKey;
+}> = [
   {
-    slug: AWARD_CATEGORIES[0].slug,
     title: "Top Talent",
-    description: SHARED_UNFINISHED_DESCRIPTION,
-    quantity: "10 Đơn vị",
-    value: "7.000.000 VNĐ cho mỗi giải thưởng",
     titleImageSrc: "/homepage-saa/Award-Name-TopTalent.png",
+    dictEntryKey: "topTalent",
   },
   {
-    slug: AWARD_CATEGORIES[1].slug,
     title: "Top Project",
-    description: SHARED_UNFINISHED_DESCRIPTION,
-    quantity: "02 Tập thể",
-    value: "15.000.000 VNĐ mỗi giải",
     titleImageSrc: "/homepage-saa/Award-Name-TopProject.png",
+    dictEntryKey: "topProject",
   },
   {
-    slug: AWARD_CATEGORIES[2].slug,
     title: "Top Project Leader",
-    description: SHARED_UNFINISHED_DESCRIPTION,
-    quantity: "03 Cá nhân",
-    value: "7.000.000 VNĐ",
     titleImageSrc: "/homepage-saa/Award-Name-TopProjectLeader.png",
+    dictEntryKey: "topProjectLeader",
   },
   {
-    slug: AWARD_CATEGORIES[3].slug,
     title: "Best Manager",
-    description: SHARED_UNFINISHED_DESCRIPTION,
-    quantity: "01 Cá nhân",
-    value: "10.000.000 VNĐ",
     titleImageSrc: "/homepage-saa/Award-Name-BestManager.png",
+    dictEntryKey: "bestManager",
   },
   {
-    slug: AWARD_CATEGORIES[4].slug,
     title: "Signature 2025 - Creator",
-    description: SIGNATURE_2025_CREATOR_DESCRIPTION,
-    quantity: "01 (cá nhân hoặc tập thể)",
-    value: "5.000.000 VNĐ (cá nhân) HOẶC 8.000.000 VNĐ (tập thể)",
     titleImageSrc: "/homepage-saa/Award-Name-Signature2025Creator.png",
+    dictEntryKey: "signatureCreator",
   },
   {
-    slug: AWARD_CATEGORIES[5].slug,
     title: "MVP (Most Valuable Person)",
-    description: SHARED_UNFINISHED_DESCRIPTION,
-    quantity: "01",
-    value: "15.000.000 VNĐ",
     titleImageSrc: "/homepage-saa/Award-Name-MVP.png",
+    dictEntryKey: "mvp",
   },
 ];
+
+/**
+ * Builds the 6 award detail entries for the `/awards` catalog from the
+ * active locale's dictionary slice (`d.awards.detail`). Order and slugs
+ * match `AWARD_CATEGORIES` — asserted by `award-detail-card.test.tsx`.
+ *
+ * Only `signature-2025-creator` (dict key `signatureCreator`) uses
+ * `detail.descriptions.signatureCreator`; the other 5 categories share
+ * `detail.descriptions.sharedUnfinished` verbatim — the Figma source design
+ * has not yet finished writing per-category copy for those 5, so they all
+ * carry the exact same paragraph (mirrors the precedent already documented
+ * on the homepage grid, `award-card.tsx`). Do not shorten, paraphrase, or
+ * invent copy.
+ */
+export function buildAwardDetailEntries(detail: AwardDetailDict): AwardDetailEntry[] {
+  return AWARD_CATEGORIES.map((category, index) => {
+    const meta = STATIC_ENTRY_META[index];
+    const description =
+      meta.dictEntryKey === "signatureCreator"
+        ? detail.descriptions.signatureCreator
+        : detail.descriptions.sharedUnfinished;
+    const dictEntry = detail.entries[meta.dictEntryKey];
+
+    return {
+      slug: category.slug,
+      title: meta.title,
+      description,
+      quantity: dictEntry.quantity,
+      value: dictEntry.value,
+      titleImageSrc: meta.titleImageSrc,
+    };
+  });
+}

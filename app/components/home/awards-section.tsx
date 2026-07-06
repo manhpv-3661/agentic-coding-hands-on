@@ -1,6 +1,7 @@
 import { Montserrat } from "next/font/google";
 
 import { AWARD_CATEGORIES } from "@/lib/awards/award-categories";
+import type { Dictionary } from "@/lib/i18n/dictionary";
 import { AwardCard, type AwardCardProps } from "./award-card";
 
 /**
@@ -15,9 +16,15 @@ const montserrat = Montserrat({
   display: "swap",
 });
 
-interface AwardEntry extends Omit<AwardCardProps, "detailsHref"> {
+/** Keys of `homepage.awards.items` — one per award slug in the dictionary. */
+type AwardSlug = keyof Dictionary["homepage"]["awards"]["items"];
+
+interface AwardEntry extends Omit<AwardCardProps, "detailsHref" | "description" | "detailsCta"> {
   /** MoMorph instance node id — used for the React key and traceability. */
   nodeId: string;
+  /** Key into `homepage.awards.items.<slug>.description` (F005) — the
+   * description string itself now lives in the dictionary, not here. */
+  slug: AwardSlug;
 }
 
 /**
@@ -26,8 +33,9 @@ interface AwardEntry extends Omit<AwardCardProps, "detailsHref"> {
  * same `Award-BG.png` placeholder photo — the design itself reuses one
  * image, this is not a data error. Descriptions for "Best Manager",
  * "Signature 2025 - Creator" and "MVP" are also identical in the source
- * design (unfinished copy) and are reproduced as-is per "do not invent
- * data". Replace with real award/CMS data once the backend track lands.
+ * design (unfinished copy) — the dictionary mirrors that duplication
+ * (`homepage.awards.items.*`), reproduced as-is per "do not invent data".
+ * Replace with real award/CMS data once the backend track lands.
  *
  * Order MUST match `AWARD_CATEGORIES` (lib/awards/award-categories.ts) —
  * `detailsHref` is derived from that array by index below (FR-20/FR-21), not
@@ -41,7 +49,7 @@ const AWARDS: AwardEntry[] = [
     // mm:I2167:9075;214:1019;214:666;10:951
     titleImageSrc: "/homepage-saa/Award-Name-TopTalent.png",
     titleAlt: "Top Talent",
-    description: "Vinh danh top cá nhân xuất sắc trên mọi phương diện",
+    slug: "topTalent",
   },
   {
     nodeId: "2167:9076",
@@ -50,8 +58,7 @@ const AWARDS: AwardEntry[] = [
     // mm:I2167:9076;214:1019;214:666;214:654
     titleImageSrc: "/homepage-saa/Award-Name-TopProject.png",
     titleAlt: "Top Project",
-    description:
-      "Vinh danh dự án xuất sắc trên mọi phương diện, dự án có doanh thu nổi bật",
+    slug: "topProject",
   },
   {
     nodeId: "2167:9077",
@@ -60,7 +67,7 @@ const AWARDS: AwardEntry[] = [
     // mm:I2167:9077;214:1019;214:666;214:655
     titleImageSrc: "/homepage-saa/Award-Name-TopProjectLeader.png",
     titleAlt: "Top Project Leader",
-    description: "Vinh danh người quản lý truyền cảm hứng và dẫn dắt dự án bứt phá, ",
+    slug: "topProjectLeader",
   },
   {
     nodeId: "2167:9079",
@@ -69,7 +76,7 @@ const AWARDS: AwardEntry[] = [
     // mm:I2167:9079;214:1019;214:666;214:656
     titleImageSrc: "/homepage-saa/Award-Name-BestManager.png",
     titleAlt: "Best Manager",
-    description: "Vinh danh người quản lý có năng lực quản lý tốt, dẫn dắt đội nhóm",
+    slug: "bestManager",
   },
   {
     nodeId: "2167:9080",
@@ -78,7 +85,7 @@ const AWARDS: AwardEntry[] = [
     // mm:I2167:9080;214:1019;214:666;214:657
     titleImageSrc: "/homepage-saa/Award-Name-Signature2025Creator.png",
     titleAlt: "Signature 2025 - Creator",
-    description: "Vinh danh người quản lý có năng lực quản lý tốt, dẫn dắt đội nhóm",
+    slug: "signatureCreator",
   },
   {
     nodeId: "2167:9081",
@@ -87,9 +94,17 @@ const AWARDS: AwardEntry[] = [
     // mm:I2167:9081;214:1019;214:666;214:653
     titleImageSrc: "/homepage-saa/Award-Name-MVP.png",
     titleAlt: "MVP (Most Valuable Person)",
-    description: "Vinh danh người quản lý có năng lực quản lý tốt, dẫn dắt đội nhóm",
+    slug: "mvp",
   },
 ];
+
+export interface AwardsSectionProps {
+  /** Section heading + per-award descriptions (`homepage.awards`). */
+  awards: Dictionary["homepage"]["awards"];
+  /** "Chi tiết" / "Details" CTA label, forwarded to every `<AwardCard>`
+   * (`shared.detailsCta`). */
+  detailsCta: Dictionary["shared"]["detailsCta"];
+}
 
 /**
  * "Hệ thống giải thưởng" section of the Homepage SAA screen.
@@ -99,7 +114,7 @@ const AWARDS: AwardEntry[] = [
  * `2167:9074`/`2167:9078` child positions); tablet/mobile collapse to a
  * 2-column grid with a tighter gap since the design has no tablet frame.
  */
-export function AwardsSection() {
+export function AwardsSection({ awards, detailsCta }: AwardsSectionProps) {
   return (
     // mm:2167:9068
     // Matches the responsive container pattern used by hero-section.tsx /
@@ -116,7 +131,8 @@ export function AwardsSection() {
       <div className="flex w-full max-w-[1224px] flex-col items-start gap-20">
         {/* mm:2167:9069 */}
         <div className="flex w-full flex-col items-start gap-4">
-          {/* mm:2167:9070 */}
+          {/* mm:2167:9070 — "Sun* annual awards 2025" is a brand name, stays
+              untranslated (clarifications.md Q4), same as "Sun* Kudos". */}
           <p className="font-montserrat text-[24px] leading-[32px] font-bold text-white">
             Sun* annual awards 2025
           </p>
@@ -126,15 +142,17 @@ export function AwardsSection() {
           <div className="flex w-full flex-row items-center gap-8">
             {/* mm:2167:9073 */}
             <h2 className="font-montserrat text-[57px] leading-[64px] font-bold tracking-[-0.25px] text-[#FFEA9E]">
-              Hệ thống giải thưởng
+              {awards.heading}
             </h2>
           </div>
         </div>
         {/* mm:5005:14974 */}
         <div className="grid w-full grid-cols-2 gap-x-6 gap-y-12 lg:grid-cols-3 lg:gap-x-[108px] lg:gap-y-20">
-          {AWARDS.map(({ nodeId, ...card }, index) => (
+          {AWARDS.map(({ nodeId, slug, ...card }, index) => (
             <AwardCard
               key={nodeId}
+              description={awards.items[slug].description}
+              detailsCta={detailsCta}
               {...card}
               detailsHref={`/awards#${AWARD_CATEGORIES[index]?.slug ?? ""}`}
             />

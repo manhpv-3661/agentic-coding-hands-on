@@ -13,6 +13,13 @@ export interface LoginButtonProps {
   disabled?: boolean;
   /** Error message rendered under the button when a login attempt failed. */
   error?: string | null;
+  /** Label shown next to the spinner while `loading` is true (dict key
+   * `login.button.loading`). Named distinctly from the `loading` boolean
+   * above to avoid a prop-name collision. */
+  loadingLabel: string;
+  /** "Login with Google" label shown next to the Google icon (dict key
+   * `login.button.google`). */
+  google: string;
 }
 
 /**
@@ -25,6 +32,8 @@ export function LoginButton({
   loading,
   disabled = false,
   error = null,
+  loadingLabel,
+  google,
 }: LoginButtonProps) {
   const isDisabled = disabled || loading;
 
@@ -43,11 +52,11 @@ export function LoginButton({
               aria-hidden="true"
               className="h-6 w-6 animate-spin rounded-full border-2 border-[#00101A]/30 border-t-[#00101A]"
             />
-            <span>Đang đăng nhập...</span>
+            <span>{loadingLabel}</span>
           </>
         ) : (
           <>
-            <span>LOGIN With Google</span>
+            <span>{google}</span>
             <Image src="/login/Google.svg" alt="" width={24} height={24} aria-hidden="true" />
           </>
         )}

@@ -3,6 +3,13 @@
 import { signOutAction } from "@/app/actions/sign-out";
 import { useDismissableMenu } from "@/hooks/use-dismissable-menu";
 
+interface AccountMenuButtonProps {
+  /** "Profile" menu item label (`shared.account.profile`). */
+  profile: string;
+  /** "Sign out" menu item label (`shared.account.signOut`). */
+  signOut: string;
+}
+
 /**
  * User profile icon — MoMorph node `I2167:9091;186:1597;186:1420`
  * (MM_MEDIA_User Profile), fill `white` in Figma → inlined with
@@ -38,7 +45,7 @@ function UserProfileIcon() {
  * stub (no navigation); "Sign out" calls the real `signOutAction` server
  * action (Supabase `auth.signOut()` + redirect to `/login`).
  */
-export function AccountMenuButton() {
+export function AccountMenuButton({ profile, signOut }: AccountMenuButtonProps) {
   const { open, containerRef, triggerProps } = useDismissableMenu();
 
   return (
@@ -63,7 +70,7 @@ export function AccountMenuButton() {
             role="menuitem"
             className="px-4 py-3 text-left transition-colors duration-200 ease-out hover:bg-white/10"
           >
-            Profile
+            {profile}
           </button>
           <button
             type="button"
@@ -73,7 +80,7 @@ export function AccountMenuButton() {
             }}
             className="px-4 py-3 text-left transition-colors duration-200 ease-out hover:bg-white/10"
           >
-            Sign out
+            {signOut}
           </button>
         </div>
       )}

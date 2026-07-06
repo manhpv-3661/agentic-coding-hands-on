@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Montserrat, Montserrat_Alternates } from "next/font/google";
 import { useScrollToTopOnHomeClick } from "@/hooks/use-scroll-to-top-on-home-click";
+import type { Dictionary } from "@/lib/i18n/dictionary";
 
 const montserrat = Montserrat({
   subsets: ["latin", "vietnamese"],
@@ -24,6 +25,13 @@ interface FooterNavLinkProps {
   label: string;
   /** Reproduces the design's gold-tinted "Award Information" highlight state. */
   highlighted?: boolean;
+}
+
+interface SiteFooterProps {
+  /** Nav link labels (`shared.nav`). */
+  nav: Dictionary["shared"]["nav"];
+  /** Footer copy — copyright line + "General Standards" link (`shared.footer`). */
+  footer: Dictionary["shared"]["footer"];
 }
 
 function FooterNavLink({ href, label, highlighted = false }: FooterNavLinkProps) {
@@ -74,7 +82,7 @@ function FooterNavLink({ href, label, highlighted = false }: FooterNavLinkProps)
  * string ("Bản quyền thuộc về Sun* © 2025") but without this footer's
  * logo/nav row — different structure, so it is intentionally not reused.
  */
-export function SiteFooter() {
+export function SiteFooter({ nav, footer }: SiteFooterProps) {
   const handleLogoClick = useScrollToTopOnHomeClick("/");
 
   return (
@@ -102,13 +110,13 @@ export function SiteFooter() {
           className={`${montserrat.className} flex flex-wrap items-center gap-12`}
         >
           {/* mm:I5001:14800;342:1410 */}
-          <FooterNavLink href="/" label="About SAA 2025" />
+          <FooterNavLink href="/" label={nav.aboutSaa} />
           {/* mm:I5001:14800;342:1411 */}
-          <FooterNavLink href="/awards" label="Award Information" highlighted />
+          <FooterNavLink href="/awards" label={nav.awardInfo} highlighted />
           {/* mm:I5001:14800;342:1412 */}
-          <FooterNavLink href="/kudos" label="Sun* Kudos" />
+          <FooterNavLink href="/kudos" label={nav.kudos} />
           {/* mm:I5001:14800;1161:9487 */}
-          <FooterNavLink href="#" label="Tiêu chuẩn chung" />
+          <FooterNavLink href="#" label={footer.generalStandards} />
         </nav>
       </div>
 
@@ -116,7 +124,7 @@ export function SiteFooter() {
       <p
         className={`${montserratAlternates.className} text-center text-base leading-6 font-bold text-white`}
       >
-        Bản quyền thuộc về Sun* © 2025
+        {footer.copyright}
       </p>
     </footer>
   );

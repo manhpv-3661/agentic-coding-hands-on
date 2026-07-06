@@ -33,6 +33,10 @@ export interface HeroCtaButtonsProps {
   /** "ABOUT KUDOS" destination — defaults to `/kudos` (FR-17), matching
    * the header's "Sun* Kudos" nav link. */
   aboutKudosHref?: string;
+  /** "ABOUT AWARDS" button label (`homepage.hero.cta.aboutAwards`). */
+  aboutAwards: string;
+  /** "ABOUT KUDOS" button label (`homepage.hero.cta.aboutKudos`). */
+  aboutKudos: string;
 }
 
 /**
@@ -45,6 +49,8 @@ export interface HeroCtaButtonsProps {
 export function HeroCtaButtons({
   aboutAwardsHref = "/awards",
   aboutKudosHref = "/kudos",
+  aboutAwards,
+  aboutKudos,
 }: HeroCtaButtonsProps) {
   return (
     // mm:2167:9062
@@ -58,7 +64,7 @@ export function HeroCtaButtons({
         <span className="flex items-center gap-1">
           {/* mm:I2167:9063;186:1568 */}
           <span className="font-montserrat text-center text-[22px] leading-7 font-bold">
-            ABOUT AWARDS
+            {aboutAwards}
           </span>
         </span>
         {/* mm:I2167:9063;186:1766 */}
@@ -73,7 +79,7 @@ export function HeroCtaButtons({
         <span className="flex items-center gap-1">
           {/* mm:I2167:9064;186:2760 */}
           <span className="font-montserrat text-center text-[22px] leading-7 font-bold">
-            ABOUT KUDOS
+            {aboutKudos}
           </span>
         </span>
         {/* mm:I2167:9064;186:2761 */}
