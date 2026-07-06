@@ -17,6 +17,9 @@ export interface RecipientSelectProps {
   /** Inline validation message (FR-4) — rendered below the field when set. */
   error?: string;
   labels: RecipientSelectLabels;
+  /** Id applied to the trigger button, so a wrapping `FieldGroup` label can
+   * point `htmlFor` at it. */
+  id?: string;
 }
 
 /**
@@ -27,9 +30,10 @@ export interface RecipientSelectProps {
  * close rather than reimplementing that behavior (DRY, same primitive the
  * header menus already use).
  */
-export function RecipientSelect({ options, value, onChange, error, labels }: RecipientSelectProps) {
+export function RecipientSelect({ options, value, onChange, error, labels, id }: RecipientSelectProps) {
   const { open, setOpen, containerRef, triggerProps } = useDismissableMenu({ haspopup: "listbox" });
   const [query, setQuery] = useState("");
+  const errorId = id ? `${id}-error` : undefined;
 
   const filtered = options.filter((person) =>
     person.name.toLowerCase().includes(query.toLowerCase()),
@@ -44,8 +48,13 @@ export function RecipientSelect({ options, value, onChange, error, labels }: Rec
   return (
     <div ref={containerRef} className="relative flex flex-col gap-1">
       <button
+        id={id}
         type="button"
         {...triggerProps}
+        // `aria-invalid` isn't a supported attribute on role="button" per
+        // the ARIA spec — `aria-describedby` alone still links the error
+        // text to this control.
+        aria-describedby={error ? errorId : undefined}
         className="flex w-full items-center justify-between rounded-lg border border-white/20 bg-[#101317] px-4 py-3 text-left text-white"
       >
         <span className={value ? "text-white" : "text-white/50"}>
@@ -83,7 +92,11 @@ export function RecipientSelect({ options, value, onChange, error, labels }: Rec
         </div>
       )}
 
-      {error && <p className="text-xs text-red-400">{error}</p>}
+      {error && (
+        <p id={errorId} className="text-xs text-red-400">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

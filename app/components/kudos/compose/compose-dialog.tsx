@@ -58,6 +58,7 @@ export function ComposeDialog({
   const [errors, setErrors] = useState<ComposeFormErrors>({});
   const [toast, setToast] = useState(false);
   const toastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const previouslyFocusedRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     return () => {
@@ -65,10 +66,64 @@ export function ComposeDialog({
     };
   }, []);
 
-  function resetAndClose() {
-    setState(EMPTY_COMPOSE_FORM_STATE);
-    setErrors({});
-    onClose();
+  // Discards the draft on EVERY close path (Cancel, Escape, outside-click,
+  // successful submit) — `ComposeDialog` never unmounts (only its inner
+  // JSX toggles on `open`), so without this the previous draft would
+  // silently reappear the next time the dialog opens. Adjusted during
+  // render (React's documented pattern for "reset state when a value
+  // changes") rather than in an effect, avoiding an extra render pass.
+  const [trackedOpen, setTrackedOpen] = useState(open);
+  if (open !== trackedOpen) {
+    setTrackedOpen(open);
+    if (!open) {
+      setState(EMPTY_COMPOSE_FORM_STATE);
+      setErrors({});
+    }
+  }
+
+  // Minimal focus management for the "modal": move focus into the panel on
+  // open, return it to whatever triggered the dialog (the "Ghi nhận" pill)
+  // on close.
+  useEffect(() => {
+    if (open) {
+      previouslyFocusedRef.current = document.activeElement as HTMLElement | null;
+      containerRef.current?.focus();
+    } else {
+      previouslyFocusedRef.current?.focus();
+      previouslyFocusedRef.current = null;
+    }
+  }, [open, containerRef]);
+
+  function updateState(patch: Partial<ComposeFormState>, errorKeys: (keyof ComposeFormErrors)[] = []) {
+    setState((s) => ({ ...s, ...patch }));
+    if (errorKeys.length === 0) return;
+    setErrors((currentErrors) => {
+      if (errorKeys.every((key) => !(key in currentErrors))) return currentErrors;
+      const nextErrors = { ...currentErrors };
+      errorKeys.forEach((key) => delete nextErrors[key]);
+      return nextErrors;
+    });
+  }
+
+  function handlePanelKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    if (event.key !== "Tab") return;
+    const panel = containerRef.current;
+    if (!panel) return;
+
+    const focusable = panel.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [contenteditable="true"], [tabindex]:not([tabindex="-1"])',
+    );
+    if (focusable.length === 0) return;
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
   }
 
   function handleSubmit() {
@@ -86,7 +141,7 @@ export function ComposeDialog({
     }
 
     onSubmit(buildKudosPost(state, currentUser, new Date()));
-    resetAndClose();
+    onClose();
 
     setToast(true);
     if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
@@ -102,61 +157,78 @@ export function ComposeDialog({
             role="dialog"
             aria-modal="true"
             aria-label={labels.dialogTitle}
-            className="flex max-h-[90vh] w-full max-w-2xl flex-col gap-5 overflow-y-auto rounded-2xl bg-[#101317] p-6 text-white"
+            tabIndex={-1}
+            onKeyDown={handlePanelKeyDown}
+            className="flex max-h-[90vh] w-full max-w-2xl flex-col gap-5 overflow-y-auto rounded-2xl bg-[#101317] p-6 text-white outline-none"
           >
             <h2 className="font-montserrat text-lg font-bold text-[#FFEA9E]">{labels.dialogTitle}</h2>
 
+            {/* No `htmlFor` here: `RecipientSelect`'s trigger is a
+             * `<button>` whose own text IS its accessible name (the
+             * placeholder or the selected person) — a programmatically
+             * associated `<label>` would override that with the static
+             * field label, hiding the current selection from AT users. */}
             <FieldGroup label={labels.recipient.label}>
               <RecipientSelect
+                id="compose-recipient"
                 options={recipientOptions}
                 value={state.recipient}
-                onChange={(recipient) => setState((s) => ({ ...s, recipient }))}
+                onChange={(recipient) => updateState({ recipient }, ["recipient"])}
                 error={errors.recipient}
                 labels={labels.recipient}
               />
             </FieldGroup>
 
-            <FieldGroup label={labels.title.label} helper={labels.title.helper}>
+            <FieldGroup label={labels.title.label} helper={labels.title.helper} htmlFor="compose-title">
               <input
+                id="compose-title"
                 type="text"
                 value={state.title}
-                onChange={(event) => setState((s) => ({ ...s, title: event.target.value }))}
+                onChange={(event) => updateState({ title: event.target.value }, ["title"])}
                 placeholder={labels.title.placeholder}
+                aria-invalid={Boolean(errors.title)}
+                aria-describedby={errors.title ? "compose-title-error" : undefined}
                 className="w-full rounded-lg border border-white/20 bg-[#101317] px-3 py-2 text-sm text-white outline-none placeholder:text-white/40"
               />
-              {errors.title && <p className="text-xs text-red-400">{errors.title}</p>}
+              {errors.title && (
+                <p id="compose-title-error" className="text-xs text-red-400">
+                  {errors.title}
+                </p>
+              )}
             </FieldGroup>
 
             <RichTextEditor
               value={state.content}
-              onChange={(content) => setState((s) => ({ ...s, content }))}
+              onChange={(content) => updateState({ content }, ["content"])}
               mentionNames={mentionNames}
               error={errors.content}
               labels={labels.content}
             />
 
-            <FieldGroup label={labels.hashtags.label}>
+            <FieldGroup label={labels.hashtags.label} htmlFor="compose-hashtags">
               <HashtagInput
+                id="compose-hashtags"
                 value={state.hashtags}
-                onChange={(hashtags) => setState((s) => ({ ...s, hashtags }))}
+                onChange={(hashtags) => updateState({ hashtags }, ["hashtags"])}
                 error={errors.hashtags}
                 labels={labels.hashtags}
               />
             </FieldGroup>
 
-            <FieldGroup label={labels.images.label}>
+            <FieldGroup label={labels.images.label} htmlFor="compose-images">
               <ImageUpload
+                id="compose-images"
                 value={state.images}
-                onChange={(images) => setState((s) => ({ ...s, images }))}
+                onChange={(images) => updateState({ images })}
                 labels={labels.images}
               />
             </FieldGroup>
 
             <AnonymousToggle
               checked={state.anonymous}
-              onCheckedChange={(anonymous) => setState((s) => ({ ...s, anonymous }))}
+              onCheckedChange={(anonymous) => updateState({ anonymous })}
               nickname={state.nickname}
-              onNicknameChange={(nickname) => setState((s) => ({ ...s, nickname }))}
+              onNicknameChange={(nickname) => updateState({ nickname }, ["nickname"])}
               nicknameError={errors.nickname}
               labels={labels.anonymous}
             />
@@ -164,7 +236,7 @@ export function ComposeDialog({
             <div className="flex items-center justify-end gap-3 border-t border-white/10 pt-4">
               <button
                 type="button"
-                onClick={resetAndClose}
+                onClick={onClose}
                 className="rounded-lg border border-white/20 px-4 py-2 text-sm text-white/80 hover:bg-white/10"
               >
                 {labels.cancel}

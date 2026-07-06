@@ -10,11 +10,7 @@ import {
   SPOTLIGHT_NAMES,
   SPOTLIGHT_TOTAL,
 } from "@/lib/kudos/kudos-data";
-import {
-  getDistinctDepartments,
-  getDistinctHashtags,
-  getDistinctRecipients,
-} from "@/lib/kudos/kudos-selectors";
+import { getDistinctRecipients } from "@/lib/kudos/kudos-selectors";
 import { KudosPageClient } from "../components/kudos/kudos-page-client";
 import { KudosSidebar } from "../components/kudos/kudos-sidebar";
 import { SpotlightBoard } from "../components/kudos/spotlight-board";
@@ -66,8 +62,6 @@ export default async function KudosPage() {
 
   const locale = await getLocale();
   const dictionary = getDictionary(locale);
-  const hashtagOptions = getDistinctHashtags(KUDOS_POSTS);
-  const departmentOptions = getDistinctDepartments(KUDOS_POSTS);
   const recipientOptions = getDistinctRecipients(KUDOS_POSTS, CURRENT_USER);
 
   return (
@@ -86,8 +80,6 @@ export default async function KudosPage() {
           initialPosts={KUDOS_POSTS}
           currentUser={CURRENT_USER}
           recipientOptions={recipientOptions}
-          hashtagOptions={hashtagOptions}
-          departmentOptions={departmentOptions}
           labels={dictionary.kudos}
           spotlight={
             <SpotlightBoard

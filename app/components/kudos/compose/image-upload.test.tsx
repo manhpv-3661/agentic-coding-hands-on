@@ -3,7 +3,12 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ImageUpload } from "./image-upload";
 
-const labels = { add: "+Image", max: "Tối đa 5", remove: "Xóa ảnh" };
+const labels = {
+  add: "+Image",
+  max: "Tối đa 5",
+  remove: "Xóa ảnh",
+  truncated: "Đã đạt giới hạn ảnh, một số ảnh không được thêm.",
+};
 
 function makeFile(name: string) {
   return new File(["content"], name, { type: "image/png" });
@@ -57,5 +62,20 @@ describe("ImageUpload", () => {
     rerender(<ImageUpload value={[]} onChange={vi.fn()} labels={labels} />);
 
     expect(URL.revokeObjectURL).toHaveBeenCalled();
+  });
+
+  it("shows a truncation message when more files are selected than remaining capacity", async () => {
+    const onChange = vi.fn();
+    const user = userEvent.setup();
+    render(<ImageUpload value={[makeFile("a.png")]} onChange={onChange} max={2} labels={labels} />);
+
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+    await user.upload(input, [makeFile("b.png"), makeFile("c.png")]);
+
+    expect(onChange).toHaveBeenCalledWith([
+      expect.objectContaining({ name: "a.png" }),
+      expect.objectContaining({ name: "b.png" }),
+    ]);
+    expect(screen.getByText(labels.truncated)).toBeInTheDocument();
   });
 });

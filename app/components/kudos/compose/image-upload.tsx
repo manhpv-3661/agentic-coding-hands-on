@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 export interface ImageUploadLabels {
   add: string;
   max: string;
   remove: string;
+  /** Shown when a selection is silently capped by `max` (F007 FR-14/15). */
+  truncated: string;
 }
 
 export interface ImageUploadProps {
@@ -14,6 +16,9 @@ export interface ImageUploadProps {
   /** Cap on the number of images (default 5, F007 FR-14/15). */
   max?: number;
   labels: ImageUploadLabels;
+  /** Id applied to the hidden file input, so a wrapping `FieldGroup` label
+   * can point `htmlFor` at it (clicking the label opens the file picker). */
+  id?: string;
 }
 
 /**
@@ -23,9 +28,10 @@ export interface ImageUploadProps {
  * `KudosPost` (`imageCount`); previews are ephemeral `URL.createObjectURL`
  * blobs revoked on remove/unmount so they never leak.
  */
-export function ImageUpload({ value, onChange, max = 5, labels }: ImageUploadProps) {
+export function ImageUpload({ value, onChange, max = 5, labels, id }: ImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const atMax = value.length >= max;
+  const [truncated, setTruncated] = useState(false);
 
   // Derived (not stored in state) so creating preview URLs never triggers
   // a second render pass; the cleanup effect below only revokes — it does
@@ -46,6 +52,7 @@ export function ImageUpload({ value, onChange, max = 5, labels }: ImageUploadPro
   function handleFilesSelected(event: React.ChangeEvent<HTMLInputElement>) {
     const selected = Array.from(event.target.files ?? []);
     const remainingCapacity = max - value.length;
+    setTruncated(selected.length > remainingCapacity);
     if (remainingCapacity > 0 && selected.length > 0) {
       onChange([...value, ...selected.slice(0, remainingCapacity)]);
     }
@@ -92,6 +99,7 @@ export function ImageUpload({ value, onChange, max = 5, labels }: ImageUploadPro
       )}
 
       <input
+        id={id}
         ref={inputRef}
         type="file"
         accept="image/*"
@@ -99,6 +107,8 @@ export function ImageUpload({ value, onChange, max = 5, labels }: ImageUploadPro
         onChange={handleFilesSelected}
         className="hidden"
       />
+
+      {truncated && <p className="w-full text-xs text-amber-400">{labels.truncated}</p>}
     </div>
   );
 }

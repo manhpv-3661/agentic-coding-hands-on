@@ -44,15 +44,24 @@ export function AnonymousToggle({
 
       {checked && (
         <div className="flex flex-col gap-1">
-          <label className="text-sm font-semibold text-white">{labels.nicknameLabel}</label>
+          <label htmlFor="compose-anonymous-nickname" className="text-sm font-semibold text-white">
+            {labels.nicknameLabel}
+          </label>
           <input
+            id="compose-anonymous-nickname"
             type="text"
             value={nickname}
             onChange={(event) => onNicknameChange(event.target.value)}
             placeholder={labels.nicknamePlaceholder}
+            aria-invalid={Boolean(nicknameError)}
+            aria-describedby={nicknameError ? "compose-anonymous-nickname-error" : undefined}
             className="rounded-lg border border-white/20 bg-[#101317] px-3 py-2 text-sm text-white outline-none placeholder:text-white/40"
           />
-          {nicknameError && <p className="text-xs text-red-400">{nicknameError}</p>}
+          {nicknameError && (
+            <p id="compose-anonymous-nickname-error" className="text-xs text-red-400">
+              {nicknameError}
+            </p>
+          )}
         </div>
       )}
     </div>

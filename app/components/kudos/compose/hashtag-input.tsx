@@ -17,6 +17,9 @@ export interface HashtagInputProps {
   max?: number;
   error?: string;
   labels: HashtagInputLabels;
+  /** Id applied to the "add new tag" text input, so a wrapping `FieldGroup`
+   * label can point `htmlFor` at it. */
+  id?: string;
 }
 
 /**
@@ -25,9 +28,10 @@ export interface HashtagInputProps {
  * plain controlled-input style. Auto-prefixes `#`, dedupes
  * case-insensitively, and caps at `max` chips.
  */
-export function HashtagInput({ value, onChange, max = 5, error, labels }: HashtagInputProps) {
+export function HashtagInput({ value, onChange, max = 5, error, labels, id }: HashtagInputProps) {
   const [text, setText] = useState("");
   const atMax = value.length >= max;
+  const errorId = id ? `${id}-error` : undefined;
 
   function commit() {
     const trimmed = text.trim();
@@ -72,6 +76,7 @@ export function HashtagInput({ value, onChange, max = 5, error, labels }: Hashta
         ) : (
           <span className="flex items-center gap-1 rounded-full border border-white/20 px-2 py-1">
             <input
+              id={id}
               type="text"
               value={text}
               onChange={(event) => setText(event.target.value)}
@@ -82,6 +87,8 @@ export function HashtagInput({ value, onChange, max = 5, error, labels }: Hashta
                 }
               }}
               placeholder={labels.placeholder}
+              aria-invalid={Boolean(error)}
+              aria-describedby={error ? errorId : undefined}
               className="w-28 bg-transparent text-xs text-white outline-none placeholder:text-white/40"
             />
             <button type="button" onClick={commit} className="text-xs font-semibold text-[#FFEA9E]">
@@ -91,7 +98,11 @@ export function HashtagInput({ value, onChange, max = 5, error, labels }: Hashta
         )}
       </div>
 
-      {error && <p className="text-xs text-red-400">{error}</p>}
+      {error && (
+        <p id={errorId} className="text-xs text-red-400">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

@@ -286,10 +286,11 @@ export const vi = {
         remove: "Xóa hashtag",
       },
       images: {
-        label: "Image",
-        add: "+Image",
+        label: "Hình ảnh",
+        add: "+Ảnh",
         max: "Tối đa 5",
         remove: "Xóa ảnh",
+        truncated: "Đã đạt giới hạn ảnh, một số ảnh không được thêm.",
       },
       anonymous: {
         checkbox: "Gửi lời cảm ơn và ghi nhận ẩn danh",

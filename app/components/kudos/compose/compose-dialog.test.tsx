@@ -21,7 +21,13 @@ const labels = {
     communityStandards: "Tiêu chuẩn cộng đồng",
   },
   hashtags: { label: "Hashtag", placeholder: "Nhập hashtag", add: "+Hashtag", max: "Tối đa 5", error: "Thêm ít nhất 1 hashtag.", remove: "Xóa hashtag" },
-  images: { label: "Image", add: "+Image", max: "Tối đa 5", remove: "Xóa ảnh" },
+  images: {
+    label: "Image",
+    add: "+Image",
+    max: "Tối đa 5",
+    remove: "Xóa ảnh",
+    truncated: "Đã đạt giới hạn ảnh, một số ảnh không được thêm.",
+  },
   anonymous: { checkbox: "Gửi lời cảm ơn và ghi nhận ẩn danh", nicknameLabel: "Nickname ẩn danh", nicknamePlaceholder: "Doraemon", error: "Vui lòng nhập nickname." },
 };
 
@@ -97,6 +103,19 @@ describe("ComposeDialog", () => {
     expect(screen.getByText("Vui lòng nhập nội dung.")).toBeInTheDocument();
     expect(screen.getByText("Thêm ít nhất 1 hashtag.")).toBeInTheDocument();
     expect(onSubmit).not.toHaveBeenCalled();
+  });
+
+  it("clears a field's inline error as soon as its value changes, without waiting for re-submit", async () => {
+    const user = userEvent.setup();
+    renderDialog();
+
+    await user.click(screen.getByRole("button", { name: "Gửi" }));
+    expect(screen.getByText("Vui lòng nhập danh hiệu.")).toBeInTheDocument();
+
+    await user.type(screen.getByPlaceholderText("Dành tặng một danh hiệu cho đồng đội."), "X");
+    expect(screen.queryByText("Vui lòng nhập danh hiệu.")).not.toBeInTheDocument();
+    // Untouched fields keep their error until their own value changes.
+    expect(screen.getByText("Vui lòng nhập nội dung.")).toBeInTheDocument();
   });
 
   it("a valid submit calls onSubmit with the built post, closes, and shows a toast", async () => {

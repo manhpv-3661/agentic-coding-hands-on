@@ -256,6 +256,7 @@ export const en = {
         add: "+Image",
         max: "Max 5",
         remove: "Remove image",
+        truncated: "Image limit reached — some photos were skipped.",
       },
       anonymous: {
         checkbox: "Send anonymously",

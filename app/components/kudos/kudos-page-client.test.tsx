@@ -34,8 +34,6 @@ function renderWrapper() {
       initialPosts={initialPosts}
       currentUser={currentUser}
       recipientOptions={recipientOptions}
-      hashtagOptions={["#a"]}
-      departmentOptions={["Dept A", "Dept B"]}
       labels={dictionary.kudos}
       spotlight={<div>spotlight-slot</div>}
       sidebar={<div>sidebar-slot</div>}
@@ -101,9 +99,69 @@ describe("KudosPageClient", () => {
     renderWrapper();
 
     await user.click(screen.getByText(dictionary.kudos.composer.placeholder));
+    let dialog = screen.getByRole("dialog");
+    await user.type(
+      within(dialog).getByPlaceholderText(dictionary.kudos.compose.title.placeholder),
+      "Draft title that should not survive",
+    );
+
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+
+    // Reopen — the draft must be gone, not silently restored.
+    await user.click(screen.getByText(dictionary.kudos.composer.placeholder));
+    dialog = screen.getByRole("dialog");
+    expect(
+      within(dialog).getByPlaceholderText(dictionary.kudos.compose.title.placeholder),
+    ).toHaveValue("");
+  });
+
+  it("Escape closes only the topmost open menu — the recipient dropdown first, then the dialog", async () => {
+    const user = userEvent.setup();
+    renderWrapper();
+
+    await user.click(screen.getByText(dictionary.kudos.composer.placeholder));
+    const dialog = screen.getByRole("dialog");
+    await user.click(
+      within(dialog).getByRole("button", { name: dictionary.kudos.compose.recipient.placeholder }),
+    );
+    expect(within(dialog).getByRole("listbox")).toBeInTheDocument();
+
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
     expect(screen.getByRole("dialog")).toBeInTheDocument();
 
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("a newly-submitted Kudos's hashtag/department become selectable in the board filters (F007)", async () => {
+    const user = userEvent.setup();
+    renderWrapper();
+
+    await user.click(screen.getByText(dictionary.kudos.composer.placeholder));
+    const dialog = screen.getByRole("dialog");
+
+    await user.click(within(dialog).getByRole("button", { name: dictionary.kudos.compose.recipient.placeholder }));
+    await user.click(within(dialog).getByRole("option", { name: /Nguyễn Văn An/ }));
+    await user.type(
+      within(dialog).getByPlaceholderText(dictionary.kudos.compose.title.placeholder),
+      "Người truyền động lực",
+    );
+    const editor = within(dialog).getByRole("textbox", { name: dictionary.kudos.compose.content.placeholder });
+    editor.textContent = "Cảm ơn bạn!";
+    fireEvent.input(editor);
+    await user.type(
+      within(dialog).getByPlaceholderText(dictionary.kudos.compose.hashtags.placeholder),
+      "newtag{Enter}",
+    );
+
+    await user.click(within(dialog).getByRole("button", { name: dictionary.kudos.compose.submit }));
+
+    const hashtagFilter = screen.getByRole("combobox", { name: dictionary.kudos.filters.hashtagLabel });
+    expect(within(hashtagFilter).getByRole("option", { name: "#newtag" })).toBeInTheDocument();
+
+    const departmentFilter = screen.getByRole("combobox", { name: dictionary.kudos.filters.departmentLabel });
+    expect(within(departmentFilter).getByRole("option", { name: currentUser.department })).toBeInTheDocument();
   });
 });

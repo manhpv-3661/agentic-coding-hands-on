@@ -89,6 +89,67 @@ describe("RichTextEditor", () => {
     expect(onChange).toHaveBeenLastCalledWith("cảm ơn @Nguyễn Văn An ");
   });
 
+  it("shows and inserts a mention typed in the middle of existing text, not just at the end", () => {
+    const onChange = vi.fn();
+    render(
+      <RichTextEditor value="" onChange={onChange} mentionNames={["Nguyễn Văn An"]} labels={labels} />,
+    );
+
+    const editor = screen.getByRole("textbox");
+    editor.textContent = "chào @an bạn nhé";
+    // Place the caret right after "@an" (offset 8) — simulating the user
+    // having typed "@an" mid-sentence, not at the tail of the message.
+    const textNode = editor.firstChild as Text;
+    const range = document.createRange();
+    range.setStart(textNode, 8);
+    range.collapse(true);
+    const selection = window.getSelection();
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+
+    fireEvent.input(editor);
+
+    const option = screen.getByRole("option", { name: "@Nguyễn Văn An" });
+    fireEvent.click(option);
+
+    expect(onChange).toHaveBeenLastCalledWith("chào @Nguyễn Văn An  bạn nhé");
+  });
+
+  it("closes the mention popup on blur", () => {
+    render(
+      <RichTextEditor value="" onChange={vi.fn()} mentionNames={["Nguyễn Văn An"]} labels={labels} />,
+    );
+
+    const editor = screen.getByRole("textbox");
+    editor.textContent = "cảm ơn @an";
+    fireEvent.input(editor);
+    expect(screen.getByRole("option", { name: "@Nguyễn Văn An" })).toBeInTheDocument();
+
+    fireEvent.blur(editor);
+    expect(screen.queryByRole("option", { name: "@Nguyễn Văn An" })).not.toBeInTheDocument();
+  });
+
+  it("ArrowDown + Enter selects a mention suggestion instead of inserting a newline", () => {
+    const onChange = vi.fn();
+    render(
+      <RichTextEditor
+        value=""
+        onChange={onChange}
+        mentionNames={["Nguyễn Văn An", "Trần Thị Bình"]}
+        labels={labels}
+      />,
+    );
+
+    const editor = screen.getByRole("textbox");
+    editor.textContent = "cảm ơn @";
+    fireEvent.input(editor);
+
+    fireEvent.keyDown(editor, { key: "ArrowDown" });
+    fireEvent.keyDown(editor, { key: "Enter" });
+
+    expect(onChange).toHaveBeenLastCalledWith("cảm ơn @Trần Thị Bình ");
+  });
+
   it("renders the inline error text when the error prop is set", () => {
     render(
       <RichTextEditor value="" onChange={vi.fn()} mentionNames={[]} error={labels.error} labels={labels} />,
