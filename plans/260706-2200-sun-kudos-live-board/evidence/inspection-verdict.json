@@ -1,0 +1,28 @@
+{
+  "score": 9,
+  "criticalCount": 0,
+  "decision": "SEALED",
+  "acceptanceCovered": [
+    "/kudos renders full content for an authenticated user (no more placeholder text)",
+    "unauthenticated request to /kudos still redirects to /login (unchanged)",
+    "Highlight Kudos carousel shows exactly the top 5 mock Kudos by heart count, prev/next arrows disabled at each end, pagination label matches active slide",
+    "Spotlight board shows the total KUDOS count and a static name cloud; search input filters/highlights by substring",
+    "All Kudos feed renders every (filtered) mock Kudos post with sender/receiver info, timestamp, content, hashtags, static heart count, working Copy Link (clipboard + toast)",
+    "Hashtag and Phong ban filters narrow both Highlight Kudos and All Kudos simultaneously; clearing shows all again; empty result shows 'Hien tai chua co Kudos nao.'",
+    "Stats sidebar shows the 4 mock figures (received/sent/opened/unopened) and the top-10 recent gift recipients list (empty state 'Chua co du lieu' when empty)",
+    "no like/heart click handler exists anywhere in the new code (explicitly out of scope)",
+    "new `kudos` i18n namespace exists in both vi.ts and en.ts with identical key sets (parity test passes)",
+    "vitest suite passes; tsc --noEmit passes"
+  ],
+  "regressionChecked": [
+    "app/page.tsx homepage SunKudosSection 'Chi tiết' CTA still hrefs '/kudos' — file untouched by this change (not in git diff), href unchanged",
+    "lib/i18n/dictionaries/parity.test.ts still asserts shared/login/homepage/prelaunch/awards top-level categories in addition to the new kudos namespace; deep recursive key-parity check (collectKeys) covers the new namespace automatically",
+    "proxy.ts protected-path list unchanged (still matches /kudos, confirmed by reading the file) and requireUser() retained verbatim in app/kudos/page.tsx",
+    "tests/unit/kudos-page.test.tsx fully rewritten — old stub-heading assertion removed, guard assertion (requireUser called once) retained",
+    "no stray onClick/button/Link introduced for the explicitly out-of-scope interactions: heart/like toggle (static span), avatar/name (no Link/onClick), 'Xem chi tiết' (static span, highlight variant only), composer bar (button with no handler) — verified by grep across app/components/kudos plus dedicated tests (kudos-card.test.tsx, avatar.test.tsx) asserting the absence of these affordances"
+  ],
+  "contractStatus": "OK",
+  "refuted": [],
+  "unproven": [],
+  "reachableRegressions": []
+}

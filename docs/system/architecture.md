@@ -17,7 +17,9 @@ backend do Supabase quản lý (managed auth), không tự viết server auth.
   - `app/page.tsx` — Trang chủ (Homepage SAA, F002); đích sau đăng nhập; được bảo vệ.
   - `app/awards/page.tsx` — Hệ thống giải thưởng (Awards Information, F004); nội dung thật (hero,
     menu scroll-spy, 6 award card, Sun* Kudos promo); được bảo vệ; thay placeholder tối giản của F002.
-  - `app/kudos/page.tsx` — placeholder, được bảo vệ (liên kết từ trang chủ).
+  - `app/kudos/page.tsx` — Sun* Kudos Live Board (F006); nội dung thật (Highlight Kudos carousel,
+    Spotlight Board word-cloud, All Kudos feed, lọc hashtag/phòng ban, thống kê + Secret Box, top 10
+    Sunner nhận quà); được bảo vệ; thay placeholder tối giản của F002.
   - `app/todo/page.tsx` — trang phụ (placeholder ở giai đoạn này; được bảo vệ; không còn là đích sau đăng nhập kể từ F002).
   - `app/auth/callback/route.ts` — route handler đổi OAuth code lấy session, rồi redirect `/` (F002 cập nhật từ `/todo`).
   - `app/prelaunch/page.tsx` — Countdown Prelaunch (F003); đích của time-gate toàn site trước mốc `NEXT_PUBLIC_EVENT_START_AT`; public, không bảo vệ.
@@ -36,7 +38,7 @@ backend do Supabase quản lý (managed auth), không tự viết server auth.
   (`NEXT_LOCALE`), không đổi route theo locale.
   - `locale.ts` — `Locale = "vi" | "en"`, `DEFAULT_LOCALE = "vi"`, `isLocale()` type guard.
   - `dictionaries/vi.ts` + `en.ts` — TS object literal lồng namespace theo màn (`shared`, `login`,
-    `homepage`, `prelaunch`, `awards`); `dictionary.ts` xuất `type Dictionary = typeof vi`, `en.ts`
+    `homepage`, `prelaunch`, `awards`, `kudos`); `dictionary.ts` xuất `type Dictionary = typeof vi`, `en.ts`
     được compile-check khớp shape này (`satisfies Dictionary`) — thiếu key bắt lỗi lúc
     `tsc --noEmit`, không phải runtime.
   - `get-locale.ts` — `async function getLocale(): Promise<Locale>`, server-only, đọc cookie qua
@@ -69,5 +71,5 @@ proxy.ts: sau mốc (hoặc fail-open) -> refresh session; đã-auth ở /login 
 
 ## Câu hỏi mở
 
-- Nội dung thực của `/todo`, `/kudos` (ngoài placeholder) thuộc màn hình khác (`/awards` đã có nội
-  dung thật kể từ F004).
+- Nội dung thực của `/todo` (ngoài placeholder) thuộc màn hình khác (`/awards` từ F004, `/kudos` từ
+  F006 đã có nội dung thật).

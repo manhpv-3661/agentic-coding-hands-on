@@ -163,4 +163,49 @@ export const en = {
       },
     },
   },
+  kudos: {
+    meta: {
+      description: "Live Sun* Kudos recognition board — Sun* Annual Awards 2025.",
+    },
+    banner: {
+      title: "Recognition & appreciation system",
+    },
+    composer: {
+      placeholder: "Who would you like to thank and recognize today?",
+    },
+    filters: {
+      hashtagLabel: "Hashtag",
+      departmentLabel: "Department",
+      allOption: "All",
+    },
+    card: {
+      viewDetail: "View details",
+      copyLink: "Copy Link",
+      copied: "Link copied",
+    },
+    empty: {
+      kudos: "There are no Kudos yet.",
+      recipients: "No data yet",
+    },
+    spotlight: {
+      searchPlaceholder: "Search",
+      panZoom: "Pan/Zoom",
+    },
+    stats: {
+      received: "Kudos received",
+      sent: "Kudos sent",
+      hearts: "Hearts received",
+      secretBoxOpened: "Secret Boxes opened",
+      secretBoxUnopened: "Secret Boxes unopened",
+    },
+    gift: {
+      openButton: "Open Secret Box",
+      dialogTitle: "Your Secret Box",
+      dialogBody: "The real reward is coming soon. This is a preview screen for the mock build.",
+      close: "Close",
+    },
+    recent: {
+      heading: "10 LATEST SUNNER GIFT RECIPIENTS",
+    },
+  },
 } satisfies Dictionary;

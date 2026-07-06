@@ -1,0 +1,33 @@
+{
+  "task": "Build the real /kudos page (Sun* Kudos - Live board) replacing the F002 placeholder: Highlight Kudos carousel (top 5 by hearts), Spotlight Board (static word-cloud), All Kudos feed, hashtag/department filters, stats sidebar (kudos received/sent, Secret Box opened/unopened), and a top-10-recent-gift-recipients list. Static heart icon+count only, no like toggle.",
+  "mode": "auto",
+  "acceptanceCriteria": [
+    "/kudos renders full content for an authenticated user (no more placeholder text)",
+    "unauthenticated request to /kudos still redirects to /login (unchanged)",
+    "Highlight Kudos carousel shows exactly the top 5 mock Kudos by heart count, prev/next arrows disabled at each end, pagination label matches active slide",
+    "Spotlight board shows the total KUDOS count and a static name cloud; search input filters/highlights by substring",
+    "All Kudos feed renders every (filtered) mock Kudos post with sender/receiver info, timestamp, content, hashtags, static heart count, working Copy Link (clipboard + toast)",
+    "Hashtag and Phong ban filters narrow both Highlight Kudos and All Kudos simultaneously; clearing shows all again; empty result shows 'Hien tai chua co Kudos nao.'",
+    "Stats sidebar shows the 4 mock figures (received/sent/opened/unopened) and the top-10 recent gift recipients list (empty state 'Chua co du lieu' when empty)",
+    "no like/heart click handler exists anywhere in the new code (explicitly out of scope)",
+    "new `kudos` i18n namespace exists in both vi.ts and en.ts with identical key sets (parity test passes)",
+    "vitest suite passes; tsc --noEmit passes"
+  ],
+  "touchpoints": [
+    "app/kudos/page.tsx",
+    "app/components/kudos/",
+    "lib/kudos/kudos-data.ts",
+    "lib/i18n/dictionaries/vi.ts",
+    "lib/i18n/dictionaries/en.ts",
+    "hooks/use-carousel.ts"
+  ],
+  "blastRadius": [
+    "app/page.tsx homepage Kudos teaser CTA link target (/kudos) — must still resolve",
+    "lib/i18n dictionary parity test (adding a new namespace to both files)",
+    "proxy.ts protected-path list (read-only check, no change expected)"
+  ],
+  "contracts": [
+    "GET /kudos requires an authenticated session (requireUser())",
+    "Dictionary type = typeof vi (lib/i18n/dictionary.ts) — new kudos namespace must satisfy this in en.ts"
+  ]
+}

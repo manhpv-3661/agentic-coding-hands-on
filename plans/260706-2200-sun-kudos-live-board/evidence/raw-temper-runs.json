@@ -1,0 +1,22 @@
+[
+  {
+    "command": "npx tsc --noEmit",
+    "exitCode": 0,
+    "summary": "TypeScript compilation successful, no type errors"
+  },
+  {
+    "command": "npx vitest run",
+    "exitCode": 0,
+    "summary": "All 330 tests across 60 test files passed (duration: 10.67s)"
+  },
+  {
+    "command": "npx next build",
+    "exitCode": 0,
+    "summary": "Next.js production build succeeded, all 8 routes compiled (2.6s compilation, 336ms page generation)"
+  },
+  {
+    "command": "npx eslint app/components/kudos app/kudos lib/kudos hooks/use-carousel.ts lib/i18n",
+    "exitCode": 0,
+    "summary": "ESLint passed with no errors or warnings"
+  }
+]

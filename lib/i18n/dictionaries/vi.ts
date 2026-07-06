@@ -185,4 +185,59 @@ export const vi = {
       },
     },
   },
+  // Sun* Kudos live board (F006, `app/kudos/page.tsx`), MoMorph screenId
+  // `MaZUn5xHXZ`. NEW top-level namespace — distinct from `homepage.kudos`
+  // (still owned by the homepage/awards teaser block, untouched). English
+  // design labels ("HIGHLIGHT KUDOS", "SPOTLIGHT BOARD", "ALL KUDOS", the
+  // "KUDOS" wordmark) stay hardcoded in components per clarifications.md,
+  // not keyed here.
+  kudos: {
+    meta: {
+      description: "Bảng ghi nhận Sun* Kudos trực tiếp — Sun* Annual Awards 2025.",
+    },
+    banner: {
+      title: "Hệ thống ghi nhận và cảm ơn",
+    },
+    composer: {
+      placeholder: "Hôm nay, bạn muốn gửi lời cảm ơn và ghi nhận đến ai?",
+    },
+    filters: {
+      hashtagLabel: "Hashtag",
+      departmentLabel: "Phòng ban",
+      allOption: "Tất cả",
+    },
+    card: {
+      viewDetail: "Xem chi tiết",
+      copyLink: "Copy Link",
+      copied: "Đã sao chép liên kết",
+    },
+    empty: {
+      kudos: "Hiện tại chưa có Kudos nào.",
+      recipients: "Chưa có dữ liệu",
+    },
+    spotlight: {
+      searchPlaceholder: "Tìm kiếm",
+      panZoom: "Pan/Zoom",
+    },
+    stats: {
+      received: "Số Kudos nhận được",
+      sent: "Số Kudos đã gửi",
+      hearts: "Số lượt thả tim",
+      secretBoxOpened: "Secret Box đã mở",
+      secretBoxUnopened: "Secret Box chưa mở",
+    },
+    gift: {
+      // Design-verbatim label chosen over the FR-19 spec text ("Mở quà")
+      // per the reviewed screenshot ground truth (plan.md open item),
+      // resolved here rather than left ambiguous downstream.
+      openButton: "Mở Secret Box",
+      dialogTitle: "Secret Box của bạn",
+      dialogBody:
+        "Phần thưởng thật sẽ được cập nhật sau. Đây là màn hình xem trước dành cho bản mock.",
+      close: "Đóng",
+    },
+    recent: {
+      heading: "10 SUNNER NHẬN QUÀ MỚI NHẤT",
+    },
+  },
 };

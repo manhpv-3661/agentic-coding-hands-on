@@ -45,6 +45,7 @@ describe("Dictionary parity", () => {
     expect(vi).toHaveProperty("homepage");
     expect(vi).toHaveProperty("prelaunch");
     expect(vi).toHaveProperty("awards");
+    expect(vi).toHaveProperty("kudos");
   });
 
   it("EN dictionary has all expected top-level categories", () => {
@@ -53,6 +54,7 @@ describe("Dictionary parity", () => {
     expect(en).toHaveProperty("homepage");
     expect(en).toHaveProperty("prelaunch");
     expect(en).toHaveProperty("awards");
+    expect(en).toHaveProperty("kudos");
   });
 
   it(
