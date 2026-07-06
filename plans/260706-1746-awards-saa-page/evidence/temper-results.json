@@ -1,0 +1,53 @@
+{
+  "commands": [
+    {
+      "command": "npx tsc --noEmit",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "No type errors across the full project",
+      "ts": "2026-07-06T12:22:00Z"
+    },
+    {
+      "command": "npx vitest run",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "202 passed (202), 30 test files, no regressions",
+      "ts": "2026-07-06T12:22:10Z"
+    },
+    {
+      "command": "npx eslint app/components/awards app/awards e2e/awards-content.spec.ts hooks/use-scroll-spy.ts playwright.config.ts",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "0 errors, 3 pre-existing-pattern warnings (SVG <img> vs next/image, matches sun-kudos-section.tsx convention)",
+      "ts": "2026-07-06T12:22:30Z"
+    },
+    {
+      "command": "npx next build",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "Build succeeded, /awards compiles as a dynamic route, no RSC client-boundary errors",
+      "ts": "2026-07-06T12:10:00Z"
+    },
+    {
+      "command": "npx playwright test e2e/awards-content.spec.ts e2e/access-control.spec.ts e2e/homepage-access.spec.ts e2e/homepage-content.spec.ts",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "37 passed (37) across chromium and chromium-authless projects, zero regressions",
+      "ts": "2026-07-06T12:35:00Z"
+    },
+    {
+      "command": "manual visual review (Playwright browser, authless build @ :3100, 1440px viewport)",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "Post-delivery visual check found award-detail-card.tsx used lg:items-center, vertically centering the 336px image against a much taller text block so it appeared to float disconnected from its title; fixed to top-align (removed lg:items-center). Confirmed fixed via before/after screenshots.",
+      "ts": "2026-07-06T13:03:00Z"
+    },
+    {
+      "command": "npx vitest run (post-fix)",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "202 passed (202), 30 test files — re-confirmed after the alignment fix, no regressions",
+      "ts": "2026-07-06T13:03:26Z"
+    }
+  ]
+}

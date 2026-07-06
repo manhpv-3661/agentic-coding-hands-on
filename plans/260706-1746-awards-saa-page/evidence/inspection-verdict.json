@@ -1,0 +1,23 @@
+{
+  "score": 9.5,
+  "criticalCount": 0,
+  "decision": "SEALED",
+  "acceptanceCovered": [
+    "All 6 award category slugs match lib/awards/award-categories.ts exactly, preserving F002 hash-anchor links — verified: award-detail-data.ts derives slugs by index from AWARD_CATEGORIES (no retyping), reviewer confirmed no drift risk, and E2E hash-anchor tests (goto /awards#mvp, /awards#best-manager) land correctly",
+    "Scroll-spy nav updates active item via real IntersectionObserver on scroll, not click-only — verified: hooks/use-scroll-spy.ts unit tests (7/7) cover tie-break/empty/missing-node/unmount cases, and the E2E passive-activation test (scrollIntoViewIfNeeded without clicking) confirms the nav item activates",
+    "Sun* Kudos section is SunKudosSection reused unmodified, placed before the footer — verified: reviewer confirmed zero git diff on app/components/home/sun-kudos-section.tsx, and E2E confirms the kudos CTA navigates to /kudos from its position before the footer",
+    "requireUser() guard remains intact on /awards — verified: reviewer confirmed the guard call at app/awards/page.tsx, and e2e/access-control.spec.ts + e2e/homepage-access.spec.ts regression pass (13+4 tests)",
+    "Full unit test suite passes with no regressions — verified: npx vitest run reports 202 passed (202), 30 test files",
+    "Full Playwright E2E suite passes with no regressions in access-control/homepage specs — verified: 37 passed (37) across chromium/chromium-authless projects, including the pre-existing access-control.spec.ts, homepage-access.spec.ts, homepage-content.spec.ts"
+  ],
+  "regressionChecked": [
+    "e2e/access-control.spec.ts — 13 tests, all pass (unauth/auth routing regression)",
+    "e2e/homepage-access.spec.ts — 4 tests, all pass (F002 redirect regression)",
+    "e2e/homepage-content.spec.ts — 14 tests, all pass (F002 content/hash-anchor regression)",
+    "full vitest unit suite — 202/202 across 30 files, no regressions introduced in F001/F002/F003 code paths"
+  ],
+  "contractStatus": "COMPATIBLE",
+  "refuted": [],
+  "unproven": [],
+  "reachableRegressions": []
+}

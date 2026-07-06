@@ -53,12 +53,12 @@ export default defineConfig({
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"], baseURL: "http://localhost:3000" },
-      testIgnore: /homepage-content|prelaunch-countdown/,
+      testIgnore: /homepage-content|awards-content|prelaunch-countdown/,
     },
     {
       name: "chromium-authless",
       use: { ...devices["Desktop Chrome"], baseURL: "http://localhost:3100" },
-      testMatch: /homepage-content/,
+      testMatch: /homepage-content|awards-content/,
     },
     {
       name: "chromium-prelaunch",

@@ -39,7 +39,8 @@ Chưa có role system (Admin Dashboard trong account menu bị ẩn cho tới kh
 |-------|-------|-----------|
 | `/login` | ✅ hiển thị | 🔁 redirect → `/` |
 | `/` — Trang chủ (bảo vệ) | 🔁 redirect → `/login` | ✅ hiển thị |
-| `/awards`, `/kudos` (placeholder, bảo vệ) | 🔁 redirect → `/login` | ✅ hiển thị |
+| `/awards` (Hệ thống giải thưởng, F004, bảo vệ) | 🔁 redirect → `/login` | ✅ hiển thị |
+| `/kudos` (placeholder, bảo vệ) | 🔁 redirect → `/login` | ✅ hiển thị |
 | `/todo` (được bảo vệ) | 🔁 redirect → `/login` | ✅ hiển thị |
 | `/auth/callback` | ✅ (xử lý OAuth code) | ✅ |
 | `/prelaunch` (F003) | ✅ luôn cho phép — public, không yêu cầu đăng nhập | ✅ luôn cho phép |

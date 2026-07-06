@@ -15,7 +15,9 @@ backend do Supabase quản lý (managed auth), không tự viết server auth.
 - **App Router routes**
   - `app/login/page.tsx` — màn hình đăng nhập (server component check session → redirect nếu đã auth; render UI client).
   - `app/page.tsx` — Trang chủ (Homepage SAA, F002); đích sau đăng nhập; được bảo vệ.
-  - `app/awards/page.tsx`, `app/kudos/page.tsx` — placeholder, được bảo vệ (liên kết từ trang chủ).
+  - `app/awards/page.tsx` — Hệ thống giải thưởng (Awards Information, F004); nội dung thật (hero,
+    menu scroll-spy, 6 award card, Sun* Kudos promo); được bảo vệ; thay placeholder tối giản của F002.
+  - `app/kudos/page.tsx` — placeholder, được bảo vệ (liên kết từ trang chủ).
   - `app/todo/page.tsx` — trang phụ (placeholder ở giai đoạn này; được bảo vệ; không còn là đích sau đăng nhập kể từ F002).
   - `app/auth/callback/route.ts` — route handler đổi OAuth code lấy session, rồi redirect `/` (F002 cập nhật từ `/todo`).
   - `app/prelaunch/page.tsx` — Countdown Prelaunch (F003); đích của time-gate toàn site trước mốc `NEXT_PUBLIC_EVENT_START_AT`; public, không bảo vệ.
@@ -50,4 +52,6 @@ proxy.ts: sau mốc (hoặc fail-open) -> refresh session; đã-auth ở /login 
 - **Next.js 16**: `cookies()` luôn async (`await cookies()`); `middleware.ts` → `proxy.ts`/`export function proxy()`.
 
 ## Câu hỏi mở
-- Nội dung thực của `/todo`, `/awards`, `/kudos` (ngoài placeholder) thuộc màn hình khác.
+
+- Nội dung thực của `/todo`, `/kudos` (ngoài placeholder) thuộc màn hình khác (`/awards` đã có nội
+  dung thật kể từ F004).

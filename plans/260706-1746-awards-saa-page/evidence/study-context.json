@@ -1,0 +1,36 @@
+{
+  "task": "F004 — Hệ thống giải thưởng (Awards Information) screen: replace the /awards placeholder with full SAA 2025 content (hero, scroll-spy nav, 6 award detail cards, Sun* Kudos promo)",
+  "mode": "feature",
+  "acceptanceCriteria": [
+    "All 6 award category slugs match lib/awards/award-categories.ts exactly, preserving F002 hash-anchor links",
+    "Scroll-spy nav updates active item via real IntersectionObserver on scroll, not click-only",
+    "Sun* Kudos section is SunKudosSection reused unmodified, placed before the footer",
+    "requireUser() guard remains intact on /awards",
+    "Full unit test suite passes with no regressions",
+    "Full Playwright E2E suite passes with no regressions in access-control/homepage specs"
+  ],
+  "touchpoints": [
+    "app/awards/page.tsx",
+    "app/components/awards/awards-catalog.tsx",
+    "app/components/awards/awards-nav-menu.tsx",
+    "app/components/awards/awards-hero.tsx",
+    "app/components/awards/award-detail-card.tsx",
+    "app/components/awards/award-detail-data.ts",
+    "hooks/use-scroll-spy.ts",
+    "tests/unit/awards-page.test.tsx",
+    "e2e/awards-content.spec.ts",
+    "playwright.config.ts",
+    "public/awards-saa/Icon-Target.svg",
+    "public/awards-saa/Icon-Diamond.svg",
+    "public/awards-saa/Icon-License.svg"
+  ],
+  "blastRadius": [
+    "/awards route content",
+    "Homepage hash-anchor links to /awards#<slug> (F002 dependency)",
+    "Playwright project config (chromium/chromium-authless testMatch/testIgnore regexes)"
+  ],
+  "contracts": [
+    "lib/awards/award-categories.ts slugs (frozen, consumed by F002 Homepage award grid)",
+    "app/components/home/sun-kudos-section.tsx (reused as-is, zero modification)"
+  ]
+}
