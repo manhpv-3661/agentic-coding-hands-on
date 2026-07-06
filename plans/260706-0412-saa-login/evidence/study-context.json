@@ -1,0 +1,25 @@
+{
+  "task": "Build SAA 2025 Login screen: pixel-perfect UI from MoMorph/Figma plus Google login via Supabase Auth (OAuth), redirect to /todo on success.",
+  "mode": "takumi-interactive",
+  "acceptanceCriteria": [
+    "Login UI matches Figma (all 8 design items rendered)",
+    "Google login via Supabase OAuth with loading and error states",
+    "Authenticated user at /login redirects to /todo; unauthenticated at /todo redirects to /login",
+    "Language selector defaults VN and writes NEXT_LOCALE cookie",
+    "Unit and E2E tests pass (project DoD)"
+  ],
+  "touchpoints": [
+    "app/login/**",
+    "lib/supabase/**",
+    "proxy.ts",
+    "app/auth/callback/route.ts",
+    "app/todo/page.tsx",
+    "app/layout.tsx"
+  ],
+  "blastRadius": "New login + auth routes; app/layout lang attr; no change to existing app/page.tsx home route.",
+  "contracts": [
+    "LoginButton controlled component props: onLogin/loading/disabled/error",
+    "Supabase @supabase/ssr client/server factory pattern (Next 16 async cookies)",
+    "proxy.ts route protection (Next 16 middleware->proxy rename)"
+  ]
+}

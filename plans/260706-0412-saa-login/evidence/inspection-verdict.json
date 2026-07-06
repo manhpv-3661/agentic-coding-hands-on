@@ -1,0 +1,21 @@
+{
+  "score": 9,
+  "criticalCount": 0,
+  "decision": "SEALED",
+  "acceptanceCovered": [
+    "Login UI matches Figma (all 8 design items rendered) — verified by 22 E2E layout tests + implementer visual-validation loop vs Figma",
+    "Google login via Supabase OAuth with loading and error states — verified by login-button-container unit tests + E2E OAuth-redirect intercept",
+    "Authenticated user at /login redirects to /todo; unauthenticated at /todo redirects to /login — verified by proxy.ts unit tests + login page guard tests",
+    "Language selector defaults VN and writes NEXT_LOCALE cookie — verified by language-selector unit tests + E2E cookie test",
+    "Unit and E2E tests pass (project DoD) — 68 unit + 22 E2E all green, build passes"
+  ],
+  "regressionChecked": [
+    "Existing app/page.tsx home route unaffected — build renders / as static, no import changes",
+    "No pre-existing routes other than / existed before this change",
+    "app/layout.tsx lang attr changed en->vi; no functional regression (verified build + tests)"
+  ],
+  "contractStatus": "PASS",
+  "refuted": [],
+  "unproven": [],
+  "reachableRegressions": []
+}
