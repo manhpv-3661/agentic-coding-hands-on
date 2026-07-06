@@ -6,6 +6,15 @@ import type { KudosFilterState, KudosPerson, KudosPost } from "./kudos-types";
  * client component (`kudos-board.tsx`) alike.
  */
 
+/**
+ * FR-4: you cannot like a Kudos you authored. Name equality is this mock
+ * repo's identity (mirrors `getDistinctRecipients`'s `currentUser.name`
+ * comparison — there is no id field on `KudosPerson`). Pure.
+ */
+export function canLikeKudos(post: KudosPost, currentUser: KudosPerson): boolean {
+  return post.sender.name !== currentUser.name;
+}
+
 /** Distinct hashtags across all posts, in first-seen order. */
 export function getDistinctHashtags(posts: KudosPost[]): string[] {
   return Array.from(new Set(posts.flatMap((post) => post.hashtags)));

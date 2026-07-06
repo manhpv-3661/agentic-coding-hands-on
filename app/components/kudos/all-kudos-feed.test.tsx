@@ -2,9 +2,17 @@ import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { AllKudosFeed } from "./all-kudos-feed";
-import type { KudosPost } from "@/lib/kudos/kudos-types";
+import type { KudosPerson, KudosPost } from "@/lib/kudos/kudos-types";
 
-const cardLabels = { viewDetail: "Xem chi tiết", copyLink: "Copy Link", copied: "Đã sao chép" };
+const cardLabels = {
+  viewDetail: "Xem chi tiết",
+  copyLink: "Copy Link",
+  copied: "Đã sao chép",
+  like: "Thả tim",
+  unlike: "Bỏ thả tim",
+};
+
+const currentUser: KudosPerson = { name: "Current User", department: "Dept X", stars: 0 };
 
 function makePost(overrides: Partial<KudosPost>): KudosPost {
   return {
@@ -58,5 +66,78 @@ describe("AllKudosFeed", () => {
     );
 
     expect(screen.getByText("Hiện tại chưa có Kudos nào.")).toBeInTheDocument();
+  });
+
+  it("renders interactive heart buttons when onToggleLike is wired (F008)", () => {
+    const posts = [makePost({ id: "likeable", hearts: 5, content: "likeable post" })];
+    const onToggleLike = vi.fn();
+
+    render(
+      <AllKudosFeed
+        posts={posts}
+        cardLabels={cardLabels}
+        emptyLabel="empty"
+        onHashtagClick={vi.fn()}
+        likedIds={new Set()}
+        currentUser={currentUser}
+        onToggleLike={onToggleLike}
+      />,
+    );
+
+    const heartButton = screen.getByRole("button", { name: cardLabels.like });
+    expect(heartButton).toBeInTheDocument();
+    expect(heartButton).not.toBeDisabled();
+  });
+
+  it("shows liked state when a post id is in likedIds (F008)", () => {
+    const posts = [makePost({ id: "p-liked", hearts: 5 })];
+    const likedIds = new Set(["p-liked"]);
+
+    render(
+      <AllKudosFeed
+        posts={posts}
+        cardLabels={cardLabels}
+        emptyLabel="empty"
+        onHashtagClick={vi.fn()}
+        likedIds={likedIds}
+        currentUser={currentUser}
+        onToggleLike={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByRole("button", { name: cardLabels.unlike })).toBeInTheDocument();
+    expect(screen.getByText("6")).toBeInTheDocument(); // 5 hearts + 1 like
+  });
+
+  it("disables the heart for own posts (F008 FR-4)", () => {
+    const posts = [makePost({ id: "own-post", sender: currentUser })];
+
+    render(
+      <AllKudosFeed
+        posts={posts}
+        cardLabels={cardLabels}
+        emptyLabel="empty"
+        onHashtagClick={vi.fn()}
+        likedIds={new Set()}
+        currentUser={currentUser}
+        onToggleLike={vi.fn()}
+      />,
+    );
+
+    const heartButton = screen.getByRole("button", { name: cardLabels.like });
+    expect(heartButton).toBeDisabled();
+  });
+
+  it("falls back to static heart when onToggleLike is omitted (F006 backward compat)", () => {
+    const posts = [makePost({ id: "static-heart", hearts: 10 })];
+
+    render(
+      <AllKudosFeed posts={posts} cardLabels={cardLabels} emptyLabel="empty" onHashtagClick={vi.fn()} />,
+    );
+
+    // When onToggleLike is omitted, the heart is a static span, not a button
+    const heartButton = screen.queryByRole("button", { name: cardLabels.like });
+    expect(heartButton).not.toBeInTheDocument();
+    expect(screen.getByText("10")).toBeInTheDocument();
   });
 });

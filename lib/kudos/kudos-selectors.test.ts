@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  canLikeKudos,
   filterKudos,
   getDistinctDepartments,
   getDistinctHashtags,
@@ -147,6 +148,37 @@ describe("getTopKudosByHearts", () => {
     for (let i = 1; i < top5.length; i++) {
       expect(top5[i - 1].hearts).toBeGreaterThanOrEqual(top5[i].hearts);
     }
+  });
+});
+
+describe("canLikeKudos", () => {
+  const currentUser: KudosPerson = { name: "Current User", department: "Dept X", stars: 0 };
+
+  it("returns false when the post's sender is the current user (FR-4)", () => {
+    const post = makePost({ sender: currentUser });
+    expect(canLikeKudos(post, currentUser)).toBe(false);
+  });
+
+  it("returns true when the sender is someone else", () => {
+    const post = makePost({
+      sender: { name: "Someone Else", department: "Dept A", stars: 1 },
+    });
+    expect(canLikeKudos(post, currentUser)).toBe(true);
+  });
+
+  it("returns true for an anonymous sender whose name differs from the current user", () => {
+    const post = makePost({
+      sender: { name: "Anonymous", department: "Dept A", stars: 0 },
+    });
+    expect(canLikeKudos(post, currentUser)).toBe(true);
+  });
+
+  it("does not consider the recipient side (only sender identity matters)", () => {
+    const post = makePost({
+      sender: { name: "Someone Else", department: "Dept A", stars: 1 },
+      recipient: currentUser,
+    });
+    expect(canLikeKudos(post, currentUser)).toBe(true);
   });
 });
 

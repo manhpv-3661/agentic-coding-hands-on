@@ -1,9 +1,10 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useDismissableMenu } from "@/hooks/use-dismissable-menu";
 import type { Dictionary } from "@/lib/i18n/dictionary";
+import { getDistinctDepartments, getDistinctHashtags } from "@/lib/kudos/kudos-selectors";
 import type { KudosPerson, KudosPost } from "@/lib/kudos/kudos-types";
 import { ComposeDialog } from "./compose/compose-dialog";
 import { KudosBanner } from "./kudos-banner";
@@ -13,8 +14,6 @@ export interface KudosPageClientProps {
   initialPosts: KudosPost[];
   currentUser: KudosPerson;
   recipientOptions: KudosPerson[];
-  hashtagOptions: string[];
-  departmentOptions: string[];
   /** Full `kudos` dictionary slice — forwards `banner`/`composer`/`compose`
    * sub-slices to the pieces this wrapper owns, and the whole slice
    * through to `KudosBoard` unchanged (F006 contract). */
@@ -42,8 +41,6 @@ export function KudosPageClient({
   initialPosts,
   currentUser,
   recipientOptions,
-  hashtagOptions,
-  departmentOptions,
   labels,
   spotlight,
   sidebar,
@@ -54,6 +51,31 @@ export function KudosPageClient({
   const addPost = useCallback((post: KudosPost) => {
     setPosts((previous) => [post, ...previous]);
   }, []);
+
+  // F008: "liked by me" post ids — session-only, same spirit as `posts`
+  // above (lost on refresh, no localStorage/backend per this feature's
+  // clarifications.md).
+  const [likedIds, setLikedIds] = useState<Set<string>>(() => new Set());
+
+  const toggleLike = useCallback((postId: string) => {
+    setLikedIds((previous) => {
+      const next = new Set(previous);
+      if (next.has(postId)) {
+        next.delete(postId);
+      } else {
+        next.add(postId);
+      }
+      return next;
+    });
+  }, []);
+
+  // Derived from the live `posts` list (not just the server-seeded
+  // `initialPosts`) so a newly-submitted Kudos's hashtags/department are
+  // immediately selectable in the board's filters (F007) — recomputed
+  // each render, same "cheap pure function over ~12 posts" precedent as
+  // `kudos-board.tsx`'s own `filtered`/`top5`.
+  const hashtagOptions = useMemo(() => getDistinctHashtags(posts), [posts]);
+  const departmentOptions = useMemo(() => getDistinctDepartments(posts), [posts]);
 
   return (
     <>
@@ -70,6 +92,9 @@ export function KudosPageClient({
         labels={labels}
         spotlight={spotlight}
         sidebar={sidebar}
+        currentUser={currentUser}
+        likedIds={likedIds}
+        onToggleLike={toggleLike}
       />
 
       <ComposeDialog

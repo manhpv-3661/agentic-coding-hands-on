@@ -1,9 +1,12 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { KudosBoard } from "./kudos-board";
 import { vi as viDictionary } from "@/lib/i18n/dictionaries/vi";
-import type { KudosPost } from "@/lib/kudos/kudos-types";
+import type { KudosPerson, KudosPost } from "@/lib/kudos/kudos-types";
+
+const CURRENT_USER: KudosPerson = { name: "Current User", department: "Eng", stars: 0 };
+const likeLabel = viDictionary.kudos.card.like;
 
 function makePost(overrides: Partial<KudosPost>): KudosPost {
   return {
@@ -35,6 +38,9 @@ describe("KudosBoard", () => {
         labels={viDictionary.kudos}
         spotlight={<div data-testid="spotlight" />}
         sidebar={<div data-testid="sidebar" />}
+        currentUser={CURRENT_USER}
+        likedIds={new Set()}
+        onToggleLike={vi.fn()}
       />,
     );
 
@@ -64,6 +70,9 @@ describe("KudosBoard", () => {
         labels={viDictionary.kudos}
         spotlight={<div data-testid="spotlight" />}
         sidebar={<div data-testid="sidebar" />}
+        currentUser={CURRENT_USER}
+        likedIds={new Set()}
+        onToggleLike={vi.fn()}
       />,
     );
 
@@ -83,10 +92,65 @@ describe("KudosBoard", () => {
         labels={viDictionary.kudos}
         spotlight={<div data-testid="spotlight" />}
         sidebar={<div data-testid="sidebar" />}
+        currentUser={CURRENT_USER}
+        likedIds={new Set()}
+        onToggleLike={vi.fn()}
       />,
     );
 
     expect(screen.getByTestId("spotlight")).toBeInTheDocument();
     expect(screen.getByTestId("sidebar")).toBeInTheDocument();
+  });
+
+  it("forwards likedIds/currentUser so a likeable post renders an interactive heart button (F008)", () => {
+    const posts = [makePost({ id: "likeable", hearts: 5, content: "likeable post" })];
+
+    render(
+      <KudosBoard
+        posts={posts}
+        hashtagOptions={[]}
+        departmentOptions={[]}
+        labels={viDictionary.kudos}
+        spotlight={<div data-testid="spotlight" />}
+        sidebar={<div data-testid="sidebar" />}
+        currentUser={CURRENT_USER}
+        likedIds={new Set()}
+        onToggleLike={vi.fn()}
+      />,
+    );
+
+    // The post appears in both the Highlight carousel and the All Kudos
+    // feed (only 1 post, so it's in the top-5).
+    const heartButtons = screen.getAllByRole("button", { name: likeLabel });
+    expect(heartButtons.length).toBeGreaterThan(0);
+    for (const button of heartButtons) {
+      expect(button).not.toBeDisabled();
+    }
+  });
+
+  it("disables the heart for a post authored by the current user (F008 FR-4)", () => {
+    const posts = [
+      makePost({ id: "own", hearts: 3, content: "my own post", sender: CURRENT_USER }),
+    ];
+
+    render(
+      <KudosBoard
+        posts={posts}
+        hashtagOptions={[]}
+        departmentOptions={[]}
+        labels={viDictionary.kudos}
+        spotlight={<div data-testid="spotlight" />}
+        sidebar={<div data-testid="sidebar" />}
+        currentUser={CURRENT_USER}
+        likedIds={new Set()}
+        onToggleLike={vi.fn()}
+      />,
+    );
+
+    const heartButtons = screen.getAllByRole("button", { name: likeLabel });
+    expect(heartButtons.length).toBeGreaterThan(0);
+    for (const button of heartButtons) {
+      expect(button).toBeDisabled();
+    }
   });
 });

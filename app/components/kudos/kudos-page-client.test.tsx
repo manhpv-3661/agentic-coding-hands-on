@@ -164,4 +164,25 @@ describe("KudosPageClient", () => {
     const departmentFilter = screen.getByRole("combobox", { name: dictionary.kudos.filters.departmentLabel });
     expect(within(departmentFilter).getByRole("option", { name: currentUser.department })).toBeInTheDocument();
   });
+
+  it("liking a post increments its heart count and toggles back on second click (F008)", async () => {
+    const user = userEvent.setup();
+    renderWrapper();
+
+    // "Existing post" is authored by "S1" (not `currentUser`), so it's
+    // likeable — this proves owner state (likedIds) + prop drilling
+    // (board → carousel/feed) + card render all agree end to end.
+    const heartButtons = screen.getAllByRole("button", { name: dictionary.kudos.card.like });
+    expect(heartButtons.length).toBeGreaterThan(0);
+
+    await user.click(heartButtons[0]);
+    expect(
+      screen.getAllByRole("button", { name: dictionary.kudos.card.unlike, pressed: true }).length,
+    ).toBeGreaterThan(0);
+    expect(screen.getAllByText("6").length).toBeGreaterThan(0);
+
+    await user.click(screen.getAllByRole("button", { name: dictionary.kudos.card.unlike })[0]);
+    expect(screen.queryAllByRole("button", { name: dictionary.kudos.card.unlike })).toHaveLength(0);
+    expect(screen.getAllByText("5").length).toBeGreaterThan(0);
+  });
 });

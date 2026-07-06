@@ -27,7 +27,10 @@ export interface KudosPost {
   hashtags: string[];
   /** Number of placeholder gallery tiles to render (0–5). */
   imageCount: number;
-  /** Static like count (heart toggle is out of scope, clarifications.md). */
+  /** Static "everyone else's" like count — the current viewer's own like
+   * (F008) is tracked separately (session-only `likedIds` state owned by
+   * `KudosPageClient`) and added on top when displayed; this field itself
+   * is never mutated. */
   hearts: number;
   /**
    * "Danh hiệu" — optional Kudos headline set by the compose form (F007,

@@ -210,6 +210,8 @@ export const vi = {
       viewDetail: "Xem chi tiết",
       copyLink: "Copy Link",
       copied: "Đã sao chép liên kết",
+      like: "Thả tim",
+      unlike: "Bỏ thả tim",
     },
     empty: {
       kudos: "Hiện tại chưa có Kudos nào.",

@@ -4,7 +4,13 @@ import userEvent from "@testing-library/user-event";
 import { KudosCard } from "./kudos-card";
 import type { KudosPost } from "@/lib/kudos/kudos-types";
 
-const labels = { viewDetail: "Xem chi tiết", copyLink: "Copy Link", copied: "Đã sao chép" };
+const labels = {
+  viewDetail: "Xem chi tiết",
+  copyLink: "Copy Link",
+  copied: "Đã sao chép",
+  like: "Thả tim",
+  unlike: "Bỏ thả tim",
+};
 
 const post: KudosPost = {
   id: "kudos-1",
@@ -28,12 +34,63 @@ describe("KudosCard", () => {
     expect(screen.getByRole("button", { name: "Copy Link" })).toBeInTheDocument();
   });
 
-  it("renders the heart count as a static span, never a button (out of scope)", () => {
+  it("renders the heart as a static span when no onToggleLike is wired (F006 fallback)", () => {
     render(<KudosCard post={post} variant="highlight" labels={labels} />);
 
     const heartCount = screen.getByText("45");
     expect(heartCount.closest("button")).toBeNull();
     expect(heartCount.tagName.toLowerCase()).not.toBe("button");
+  });
+
+  it("renders an interactive heart button when onToggleLike is wired (F008)", () => {
+    render(
+      <KudosCard post={post} variant="highlight" labels={labels} onToggleLike={vi.fn()} />,
+    );
+
+    const button = screen.getByRole("button", { name: labels.like });
+    expect(button).toHaveAttribute("aria-pressed", "false");
+    expect(button).toHaveTextContent("45");
+  });
+
+  it("toggles liked state / count via onToggleLike (F008)", async () => {
+    const onToggleLike = vi.fn();
+    const user = userEvent.setup();
+
+    const { rerender } = render(
+      <KudosCard post={post} variant="highlight" labels={labels} onToggleLike={onToggleLike} />,
+    );
+
+    await user.click(screen.getByRole("button", { name: labels.like }));
+    expect(onToggleLike).toHaveBeenCalledWith(post.id);
+
+    rerender(
+      <KudosCard post={post} variant="highlight" labels={labels} liked onToggleLike={onToggleLike} />,
+    );
+
+    const likedButton = screen.getByRole("button", { name: labels.unlike });
+    expect(likedButton).toHaveAttribute("aria-pressed", "true");
+    expect(likedButton).toHaveTextContent("46");
+  });
+
+  it("disables the heart for own post (canLike=false) and does not fire onToggleLike (F008)", async () => {
+    const onToggleLike = vi.fn();
+    const user = userEvent.setup();
+
+    render(
+      <KudosCard
+        post={post}
+        variant="highlight"
+        labels={labels}
+        canLike={false}
+        onToggleLike={onToggleLike}
+      />,
+    );
+
+    const button = screen.getByRole("button", { name: labels.like });
+    expect(button).toBeDisabled();
+
+    await user.click(button);
+    expect(onToggleLike).not.toHaveBeenCalled();
   });
 
   it("highlight variant shows 'Xem chi tiết' as static text with no href", () => {

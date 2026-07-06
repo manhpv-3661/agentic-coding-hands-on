@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { filterKudos, getTopKudosByHearts } from "@/lib/kudos/kudos-selectors";
-import type { KudosFilterState, KudosPost } from "@/lib/kudos/kudos-types";
+import type { KudosFilterState, KudosPerson, KudosPost } from "@/lib/kudos/kudos-types";
 import type { Dictionary } from "@/lib/i18n/dictionary";
 import { AllKudosFeed } from "./all-kudos-feed";
 import { HighlightKudosCarousel } from "./highlight-kudos-carousel";
@@ -23,6 +23,14 @@ export interface KudosBoardProps {
   /** Server-rendered stats/top-10 sidebar, passed in as a slot so it
    * never enters this client bundle (Phase 07/08 boundary). */
   sidebar: ReactNode;
+  /** F008: the logged-in Sunner — forwarded so the carousel/feed can gate
+   * each card's like-ability via `canLikeKudos`. */
+  currentUser: KudosPerson;
+  /** F008: session-only "liked by me" post ids, owned by `KudosPageClient`
+   * and forwarded unchanged — this component has no like state itself. */
+  likedIds: Set<string>;
+  /** F008: flips a post's liked state, owned by `KudosPageClient`. */
+  onToggleLike: (postId: string) => void;
 }
 
 /**
@@ -42,6 +50,9 @@ export function KudosBoard({
   labels,
   spotlight,
   sidebar,
+  currentUser,
+  likedIds,
+  onToggleLike,
 }: KudosBoardProps) {
   const [filter, setFilter] = useState<KudosFilterState>({ hashtag: null, department: null });
 
@@ -67,6 +78,9 @@ export function KudosBoard({
             labels={labels.filters}
           />
         }
+        likedIds={likedIds}
+        currentUser={currentUser}
+        onToggleLike={onToggleLike}
       />
 
       {spotlight}
@@ -77,6 +91,9 @@ export function KudosBoard({
           cardLabels={labels.card}
           emptyLabel={labels.empty.kudos}
           onHashtagClick={setHashtag}
+          likedIds={likedIds}
+          currentUser={currentUser}
+          onToggleLike={onToggleLike}
         />
         {sidebar}
       </section>

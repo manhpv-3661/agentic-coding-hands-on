@@ -1,6 +1,7 @@
 "use client";
 
-import type { KudosPost } from "@/lib/kudos/kudos-types";
+import { canLikeKudos } from "@/lib/kudos/kudos-selectors";
+import type { KudosPerson, KudosPost } from "@/lib/kudos/kudos-types";
 import { KudosCard, type KudosCardLabels } from "./kudos-card";
 import { KudosSectionHeading } from "./kudos-section-heading";
 
@@ -14,6 +15,12 @@ export interface AllKudosFeedProps {
   /** Forwards a clicked hashtag up to the board, which sets it as the
    * active hashtag filter (FR-17). */
   onHashtagClick: (tag: string) => void;
+  /** F008 like wiring, owned by `KudosPageClient` and forwarded through
+   * the board — optional so this component still renders the legacy
+   * static heart when a caller omits them. */
+  likedIds?: Set<string>;
+  currentUser?: KudosPerson;
+  onToggleLike?: (postId: string) => void;
 }
 
 /**
@@ -22,7 +29,15 @@ export interface AllKudosFeedProps {
  * (stats/top-10) is a separate, server-renderable slot (Phase 07/08), NOT
  * a child of this component, so it never enters this client bundle.
  */
-export function AllKudosFeed({ posts, cardLabels, emptyLabel, onHashtagClick }: AllKudosFeedProps) {
+export function AllKudosFeed({
+  posts,
+  cardLabels,
+  emptyLabel,
+  onHashtagClick,
+  likedIds,
+  currentUser,
+  onToggleLike,
+}: AllKudosFeedProps) {
   return (
     <div className="flex min-w-0 flex-1 flex-col gap-6">
       <KudosSectionHeading subtitle="Sun* Annual Awards 2025" title="ALL KUDOS" />
@@ -38,6 +53,9 @@ export function AllKudosFeed({ posts, cardLabels, emptyLabel, onHashtagClick }: 
               variant="feed"
               labels={cardLabels}
               onHashtagClick={onHashtagClick}
+              liked={likedIds?.has(post.id)}
+              canLike={currentUser ? canLikeKudos(post, currentUser) : undefined}
+              onToggleLike={onToggleLike}
             />
           ))}
         </div>

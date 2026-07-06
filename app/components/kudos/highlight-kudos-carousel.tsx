@@ -2,7 +2,8 @@
 
 import type { ReactNode } from "react";
 import { useCarousel } from "@/hooks/use-carousel";
-import type { KudosPost } from "@/lib/kudos/kudos-types";
+import { canLikeKudos } from "@/lib/kudos/kudos-selectors";
+import type { KudosPerson, KudosPost } from "@/lib/kudos/kudos-types";
 import { KudosCard, type KudosCardLabels } from "./kudos-card";
 import { KudosSectionHeading } from "./kudos-section-heading";
 
@@ -18,6 +19,12 @@ export interface HighlightKudosCarouselProps {
    * row so the section owns layout while the board owns state (plan.md
    * client/server boundary decision). */
   filtersSlot?: ReactNode;
+  /** F008 like wiring, owned by `KudosPageClient` and forwarded through
+   * the board — optional so this component still renders the legacy
+   * static heart when a caller omits them. */
+  likedIds?: Set<string>;
+  currentUser?: KudosPerson;
+  onToggleLike?: (postId: string) => void;
 }
 
 /** Left/right chevrons — `currentColor` inline SVG, disabled via the
@@ -42,6 +49,9 @@ export function HighlightKudosCarousel({
   cardLabels,
   emptyLabel,
   filtersSlot,
+  likedIds,
+  currentUser,
+  onToggleLike,
 }: HighlightKudosCarouselProps) {
   const { index, next, prev, canPrev, canNext } = useCarousel(posts.length);
 
@@ -71,7 +81,14 @@ export function HighlightKudosCarousel({
                   }}
                   aria-hidden={!isActive}
                 >
-                  <KudosCard post={post} variant="highlight" labels={cardLabels} />
+                  <KudosCard
+                    post={post}
+                    variant="highlight"
+                    labels={cardLabels}
+                    liked={likedIds?.has(post.id)}
+                    canLike={currentUser ? canLikeKudos(post, currentUser) : undefined}
+                    onToggleLike={onToggleLike}
+                  />
                 </div>
               );
             })}

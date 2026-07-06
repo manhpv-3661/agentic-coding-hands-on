@@ -182,6 +182,8 @@ export const en = {
       viewDetail: "View details",
       copyLink: "Copy Link",
       copied: "Link copied",
+      like: "Like",
+      unlike: "Unlike",
     },
     empty: {
       kudos: "There are no Kudos yet.",
