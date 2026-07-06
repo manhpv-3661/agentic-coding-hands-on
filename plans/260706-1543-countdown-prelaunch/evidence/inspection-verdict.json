@@ -1,0 +1,25 @@
+{
+  "score": 9.6,
+  "criticalCount": 0,
+  "decision": "SEALED",
+  "acceptanceCovered": [
+    "FR-001: before launch, every route (incl. /login) except /prelaunch and static assets redirects to /prelaunch, running before the auth-gate — proven by proxy.ts:47-54, tests/unit/proxy.test.ts (10 new cases), e2e/prelaunch-countdown.spec.ts (5 route redirects incl. /login)",
+    "FR-005/BR-001: after launch (or env missing/invalid, fail-open), the time-gate stops interfering and the existing auth-gate behaves unchanged — proven by isBeforeLaunch()'s fail-open derivation from computeCountdown().isZero, tests/unit/proxy.test.ts past-date/unset-env cases, and the full pre-existing 12-case auth-gate suite still passing unmodified",
+    "FR-006/BR-002: redirect to /prelaunch carries the original path+query in ?next=, sanitized against open-redirect on read — proven by lib/safe-redirect.ts + tests/unit/safe-redirect.test.ts (12 cases incl. //evil.com, https://evil.com, javascript:, data:), e2e query-string-preservation case",
+    "FR-002..004: /prelaunch renders the static background, static Vietnamese title, and 3 zero-padded LED countdown blocks (DAYS/HOURS/MINUTES) — proven by app/prelaunch/components/*, e2e/prelaunch-countdown.spec.ts title/unit assertions, visual diff against MoMorph get_frame_image at 1512x1077",
+    "FR-007: client on /prelaunch auto-navigates to the sanitized ?next= target the moment the countdown reaches zero — proven by hooks/use-prelaunch-auto-redirect.ts + tests/unit/use-prelaunch-auto-redirect.test.tsx (8 cases covering showComingSoon transitions, missing/malicious ?next=, dependency-array correctness)",
+    "No new env vars or API endpoints — reuses NEXT_PUBLIC_EVENT_START_AT and existing lib/event-countdown.ts, hooks/use-event-countdown.ts unmodified — proven by git diff (neither file touched) and clarifications.md decision",
+    "Regression: F001/F002 auth-gate and homepage-content e2e suites remain green after the time-gate matcher change — proven by 52/52 e2e passing across all 3 projects after the fixture-date fix, including the Supabase-getUser-on-static-assets fix caught in review"
+  ],
+  "regressionChecked": [
+    "F001/F002 auth-gate (login.spec.ts, access-control.spec.ts, homepage-access.spec.ts): initially broke because the new matcher's time-gate redirected /login before those specs could run against a future-dated build fixture; fixed by flipping that build's NEXT_PUBLIC_EVENT_START_AT to the past and giving the gate its own dedicated build (chromium-prelaunch, port 3200) — all 29 tests re-verified green",
+    "F002 homepage-content.spec.ts 'Comming soon' assertion: this state is now unreachable via real navigation once F003 ships (the time-gate keeps / unreachable pre-launch, and post-launch the homepage's own countdown is always at zero) — test updated to assert the zero state instead of deleted; all 14 tests re-verified green",
+    "Supabase getUser() network-call regression: the broadened matcher initially caused every request (incl. public static assets not covered by the _next/*/favicon exemptions) to trigger a live Supabase Auth call — caught in review, fixed with an early-return guard restricting the Supabase block to /login + protected paths only, re-verified via full unit+e2e+build re-run",
+    "No self-redirect loop: /prelaunch is exempt both via the matcher and an explicit in-function guard — verified by unit test and e2e direct-navigation case",
+    "next.config.ts / tsconfig.json / .gitignore build-dir entries for the new chromium-prelaunch e2e build follow the exact pre-existing build-authless pattern — verified by diff comparison, not fabricated"
+  ],
+  "contractStatus": "VERIFIED",
+  "refuted": [],
+  "unproven": [],
+  "reachableRegressions": []
+}

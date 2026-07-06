@@ -1,0 +1,26 @@
+{
+  "task": "Build Countdown Prelaunch (F003) — site-wide navigation time-gate from MoMorph screenId 8PJQswPZmU, reusing F002's countdown primitives",
+  "mode": "feature",
+  "acceptanceCriteria": [
+    "FR-001: before launch, every route (incl. /login) except /prelaunch and static assets redirects to /prelaunch, running before the auth-gate",
+    "FR-005/BR-001: after launch (or env missing/invalid, fail-open), the time-gate stops interfering and the existing auth-gate behaves unchanged",
+    "FR-006/BR-002: redirect to /prelaunch carries the original path+query in ?next=, sanitized against open-redirect on read",
+    "FR-002..004: /prelaunch renders the static background, static Vietnamese title, and 3 zero-padded LED countdown blocks (DAYS/HOURS/MINUTES)",
+    "FR-007: client on /prelaunch auto-navigates to the sanitized ?next= target the moment the countdown reaches zero",
+    "No new env vars or API endpoints — reuses NEXT_PUBLIC_EVENT_START_AT and existing lib/event-countdown.ts, hooks/use-event-countdown.ts unmodified",
+    "Regression: F001/F002 auth-gate and homepage-content e2e suites remain green after the time-gate matcher change"
+  ],
+  "touchpoints": [
+    "proxy.ts", "lib/safe-redirect.ts", "hooks/use-prelaunch-auto-redirect.ts",
+    "app/prelaunch/page.tsx", "app/prelaunch/prelaunch-countdown-client.tsx",
+    "app/prelaunch/components/prelaunch-background.tsx", "app/prelaunch/components/prelaunch-content.tsx",
+    "app/prelaunch/components/countdown-led-unit.tsx", "public/prelaunch/bg-image.png",
+    "playwright.config.ts", "e2e/prelaunch-countdown.spec.ts", "e2e/homepage-content.spec.ts",
+    ".env.local.example"
+  ],
+  "blastRadius": [
+    "proxy.ts matcher broadened from a 5-route allowlist to a catch-all-minus-exemptions — every request now passes through proxy(), including public static assets not covered by the _next/*/favicon exemptions",
+    "e2e fixtures: chromium/chromium-authless webServer NEXT_PUBLIC_EVENT_START_AT flipped from future to past so the new gate doesn't block the existing F001/F002 specs; a third build (chromium-prelaunch, future date) added for the gate's own tests",
+    "docs/system/permissions.md (active) not yet reconciled with the new time-gate layer — delta drafted at plans/260706-1543-countdown-prelaunch/spec/system/permissions.md, promotion deferred to doc-writer/gen-gate"
+  ]
+}

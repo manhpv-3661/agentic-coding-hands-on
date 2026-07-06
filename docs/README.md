@@ -9,6 +9,9 @@ auth via Supabase (Google OAuth). Spec language: **vi**.
 
 ## Features
 - [`features/f001-login/feature.md`](features/f001-login/feature.md) — F001 Login screen spec.
+- [`features/f002-homepage/feature.md`](features/f002-homepage/feature.md) — F002 Homepage SAA spec.
+- [`features/f003-countdown-prelaunch/feature.md`](features/f003-countdown-prelaunch/feature.md) —
+  F003 Countdown Prelaunch (site-wide time-gate) spec.
 
 ## Local setup
 1. Copy `.env.local.example` → `.env.local`; fill `NEXT_PUBLIC_SUPABASE_URL` and

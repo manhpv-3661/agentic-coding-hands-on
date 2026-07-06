@@ -38,7 +38,11 @@
     "build/types/**/*.ts",
     "build/dev/types/**/*.ts",
     "build-authless/types/**/*.ts",
-    "build-authless/dev/types/**/*.ts"
+    "build-authless/dev/types/**/*.ts",
+    "build-prelaunch/types/**/*.ts",
+    "build-prelaunch/dev/types/**/*.ts",
+    "build-review-check/types/**/*.ts",
+    "build-review-check/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

@@ -18,11 +18,18 @@ backend do Supabase quản lý (managed auth), không tự viết server auth.
   - `app/awards/page.tsx`, `app/kudos/page.tsx` — placeholder, được bảo vệ (liên kết từ trang chủ).
   - `app/todo/page.tsx` — trang phụ (placeholder ở giai đoạn này; được bảo vệ; không còn là đích sau đăng nhập kể từ F002).
   - `app/auth/callback/route.ts` — route handler đổi OAuth code lấy session, rồi redirect `/` (F002 cập nhật từ `/todo`).
+  - `app/prelaunch/page.tsx` — Countdown Prelaunch (F003); đích của time-gate toàn site trước mốc `NEXT_PUBLIC_EVENT_START_AT`; public, không bảo vệ.
 - **Supabase client layer** (`lib/supabase/`)
   - `client.ts` — browser client (`createBrowserClient` từ `@supabase/ssr`).
   - `server.ts` — server client đọc/ghi cookie (`createServerClient`), dùng trong server component & route handler.
   - `env.ts` — `isSupabaseConfigured()`, kiểm tra duy nhất một chỗ có đủ 2 env var Supabase hay không (dùng chung bởi client + server).
-- **proxy.ts** (root) — refresh session + điều hướng theo trạng thái auth (`matcher: ["/", "/awards", "/kudos", "/todo/:path*", "/login"]`). Next.js 16 đổi tên `middleware.ts`/`middleware()` → `proxy.ts`/`proxy()`; runtime `nodejs` bắt buộc. Không cấu hình env Supabase → fail-open (no-op, log warning), không chặn build/dev.
+- **proxy.ts** (root) — chạy time-gate (F003) TRƯỚC, rồi refresh session + điều hướng theo trạng thái
+  auth. Matcher (từ F003, thay allowlist cũ): `/((?!_next/static|_next/image|favicon.ico|prelaunch).*)`
+  — bắt hầu như mọi route (cần thiết để time-gate chặn được toàn site trước launch); chi tiết đầy đủ
+  ở `docs/system/permissions.md` § Time-Gate. Next.js 16 đổi tên `middleware.ts`/`middleware()` →
+  `proxy.ts`/`proxy()`; runtime `nodejs` bắt buộc. Không cấu hình env Supabase → fail-open (no-op, log
+  warning), không chặn build/dev; thiếu/không hợp lệ env `NEXT_PUBLIC_EVENT_START_AT` cũng fail-open
+  tương tự (time-gate tự mở).
 - **i18n (giới hạn)** — cookie `NEXT_LOCALE` do language selector ghi; hạ tầng dịch đầy đủ hoãn sang màn 12.
 
 ## Luồng dữ liệu xác thực
@@ -32,7 +39,8 @@ Browser (Login page)
   -> Google OAuth consent
   -> /auth/callback?code=... (route handler) -> exchangeCodeForSession -> set cookie session
   -> redirect / (hoặc ?next=... nếu là relative path cùng-origin; mặc định / — F002 cập nhật từ /todo; chặn open-redirect)
-proxy.ts: mỗi request refresh session; đã-auth ở /login -> / ; chưa-auth ở route bảo vệ (/, /awards, /kudos, /todo) -> /login
+proxy.ts: [F003] trước mốc NEXT_PUBLIC_EVENT_START_AT -> mọi route (trừ /prelaunch) redirect /prelaunch?next=<path>
+proxy.ts: sau mốc (hoặc fail-open) -> refresh session; đã-auth ở /login -> / ; chưa-auth ở route bảo vệ (/, /awards, /kudos, /todo) -> /login
 ```
 
 ## Quyết định kỹ thuật

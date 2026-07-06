@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { computeCountdown, parseEventStart } from "@/lib/event-countdown";
 
 /**
  * Next.js 16 renamed `middleware` → `proxy` (root file `proxy.ts`, function
@@ -12,6 +13,13 @@ import { createServerClient } from "@supabase/ssr";
  *
  * Mock/training repo: with no Supabase env configured, this is a no-op
  * passthrough so the app still builds and runs.
+ *
+ * A site-wide TIME-GATE (Countdown Prelaunch) runs first, ahead of the
+ * auth-gate below: before `NEXT_PUBLIC_EVENT_START_AT`, every route except
+ * `/prelaunch` itself redirects there (see `isBeforeLaunch`/matcher below).
+ * Once the countdown reaches zero (or the env var is missing/invalid —
+ * fail-open, mirroring the Supabase fail-open below), the time-gate stops
+ * interfering and the auth-gate resumes exactly as before.
  */
 let warnedMissingEnv = false;
 
@@ -25,7 +33,36 @@ function isProtectedPath(pathname: string): boolean {
   );
 }
 
+/**
+ * True only while strictly before the event start. Missing/invalid env or a
+ * past target both resolve to `computeCountdown(...).isZero === true`
+ * (see `lib/event-countdown.ts`), so this fails open to "launched" rather
+ * than gating the whole site shut on misconfiguration.
+ */
+function isBeforeLaunch(now: Date): boolean {
+  const target = parseEventStart(process.env.NEXT_PUBLIC_EVENT_START_AT);
+  return !computeCountdown(target, now).isZero;
+}
+
 export async function proxy(request: NextRequest) {
+  const { pathname, search } = request.nextUrl;
+
+  if (pathname !== "/prelaunch" && isBeforeLaunch(new Date())) {
+    const url = new URL("/prelaunch", request.url);
+    url.searchParams.set("next", pathname + search);
+    return NextResponse.redirect(url);
+  }
+
+  // The matcher below is broad (needed so the time-gate above can catch
+  // every route) but the Supabase auth check is only relevant to `/login`
+  // and the protected routes — skip it for everything else (public static
+  // assets that aren't covered by the `_next/*`/favicon matcher exemptions,
+  // e.g. files under `public/`) so this doesn't add a network round-trip to
+  // Supabase's Auth API on every asset request.
+  if (pathname !== "/login" && !isProtectedPath(pathname)) {
+    return NextResponse.next({ request });
+  }
+
   let response = NextResponse.next({ request });
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -66,8 +103,6 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { pathname } = request.nextUrl;
-
   if (user && pathname === "/login") {
     return NextResponse.redirect(new URL("/", request.url));
   }
@@ -79,6 +114,8 @@ export async function proxy(request: NextRequest) {
   return response;
 }
 
+// Catch-all minus Next.js internals and the gate's own target: before launch
+// no route is exempt except `/prelaunch`, so this replaces the prior allowlist.
 export const config = {
-  matcher: ["/", "/awards", "/kudos", "/todo/:path*", "/login"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|prelaunch).*)"],
 };

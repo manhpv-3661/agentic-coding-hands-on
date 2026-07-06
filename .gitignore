@@ -23,6 +23,7 @@
 # production
 /build
 /build-authless
+/build-prelaunch
 
 # misc
 .DS_Store

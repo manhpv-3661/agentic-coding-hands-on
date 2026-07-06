@@ -49,29 +49,30 @@ test.describe("Homepage content (authless)", () => {
     ).toBeVisible();
   });
 
-  test("countdown shows zero-padded, non-zero digits and 'Comming soon'", async ({
+  test("countdown shows zero-padded zero state, no 'Comming soon'", async ({
     page,
   }) => {
     await page.goto("/");
 
-    // NEXT_PUBLIC_EVENT_START_AT is far in the future (2027), so the
-    // countdown is in its live (non-zero) state — "Comming soon" only
-    // renders in that state (lib/event-countdown.ts `showComingSoon`).
+    // NEXT_PUBLIC_EVENT_START_AT is in the PAST for this build (see
+    // playwright.config.ts) — required so the Countdown Prelaunch time-gate
+    // (proxy.ts, F003) treats the event as launched and lets `/` through at
+    // all. At/after the target, `computeCountdown` returns the zero state:
+    // "00 00 00" and `showComingSoon: false` (lib/event-countdown.ts) — the
+    // pre-launch "Comming soon" hero state is exercised at the unit level
+    // (`use-event-countdown.test.tsx`) instead, since real navigation can
+    // never observe it once F003's gate is in front of `/`.
     await expect(
       page.getByText("Comming soon", { exact: true }),
-    ).toBeVisible();
+    ).not.toBeVisible();
 
     const days = await readCountdownUnitDigits(page, "DAYS");
     const hours = await readCountdownUnitDigits(page, "HOURS");
     const minutes = await readCountdownUnitDigits(page, "MINUTES");
 
-    // `pad2()` guarantees >=2 digits for every unit. Hours/minutes are
-    // additionally capped (0-23 / 0-59) so they are always exactly 2 digits;
-    // days is not capped and, for a target this far out, is >2 digits.
-    expect(days).toMatch(/^\d{2,}$/);
-    expect(hours).toMatch(/^\d{2}$/);
-    expect(minutes).toMatch(/^\d{2}$/);
-    expect(Number(days) + Number(hours) + Number(minutes)).toBeGreaterThan(0);
+    expect(days).toBe("00");
+    expect(hours).toBe("00");
+    expect(minutes).toBe("00");
   });
 
   test("event info shows the date, venue, and livestream note", async ({

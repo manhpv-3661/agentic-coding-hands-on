@@ -1,0 +1,32 @@
+{
+  "commands": [
+    {
+      "command": "npx tsc --noEmit",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "Typecheck clean across proxy.ts, lib/safe-redirect.ts, hooks/use-prelaunch-auto-redirect.ts, app/prelaunch/**, and all new/modified test files",
+      "ts": "2026-07-06T10:03:56Z"
+    },
+    {
+      "command": "npx vitest run",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "181/181 unit tests passing (151 pre-existing + 30 new: proxy time-gate, lib/safe-redirect, hooks/use-prelaunch-auto-redirect)",
+      "ts": "2026-07-06T10:03:56Z"
+    },
+    {
+      "command": "npx playwright test --reporter=list",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "52/52 e2e passing across all 3 projects (chromium 29, chromium-authless 14, chromium-prelaunch 9) — includes F001/F002 regression coverage re-verified green after the matcher/env-fixture change",
+      "ts": "2026-07-06T10:03:56Z"
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "Production build clean; /prelaunch emitted as a static route",
+      "ts": "2026-07-06T10:03:56Z"
+    }
+  ]
+}
