@@ -1,3 +1,5 @@
+import type { DismissableMenuTriggerProps } from "@/hooks/use-dismissable-menu";
+
 export interface KudosBannerLabels {
   title: string;
 }
@@ -9,6 +11,12 @@ export interface KudosComposerLabels {
 export interface KudosBannerProps {
   labels: KudosBannerLabels;
   composer: KudosComposerLabels;
+  /**
+   * F007 — the "Ghi nhận" pill's `useDismissableMenu` trigger props (open
+   * the compose dialog). Optional so callers that don't wire a compose
+   * flow keep the pill inert, exactly as F006 shipped it.
+   */
+  composerTriggerProps?: DismissableMenuTriggerProps;
 }
 
 /** Pencil icon on the composer pill — `currentColor` inline SVG. */
@@ -27,11 +35,11 @@ function PencilIcon() {
 
 /**
  * Static banner ("Hệ thống ghi nhận và cảm ơn" + "KUDOS" wordmark, FR-3)
- * + the "Ghi nhận" composer pill (FR-4). Both are display-only per
- * clarifications.md — the composer's click is a no-op (the "compose a new
- * Kudos" dialog is out of scope for this pass).
+ * + the "Ghi nhận" composer pill (FR-4). The banner itself stays
+ * display-only; the pill opens the "Viết Kudos" compose dialog (F007) when
+ * a caller supplies `composerTriggerProps` — inert otherwise (F006 default).
  */
-export function KudosBanner({ labels, composer }: KudosBannerProps) {
+export function KudosBanner({ labels, composer, composerTriggerProps }: KudosBannerProps) {
   return (
     // mm:kudos-banner (mms_A / mms_A.1)
     <div className="flex w-full flex-col items-center gap-8 bg-gradient-to-br from-[#1B2A3A] via-[#2E3940] to-[#00101A] px-6 py-16 text-center">
@@ -43,10 +51,12 @@ export function KudosBanner({ labels, composer }: KudosBannerProps) {
         </p>
       </div>
 
-      {/* Static — clicking is a no-op; the "send a new Kudos" dialog is
-       * out of scope for this pass (clarifications.md). */}
+      {/* F007: when `composerTriggerProps` is supplied, this pill opens the
+       * "Viết Kudos" compose dialog (spread onto the button). Omitted =
+       * inert, exactly as F006 originally shipped it. */}
       <button
         type="button"
+        {...composerTriggerProps}
         className="flex w-full max-w-xl items-center gap-3 rounded-full border border-white/20 bg-white/5 px-6 py-4 text-left text-white/70"
       >
         <PencilIcon />

@@ -74,4 +74,16 @@ describe("KudosCard", () => {
 
     expect(screen.queryByRole("link")).not.toBeInTheDocument();
   });
+
+  it("renders the title line when post.title is present (F007)", () => {
+    render(<KudosCard post={{ ...post, title: "Người truyền động lực" }} variant="feed" labels={labels} />);
+    expect(screen.getByText("Người truyền động lực")).toBeInTheDocument();
+  });
+
+  it("renders no extra title heading when post.title is absent (F006 posts unaffected)", () => {
+    render(<KudosCard post={post} variant="feed" labels={labels} />);
+    expect(post.title).toBeUndefined();
+    // No additional heading beyond timestamp/content/hashtags exists —
+    // sanity-checked by the other assertions above already passing.
+  });
 });

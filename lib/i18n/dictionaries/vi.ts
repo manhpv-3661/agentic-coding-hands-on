@@ -239,5 +239,64 @@ export const vi = {
     recent: {
       heading: "10 SUNNER NHẬN QUÀ MỚI NHẤT",
     },
+    // F007 — form "Viết Kudos" mở từ pill "Ghi nhận" (thanh composer trên).
+    compose: {
+      dialogTitle: "Viết Kudos",
+      cancel: "Hủy",
+      submit: "Gửi",
+      successToast: "Đã gửi Kudos!",
+      recipient: {
+        label: "Người nhận",
+        placeholder: "Chọn người nhận",
+        search: "Tìm đồng nghiệp",
+        error: "Vui lòng chọn người nhận.",
+      },
+      title: {
+        label: "Danh hiệu",
+        placeholder: "Dành tặng một danh hiệu cho đồng đội.",
+        helper:
+          "Ví dụ: Người truyền động lực cho tôi.\nDanh hiệu sẽ hiển thị làm tiêu đề Kudos của bạn.",
+        error: "Vui lòng nhập danh hiệu.",
+      },
+      content: {
+        label: "Nội dung",
+        placeholder:
+          'Hãy gửi lời cảm ơn và ghi nhận đến đồng đội tại đây nhé!\nVD: Cảm ơn bạn vì tinh thần dẫn dắt và khả năng "giữ nhịp" cực kỳ tốt trong giai đoạn nước rút của dự án...',
+        mentionHint: 'Bạn có thể "@ + tên" để nhắc tới đồng nghiệp khác',
+        counterMax: "1.000",
+        error: "Vui lòng nhập nội dung.",
+        // Nested under `content` (not a sibling) — both are consumed
+        // together by `RichTextEditor` via a single `labels` prop.
+        toolbar: {
+          bold: "In đậm",
+          italic: "In nghiêng",
+          strikethrough: "Gạch ngang",
+          list: "Danh sách",
+          link: "Chèn liên kết",
+          quote: "Trích dẫn",
+        },
+        communityStandards: "Tiêu chuẩn cộng đồng",
+      },
+      hashtags: {
+        label: "Hashtag",
+        placeholder: "Nhập hashtag",
+        add: "+Hashtag",
+        max: "Tối đa 5",
+        error: "Thêm ít nhất 1 hashtag.",
+        remove: "Xóa hashtag",
+      },
+      images: {
+        label: "Image",
+        add: "+Image",
+        max: "Tối đa 5",
+        remove: "Xóa ảnh",
+      },
+      anonymous: {
+        checkbox: "Gửi lời cảm ơn và ghi nhận ẩn danh",
+        nicknameLabel: "Nickname ẩn danh",
+        nicknamePlaceholder: "Doraemon",
+        error: "Vui lòng nhập nickname.",
+      },
+    },
   },
 };

@@ -1,4 +1,4 @@
-import type { GiftRecipient, KudosPost, KudosStats } from "./kudos-types";
+import type { GiftRecipient, KudosPerson, KudosPost, KudosStats } from "./kudos-types";
 
 /**
  * Single source of truth for the Sun* Kudos live board mock content
@@ -196,3 +196,17 @@ export const RECENT_GIFT_RECIPIENTS: GiftRecipient[] = Array.from(
   { length: 10 },
   () => ({ name: "Huỳnh Dương Xuân", gift: "Nhận được 1 áo phông SAA" }),
 );
+
+/**
+ * Mock "logged-in Sunner" (F007) — this repo has no auth→`KudosPerson`
+ * mapping anywhere (`requireUser()` only validates a Supabase session, see
+ * `clarifications.md`), so the compose form needs a stand-in sender
+ * identity. The name is deliberately absent from `KUDOS_POSTS` so
+ * `getDistinctRecipients` never has to exclude a name collision from the
+ * mock dataset.
+ */
+export const CURRENT_USER: KudosPerson = {
+  name: "Lương Thị Kim Chi",
+  department: "Phòng Sản phẩm",
+  stars: 8,
+};

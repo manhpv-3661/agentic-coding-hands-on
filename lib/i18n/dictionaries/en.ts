@@ -207,5 +207,62 @@ export const en = {
     recent: {
       heading: "10 LATEST SUNNER GIFT RECIPIENTS",
     },
+    // F007 — "Write Kudos" form opened from the "Ghi nhận" composer pill.
+    compose: {
+      dialogTitle: "Write Kudos",
+      cancel: "Cancel",
+      submit: "Send",
+      successToast: "Kudos sent!",
+      recipient: {
+        label: "Recipient",
+        placeholder: "Choose a recipient",
+        search: "Search colleagues",
+        error: "Please choose a recipient.",
+      },
+      title: {
+        label: "Title",
+        placeholder: "Give your teammate a title.",
+        helper:
+          'Example: The person who motivates me.\nThe title will be shown as your Kudos\' headline.',
+        error: "Please enter a title.",
+      },
+      content: {
+        label: "Message",
+        placeholder:
+          'Write your thanks and recognition for a teammate here!\nE.g.: Thank you for your leadership and for "keeping the pace" so well during the project\'s final sprint...',
+        mentionHint: 'You can type "@ + name" to mention another colleague',
+        counterMax: "1,000",
+        error: "Please enter a message.",
+        toolbar: {
+          bold: "Bold",
+          italic: "Italic",
+          strikethrough: "Strikethrough",
+          list: "List",
+          link: "Insert link",
+          quote: "Quote",
+        },
+        communityStandards: "Community Standards",
+      },
+      hashtags: {
+        label: "Hashtag",
+        placeholder: "Enter a hashtag",
+        add: "+Hashtag",
+        max: "Max 5",
+        error: "Add at least 1 hashtag.",
+        remove: "Remove hashtag",
+      },
+      images: {
+        label: "Image",
+        add: "+Image",
+        max: "Max 5",
+        remove: "Remove image",
+      },
+      anonymous: {
+        checkbox: "Send anonymously",
+        nicknameLabel: "Anonymous nickname",
+        nicknamePlaceholder: "Doraemon",
+        error: "Please enter a nickname.",
+      },
+    },
   },
 } satisfies Dictionary;

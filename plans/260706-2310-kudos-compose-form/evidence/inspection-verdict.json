@@ -1,0 +1,28 @@
+{
+  "score": 9,
+  "criticalCount": 0,
+  "decision": "SEALED",
+  "acceptanceCovered": [
+    "clicking the 'Ghi nhan' composer pill on /kudos opens the Viet Kudos dialog (role=dialog, aria-modal) - verified compose-dialog.tsx role=\"dialog\" aria-modal=\"true\" and kudos-page-client.tsx wiring; confirmed live via kudos-compose.test.tsx FR-1 test and a fresh vitest run (139/139 passed)",
+    "submitting with recipient/title/content/hashtag all empty shows inline errors per field and does not close the dialog or call onSubmit - verified validateComposeForm in compose-form-helpers.ts checks all 4 fields, compose-dialog.tsx handleSubmit returns early on any error without calling onSubmit; integration test confirms all 4 error messages render and dialog stays open",
+    "a valid submit builds a KudosPost (new id, formatted timestamp, hearts:0, imageCount from selected files) and prepends it to the All Kudos feed without a page refresh - verified buildKudosPost() sets id=`kudos-new-${now.getTime()}`, timestamp via formatKudosTimestamp, hearts:0, imageCount:state.images.length; kudos-page-client.tsx addPost prepends via setPosts(prev => [post, ...prev]); integration test confirms new post appears without navigation",
+    "checking 'Gui an danh' reveals a required Nickname field; submitting anonymous replaces sender with {name: nickname, department: '', stars: 0} - verified anonymous-toggle.tsx conditional render, compose-form-helpers.ts buildKudosPost's ternary produces exactly {name: state.nickname.trim(), department: \"\", stars: 0} on the anonymous path (no CURRENT_USER leakage), validateComposeForm requires nickname only when anonymous is true",
+    "hashtag input auto-prefixes '#', dedupes case-insensitively, and caps at 5; image upload caps at 5 and only persists imageCount (no real upload/storage)",
+    "rich text content stays a plain string end to end (KudosPost.content) - no HTML persisted or rendered - verified rich-text-editor.tsx onChange always passes el.textContent (never innerHTML), grep across app/components/kudos/compose and lib/kudos found zero dangerouslySetInnerHTML/innerHTML usages",
+    "cancel button discards the draft and closes without calling onSubmit - verified resetAndClose() only calls setState(EMPTY_COMPOSE_FORM_STATE)/onClose, never onSubmit",
+    "Escape / outside-click closes the dialog (via the shared use-dismissable-menu hook) - verified kudos-page-client.tsx wires compose.containerRef/compose.setOpen from useDismissableMenu; integration test confirms Escape closes dialog and discards draft",
+    "existing F006 KudosCard/KudosBanner/KudosBoard tests and behavior are unchanged (title/composerTriggerProps are additive-optional) - verified via git diff HEAD~1 on kudos-banner.test.tsx/kudos-card.test.tsx: 100% additive (new it() blocks only, zero existing assertions removed/modified); KudosPost.title? and KudosBanner.composerTriggerProps? are optional in the type defs",
+    "new kudos.compose i18n namespace exists in both vi.ts and en.ts with identical key sets (parity test passes) - verified programmatically: extracted compose{} block from both dictionaries, 45 keys each side, zero diff either direction; Dictionary type = typeof vi and tsc --noEmit passed, so en.ts structurally satisfies vi's shape at compile time",
+    "vitest suite passes (existing + new tests); tsc --noEmit passes; npm run build passes; eslint clean on new/modified files - confirmed via temper-results.json (all 4 commands exit 0) and a fresh re-run of vitest scoped to kudos files (30 files/139 tests passed) to rule out staleness"
+  ],
+  "regressionChecked": [
+    "F006's KudosPost/KudosPerson contract - only additive fields (title?) allowed, no breaking changes - confirmed in kudos-types.ts, title is optional with doc comment explaining backward-compat intent",
+    "F006's kudos-card.test.tsx / kudos-banner.test.tsx - must remain green with the new optional props - confirmed via git diff: both files only gained new it() blocks, existing tests untouched; full suite green",
+    "lib/i18n dictionary parity test (adding kudos.compose to both files) - confirmed 45/45 key parity, tsc clean",
+    "app/kudos/page.tsx composition - KudosBanner + KudosBoard now sit inside the new KudosPageClient wrapper - read page.tsx, confirmed KudosPageClient renders KudosBanner+KudosBoard+ComposeDialog as documented, requireUser()/locale/dict wiring unchanged"
+  ],
+  "contractStatus": "OK",
+  "refuted": [],
+  "unproven": [],
+  "reachableRegressions": []
+}

@@ -29,6 +29,13 @@ export interface KudosPost {
   imageCount: number;
   /** Static like count (heart toggle is out of scope, clarifications.md). */
   hearts: number;
+  /**
+   * "Danh hiệu" — optional Kudos headline set by the compose form (F007,
+   * FR-5). Optional so every F006 post (none of which has one) keeps
+   * compiling/rendering unchanged; `KudosCard` only renders the line when
+   * present.
+   */
+  title?: string;
 }
 
 /**

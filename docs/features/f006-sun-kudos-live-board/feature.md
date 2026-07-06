@@ -135,3 +135,7 @@ này — một task riêng trong tương lai sẽ nối logic (đặc biệt là
 - Không còn câu hỏi chặn. Việc nối logic thật cho toggle thả tim / dialog Ghi nhận / dialog Mở
   Secret Box / trang chi tiết Kudos / trang profile Sunner được để lại cho các task tương lai
   (xem §1 "Ngoài phạm vi").
+- **Đã shipped**: dialog "Ghi nhận" (pill compose trong `KudosBanner`, FR-4) nay đã superseded bởi
+  F007 (dialog "Viết Kudos" thật, submit prepend vào "All Kudos") — xem
+  `docs/features/f007-kudos-compose-form/feature.md`. Toggle thả tim / dialog Mở Secret Box /
+  trang chi tiết Kudos / trang profile Sunner vẫn ngoài phạm vi, chưa có task nối logic.

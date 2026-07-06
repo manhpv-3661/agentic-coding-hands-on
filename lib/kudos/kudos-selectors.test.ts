@@ -3,10 +3,11 @@ import {
   filterKudos,
   getDistinctDepartments,
   getDistinctHashtags,
+  getDistinctRecipients,
   getTopKudosByHearts,
 } from "./kudos-selectors";
-import { KUDOS_POSTS } from "./kudos-data";
-import type { KudosPost } from "./kudos-types";
+import { CURRENT_USER, KUDOS_POSTS } from "./kudos-data";
+import type { KudosPerson, KudosPost } from "./kudos-types";
 
 function makePost(overrides: Partial<KudosPost>): KudosPost {
   return {
@@ -146,5 +147,54 @@ describe("getTopKudosByHearts", () => {
     for (let i = 1; i < top5.length; i++) {
       expect(top5[i - 1].hearts).toBeGreaterThanOrEqual(top5[i].hearts);
     }
+  });
+});
+
+describe("getDistinctRecipients", () => {
+  const currentUser: KudosPerson = { name: "Current User", department: "Dept X", stars: 0 };
+
+  it("dedupes people across both sender and recipient sides, first-seen order", () => {
+    const posts = [
+      makePost({
+        sender: { name: "A", department: "Dept A", stars: 1 },
+        recipient: { name: "B", department: "Dept B", stars: 1 },
+      }),
+      makePost({
+        sender: { name: "B", department: "Dept B", stars: 1 },
+        recipient: { name: "C", department: "Dept C", stars: 1 },
+      }),
+    ];
+
+    const result = getDistinctRecipients(posts, currentUser);
+    expect(result.map((p) => p.name)).toEqual(["A", "B", "C"]);
+  });
+
+  it("excludes the current user even when they appear as a sender/recipient", () => {
+    const posts = [
+      makePost({
+        sender: currentUser,
+        recipient: { name: "B", department: "Dept B", stars: 1 },
+      }),
+    ];
+
+    const result = getDistinctRecipients(posts, currentUser);
+    expect(result.map((p) => p.name)).toEqual(["B"]);
+  });
+
+  it("returns an empty array for empty input", () => {
+    expect(getDistinctRecipients([], currentUser)).toEqual([]);
+  });
+
+  it("does not mutate the input array", () => {
+    const posts = [makePost({})];
+    const copy = [...posts];
+    getDistinctRecipients(posts, currentUser);
+    expect(posts).toEqual(copy);
+  });
+
+  it("excludes CURRENT_USER from the real mock dataset's recipient list", () => {
+    const result = getDistinctRecipients(KUDOS_POSTS, CURRENT_USER);
+    expect(result.some((p) => p.name === CURRENT_USER.name)).toBe(false);
+    expect(result.length).toBeGreaterThan(0);
   });
 });

@@ -18,6 +18,9 @@ auth via Supabase (Google OAuth). Spec language: **vi**.
   F005 Đa ngôn ngữ (real VI/EN dictionary i18n, replaces cookie-only stub; translates F001-F004) spec.
 - [`features/f006-sun-kudos-live-board/feature.md`](features/f006-sun-kudos-live-board/feature.md) —
   F006 Sun* Kudos Live Board (`/kudos` full content, replaces F002 placeholder) spec.
+- [`features/f007-kudos-compose-form/feature.md`](features/f007-kudos-compose-form/feature.md) —
+  F007 Viết Kudos — Compose Form (wires F006's static "Ghi nhận" pill to a real dialog; new
+  Kudos posts prepend to the "All Kudos" feed, session-scoped) spec.
 
 ## Local setup
 1. Copy `.env.local.example` → `.env.local`; fill `NEXT_PUBLIC_SUPABASE_URL` and

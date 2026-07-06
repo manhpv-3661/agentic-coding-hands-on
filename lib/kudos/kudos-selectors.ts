@@ -1,4 +1,4 @@
-import type { KudosFilterState, KudosPost } from "./kudos-types";
+import type { KudosFilterState, KudosPerson, KudosPost } from "./kudos-types";
 
 /**
  * Pure shaping functions over `KUDOS_POSTS` (or any `KudosPost[]`). No
@@ -45,4 +45,31 @@ export function filterKudos(posts: KudosPost[], filter: KudosFilterState): Kudos
  */
 export function getTopKudosByHearts(posts: KudosPost[], n = 5): KudosPost[] {
   return [...posts].sort((a, b) => b.hearts - a.hearts).slice(0, n);
+}
+
+/**
+ * Distinct people (from both the sender and recipient side of every post),
+ * deduped by name, in first-seen order, excluding `currentUser` — the
+ * compose form's "Người nhận" option list (F007, FR-3). There is no
+ * employee-directory data model in this repo, so this mock dataset itself
+ * is the stand-in "database" (mirrors `getDistinctHashtags`/
+ * `getDistinctDepartments`). Does not mutate `posts`.
+ */
+export function getDistinctRecipients(
+  posts: KudosPost[],
+  currentUser: KudosPerson,
+): KudosPerson[] {
+  const seen = new Set<string>([currentUser.name]);
+  const people: KudosPerson[] = [];
+
+  for (const post of posts) {
+    for (const person of [post.sender, post.recipient]) {
+      if (!seen.has(person.name)) {
+        seen.add(person.name);
+        people.push(person);
+      }
+    }
+  }
+
+  return people;
 }

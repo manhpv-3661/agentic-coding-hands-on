@@ -1,0 +1,44 @@
+{
+  "task": "Build the 'Viet Kudos' compose form: recipient search dropdown, Danh hieu (title) field, minimal rich text editor (bold/italic/strikethrough/list/link/quote + @mention, 1000 char cap), up to 5 hashtags, up to 5 image uploads, an anonymous toggle (reveals a required nickname field), a static 'Tieu chuan cong dong' link, and Huy/Gui buttons. Submit creates a new KudosPost that appears at the top of the All Kudos list built in F006.",
+  "mode": "auto",
+  "acceptanceCriteria": [
+    "clicking the 'Ghi nhan' composer pill on /kudos opens the Viet Kudos dialog (role=dialog, aria-modal)",
+    "submitting with recipient/title/content/hashtag all empty shows inline errors per field and does not close the dialog or call onSubmit",
+    "a valid submit builds a KudosPost (new id, formatted timestamp, hearts:0, imageCount from selected files) and prepends it to the All Kudos feed without a page refresh",
+    "checking 'Gui an danh' reveals a required Nickname field; submitting anonymous replaces sender with {name: nickname, department: '', stars: 0}",
+    "hashtag input auto-prefixes '#', dedupes case-insensitively, and caps at 5; image upload caps at 5 and only persists imageCount (no real upload/storage)",
+    "rich text content stays a plain string end to end (KudosPost.content) - no HTML persisted or rendered",
+    "cancel button discards the draft and closes without calling onSubmit",
+    "Escape / outside-click closes the dialog (via the shared use-dismissable-menu hook)",
+    "existing F006 KudosCard/KudosBanner/KudosBoard tests and behavior are unchanged (title/composerTriggerProps are additive-optional)",
+    "new kudos.compose i18n namespace exists in both vi.ts and en.ts with identical key sets (parity test passes)",
+    "vitest suite passes (existing + new tests); tsc --noEmit passes; npm run build passes; eslint clean on new/modified files"
+  ],
+  "touchpoints": [
+    "app/kudos/page.tsx",
+    "app/components/kudos/kudos-page-client.tsx",
+    "app/components/kudos/kudos-banner.tsx",
+    "app/components/kudos/kudos-card.tsx",
+    "app/components/kudos/compose/",
+    "lib/kudos/kudos-types.ts",
+    "lib/kudos/kudos-data.ts",
+    "lib/kudos/kudos-selectors.ts",
+    "lib/kudos/format-kudos-timestamp.ts",
+    "lib/i18n/dictionaries/vi.ts",
+    "lib/i18n/dictionaries/en.ts",
+    "hooks/use-dismissable-menu.ts (reused, not modified)"
+  ],
+  "blastRadius": [
+    "F006's KudosPost/KudosPerson contract - only additive fields (title?) allowed, no breaking changes",
+    "F006's kudos-card.test.tsx / kudos-banner.test.tsx - must remain green with the new optional props",
+    "lib/i18n dictionary parity test (adding kudos.compose to both files)",
+    "app/kudos/page.tsx composition - KudosBanner + KudosBoard now sit inside the new KudosPageClient wrapper"
+  ],
+  "contracts": [
+    "KudosPost.title is optional (title?: string) - existing title-less posts must keep rendering unchanged",
+    "KudosBanner.composerTriggerProps is optional - omitted means the pill stays inert (F006 default)",
+    "getDistinctRecipients(posts, currentUser) excludes currentUser by name, dedupes by name, first-seen order, no mutation",
+    "Dictionary type = typeof vi (lib/i18n/dictionary.ts) - new kudos.compose namespace must satisfy this in en.ts",
+    "No backend/persistence exists - submitted posts are session-scoped client state only (lost on refresh)"
+  ]
+}

@@ -117,6 +117,13 @@ export function KudosCard({ post, variant, labels, onHashtagClick }: KudosCardPr
 
       <p className="text-xs text-white/50">{post.timestamp}</p>
 
+      {/* "Danh hiệu" (F007, FR-5) — optional, only set by the compose form;
+       * every existing F006 post has no `title`, so this renders nothing
+       * for them (additive, no layout shift). */}
+      {post.title && (
+        <p className="font-montserrat text-sm font-semibold text-[#FFEA9E]">{post.title}</p>
+      )}
+
       <p className={`font-montserrat text-sm text-white/90 ${contentClamp}`}>{post.content}</p>
 
       {isFeed && <KudosImageGallery count={post.imageCount} />}

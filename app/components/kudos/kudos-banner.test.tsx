@@ -1,5 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { KudosBanner } from "./kudos-banner";
 
 describe("KudosBanner", () => {
@@ -16,5 +17,35 @@ describe("KudosBanner", () => {
     expect(
       screen.getByText("Hôm nay, bạn muốn gửi lời cảm ơn và ghi nhận đến ai?"),
     ).toBeInTheDocument();
+  });
+
+  it("the composer pill is inert when composerTriggerProps is omitted (F006 default)", async () => {
+    const user = userEvent.setup();
+    render(
+      <KudosBanner
+        labels={{ title: "Hệ thống ghi nhận và cảm ơn" }}
+        composer={{ placeholder: "Hôm nay, bạn muốn gửi lời cảm ơn và ghi nhận đến ai?" }}
+      />,
+    );
+
+    const pill = screen.getByText("Hôm nay, bạn muốn gửi lời cảm ơn và ghi nhận đến ai?").closest("button");
+    expect(pill).not.toBeNull();
+    await user.click(pill as HTMLButtonElement);
+    // No throw, no assertion target — the pill has no handler wired.
+  });
+
+  it("clicking the pill fires the supplied composerTriggerProps.onClick (F007)", async () => {
+    const onClick = vi.fn();
+    const user = userEvent.setup();
+    render(
+      <KudosBanner
+        labels={{ title: "Hệ thống ghi nhận và cảm ơn" }}
+        composer={{ placeholder: "Hôm nay, bạn muốn gửi lời cảm ơn và ghi nhận đến ai?" }}
+        composerTriggerProps={{ onClick, "aria-expanded": false, "aria-haspopup": "dialog" }}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: /hôm nay/i }));
+    expect(onClick).toHaveBeenCalledTimes(1);
   });
 });

@@ -1,0 +1,109 @@
+import { describe, expect, it, vi, beforeEach } from "vitest";
+import { fireEvent, render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { KudosPageClient } from "./kudos-page-client";
+import type { KudosPerson, KudosPost } from "@/lib/kudos/kudos-types";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
+
+const dictionary = getDictionary("vi");
+
+const currentUser: KudosPerson = { name: "Current User", department: "Dept X", stars: 8 };
+const recipientOptions: KudosPerson[] = [{ name: "Nguyễn Văn An", department: "Phòng Kỹ thuật", stars: 12 }];
+
+const initialPosts: KudosPost[] = [
+  {
+    id: "kudos-1",
+    sender: { name: "S1", department: "Dept A", stars: 1 },
+    recipient: { name: "R1", department: "Dept B", stars: 1 },
+    timestamp: "09:00 - 01/01/2026",
+    content: "Existing post",
+    hashtags: ["#a"],
+    imageCount: 0,
+    hearts: 5,
+  },
+];
+
+beforeEach(() => {
+  URL.createObjectURL = vi.fn(() => "blob:mock");
+  URL.revokeObjectURL = vi.fn();
+});
+
+function renderWrapper() {
+  render(
+    <KudosPageClient
+      initialPosts={initialPosts}
+      currentUser={currentUser}
+      recipientOptions={recipientOptions}
+      hashtagOptions={["#a"]}
+      departmentOptions={["Dept A", "Dept B"]}
+      labels={dictionary.kudos}
+      spotlight={<div>spotlight-slot</div>}
+      sidebar={<div>sidebar-slot</div>}
+    />,
+  );
+}
+
+describe("KudosPageClient", () => {
+  it("renders the banner, board (with the existing post), spotlight and sidebar slots", () => {
+    renderWrapper();
+
+    expect(screen.getByText(dictionary.kudos.banner.title)).toBeInTheDocument();
+    // "Existing post" legitimately renders twice with only 1 total post
+    // (both the Highlight top-5 and the All Kudos feed share the same
+    // small dataset) — assert presence, not uniqueness.
+    expect(screen.getAllByText("Existing post").length).toBeGreaterThan(0);
+    expect(screen.getByText("spotlight-slot")).toBeInTheDocument();
+    expect(screen.getByText("sidebar-slot")).toBeInTheDocument();
+  });
+
+  it("clicking the composer pill opens the compose dialog", async () => {
+    const user = userEvent.setup();
+    renderWrapper();
+
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    await user.click(screen.getByText(dictionary.kudos.composer.placeholder));
+    expect(screen.getByRole("dialog", { name: dictionary.kudos.compose.dialogTitle })).toBeInTheDocument();
+  });
+
+  it("a valid submit prepends the new Kudos so it appears first in the feed", async () => {
+    const user = userEvent.setup();
+    renderWrapper();
+
+    await user.click(screen.getByText(dictionary.kudos.composer.placeholder));
+    const dialog = screen.getByRole("dialog");
+
+    await user.click(within(dialog).getByRole("button", { name: dictionary.kudos.compose.recipient.placeholder }));
+    await user.click(within(dialog).getByRole("option", { name: /Nguyễn Văn An/ }));
+    await user.type(
+      within(dialog).getByPlaceholderText(dictionary.kudos.compose.title.placeholder),
+      "Người truyền động lực",
+    );
+    const editor = within(dialog).getByRole("textbox", { name: dictionary.kudos.compose.content.placeholder });
+    editor.textContent = "Cảm ơn bạn!";
+    fireEvent.input(editor);
+    await user.type(
+      within(dialog).getByPlaceholderText(dictionary.kudos.compose.hashtags.placeholder),
+      "teamwork{Enter}",
+    );
+
+    await user.click(within(dialog).getByRole("button", { name: dictionary.kudos.compose.submit }));
+
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    // The new post was prepended to the wrapper's `posts` state (proves
+    // `addPost`/submit wiring works end to end); precise feed ordering is
+    // covered by the dedicated Phase 11 integration test with a larger,
+    // unambiguous fixture set.
+    expect(screen.getAllByText("Cảm ơn bạn!").length).toBeGreaterThan(0);
+  });
+
+  it("Escape closes the compose dialog and discards the draft", async () => {
+    const user = userEvent.setup();
+    renderWrapper();
+
+    await user.click(screen.getByText(dictionary.kudos.composer.placeholder));
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+});

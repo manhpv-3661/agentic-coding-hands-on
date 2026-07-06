@@ -1,0 +1,89 @@
+"use client";
+
+import { useState } from "react";
+import { useDismissableMenu } from "@/hooks/use-dismissable-menu";
+import type { KudosPerson } from "@/lib/kudos/kudos-types";
+
+export interface RecipientSelectLabels {
+  placeholder: string;
+  search: string;
+  error: string;
+}
+
+export interface RecipientSelectProps {
+  options: KudosPerson[];
+  value: KudosPerson | null;
+  onChange: (person: KudosPerson) => void;
+  /** Inline validation message (FR-4) — rendered below the field when set. */
+  error?: string;
+  labels: RecipientSelectLabels;
+}
+
+/**
+ * Searchable single-select over `KudosPerson[]` (F007, FR-3) — this repo has
+ * no combobox library (clarifications.md), so it is hand-built: a trigger
+ * button + a listbox panel with a local search filter. Reuses
+ * `useDismissableMenu({ haspopup: "listbox" })` for Escape/outside-click
+ * close rather than reimplementing that behavior (DRY, same primitive the
+ * header menus already use).
+ */
+export function RecipientSelect({ options, value, onChange, error, labels }: RecipientSelectProps) {
+  const { open, setOpen, containerRef, triggerProps } = useDismissableMenu({ haspopup: "listbox" });
+  const [query, setQuery] = useState("");
+
+  const filtered = options.filter((person) =>
+    person.name.toLowerCase().includes(query.toLowerCase()),
+  );
+
+  function handleSelect(person: KudosPerson) {
+    onChange(person);
+    setOpen(false);
+    setQuery("");
+  }
+
+  return (
+    <div ref={containerRef} className="relative flex flex-col gap-1">
+      <button
+        type="button"
+        {...triggerProps}
+        className="flex w-full items-center justify-between rounded-lg border border-white/20 bg-[#101317] px-4 py-3 text-left text-white"
+      >
+        <span className={value ? "text-white" : "text-white/50"}>
+          {value?.name ?? labels.placeholder}
+        </span>
+        <span aria-hidden="true">▾</span>
+      </button>
+
+      {open && (
+        <div className="absolute top-full z-10 mt-1 w-full rounded-lg border border-white/20 bg-[#101317] p-2 shadow-lg">
+          <input
+            autoFocus
+            type="text"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder={labels.search}
+            className="mb-2 w-full rounded-md border border-white/20 bg-[#00101A] px-3 py-2 text-sm text-white outline-none"
+          />
+          <ul role="listbox" className="flex max-h-56 flex-col gap-1 overflow-y-auto">
+            {filtered.map((person) => (
+              <li key={person.name}>
+                <button
+                  type="button"
+                  role="option"
+                  aria-selected={value?.name === person.name}
+                  onClick={() => handleSelect(person)}
+                  className="flex w-full flex-col items-start rounded-md px-3 py-2 text-left text-sm text-white hover:bg-white/10"
+                >
+                  <span className="font-medium">{person.name}</span>
+                  <span className="text-xs text-white/60">{person.department}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {error && <p className="text-xs text-red-400">{error}</p>}
+    </div>
+  );
+}

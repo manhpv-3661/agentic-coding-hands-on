@@ -19,7 +19,13 @@ backend do Supabase quản lý (managed auth), không tự viết server auth.
     menu scroll-spy, 6 award card, Sun* Kudos promo); được bảo vệ; thay placeholder tối giản của F002.
   - `app/kudos/page.tsx` — Sun* Kudos Live Board (F006); nội dung thật (Highlight Kudos carousel,
     Spotlight Board word-cloud, All Kudos feed, lọc hashtag/phòng ban, thống kê + Secret Box, top 10
-    Sunner nhận quà); được bảo vệ; thay placeholder tối giản của F002.
+    Sunner nhận quà); được bảo vệ; thay placeholder tối giản của F002. Từ F007: `page.tsx` (server)
+    render thêm `kudos-page-client.tsx` (client wrapper, chủ sở hữu DUY NHẤT state `posts` +
+    open/close dialog compose) giữa `page.tsx` và `KudosBanner`/`KudosBoard` — click pill "Ghi
+    nhận" (`KudosBanner`) mở dialog "Viết Kudos" (`app/components/kudos/compose/*`: recipient
+    dropdown, rich-text editor tự viết qua `document.execCommand`, hashtag chip input, image upload
+    preview client-side, anonymous toggle); submit hợp lệ prepend `KudosPost` mới vào "All Kudos"
+    (session-scoped, không có backend/storage thật).
   - `app/todo/page.tsx` — trang phụ (placeholder ở giai đoạn này; được bảo vệ; không còn là đích sau đăng nhập kể từ F002).
   - `app/auth/callback/route.ts` — route handler đổi OAuth code lấy session, rồi redirect `/` (F002 cập nhật từ `/todo`).
   - `app/prelaunch/page.tsx` — Countdown Prelaunch (F003); đích của time-gate toàn site trước mốc `NEXT_PUBLIC_EVENT_START_AT`; public, không bảo vệ.
