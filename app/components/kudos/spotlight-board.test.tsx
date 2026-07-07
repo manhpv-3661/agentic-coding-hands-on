@@ -54,7 +54,12 @@ describe("SpotlightBoard", () => {
   });
 
   it("renders the decorative collage backdrop", () => {
+    // Phase 07 fix: the backdrop no longer renders an `<img>` — the previous
+    // `spotlight-crop.png` baked ~120 interactive names into pixels under
+    // the real DOM name-cloud (duplicate names + asset-rule violation).
+    // It is now a CSS-only decorative layer (`spotlight-collage-backdrop.tsx`),
+    // so this asserts the `aria-hidden` backdrop container renders instead.
     const { container } = render(<SpotlightBoard names={names} total={388} labels={labels} />);
-    expect(container.querySelectorAll("img")).not.toHaveLength(0);
+    expect(container.querySelector('[aria-hidden="true"]')).toBeInTheDocument();
   });
 });
