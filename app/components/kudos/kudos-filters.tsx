@@ -45,10 +45,12 @@ function ChevronDownIcon() {
 
 /** Shared pill chrome (mm: "Frame 483" INSTANCE `186:2757`) — 1px
  * `#998C5F` border, translucent gold fill, 4px radius, uniform 16px
- * padding (widened on the right for the embedded chevron). The design has
- * no separate field-label text node: the pill's own value doubles as its
- * label, so the accessible name is carried via `aria-label` instead of
- * visible label copy. */
+ * padding (widened on the right for the embedded chevron). Ground truth
+ * (`get_frame_image` MaZUn5xHXZ) shows the field's own name ("Hashtag" /
+ * "Phòng ban") as the resting/default display text — NOT the generic
+ * "Tất cả" — so the un-filtered option renders the field label; picking it
+ * from the open dropdown is how the filter resets to "no filter" (same
+ * `ALL_VALUE` semantics, just correct display text). */
 const PILL_SELECT_CLASSNAME =
   "font-montserrat w-full appearance-none rounded-[4px] border border-[#998C5F] bg-[rgba(255,234,158,0.10)] py-4 pl-4 pr-12 text-base font-bold tracking-[0.15px] text-white";
 
@@ -80,7 +82,7 @@ export function KudosFilters({
           }
           className={PILL_SELECT_CLASSNAME}
         >
-          <option value={ALL_VALUE}>{labels.allOption}</option>
+          <option value={ALL_VALUE}>{labels.hashtagLabel}</option>
           {hashtagOptions.map((tag) => (
             <option key={tag} value={tag}>
               {tag}
@@ -102,7 +104,7 @@ export function KudosFilters({
           }
           className={PILL_SELECT_CLASSNAME}
         >
-          <option value={ALL_VALUE}>{labels.allOption}</option>
+          <option value={ALL_VALUE}>{labels.departmentLabel}</option>
           {departmentOptions.map((department) => (
             <option key={department} value={department}>
               {department}

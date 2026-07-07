@@ -56,7 +56,9 @@ describe("KudosFilters", () => {
       />,
     );
 
-    await user.selectOptions(screen.getByRole("combobox", { name: /Hashtag/ }), "Tất cả");
+    // Resetting picks the default option, which now displays the field's own
+    // label ("Hashtag") per ground truth — not a separate "Tất cả" option.
+    await user.selectOptions(screen.getByRole("combobox", { name: /Hashtag/ }), "Hashtag");
 
     expect(onChange).toHaveBeenCalledWith({ hashtag: null, department: null });
   });

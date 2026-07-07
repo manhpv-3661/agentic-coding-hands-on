@@ -64,11 +64,17 @@ function SearchIcon() {
  */
 function SearchPill({ placeholder }: { placeholder: string }) {
   return (
+    // No native `disabled` attribute: on a fully custom-styled button, some
+    // browsers still paint their own default disabled-control chrome
+    // underneath the Tailwind classes, rendering as a faint duplicate pill
+    // (confirmed visually against ground truth, which shows exactly one).
+    // `aria-disabled` + `tabIndex={-1}` + `pointer-events-none` gets the
+    // same inert, unfocusable result without that native paint.
     <button
       type="button"
-      disabled
       aria-disabled="true"
-      className={`${PILL_CLASS} sm:max-w-sm cursor-default opacity-90`}
+      tabIndex={-1}
+      className={`${PILL_CLASS} pointer-events-none sm:max-w-sm`}
     >
       <SearchIcon />
       <span className="font-montserrat text-base leading-6 font-bold">{placeholder}</span>
@@ -85,13 +91,17 @@ function SearchPill({ placeholder }: { placeholder: string }) {
  * Background: the MoMorph keyvisual (`I2940:13432;2167:5141`,
  * `MM_MEDIA_KV Background`) has no clean source export (`get_figma_image`/
  * `get_media_file` 401/500 for this node — same limitation documented on
- * `login/page.tsx`'s hero art). `/public/kudos/hero-waves.jpg` is therefore
- * a crop of the design's own full-page render (x≥700, header band removed)
- * so it holds only the wave artwork, right-anchored. The darkening scrim
- * on top of it, however, reproduces the ground-truth "Cover" node
+ * `login/page.tsx`'s hero art). `/public/kudos/hero-waves.jpg` is a crop of
+ * the design's own full-page render (x≥700, right-anchored). The Y-range is
+ * deliberately a narrow band well above the composer/search pill row (not
+ * the full hero height) — an earlier crop spanned down into the pill row
+ * and baked a second, static copy of the search pill into the image itself,
+ * which then visually doubled the real HTML pill rendered on top of it
+ * (confirmed via live-browser screenshot vs. ground truth). `bg-cover`
+ * scales this artwork-only band to fill the actual hero height. The
+ * darkening scrim on top of it reproduces the ground-truth "Cover" node
  * (`I2940:13432;1210:12612`) exactly — a 25deg linear gradient from solid
- * `#00101A` to fully transparent — even though the photo underneath is a
- * substitute; the scrim's angle/stops are independent of that substitution.
+ * `#00101A` to fully transparent — independent of the photo substitution.
  */
 export function KudosBanner({ labels, composer, composerTriggerProps }: KudosBannerProps) {
   return (

@@ -20,13 +20,15 @@ describe("KudosBanner", () => {
     ).toBeInTheDocument();
   });
 
-  it("renders the search pill placeholder from the dictionary, disabled and inert", () => {
+  it("renders the search pill placeholder from the dictionary, inert but not natively disabled (avoids a browser default disabled-button paint that rendered as a duplicate pill)", () => {
     render(<KudosBanner labels={labels} composer={composer} />);
 
     const searchPill = screen.getByText("Tìm kiếm profile Sunner").closest("button");
     expect(searchPill).not.toBeNull();
-    expect(searchPill).toBeDisabled();
+    expect(searchPill).not.toBeDisabled();
     expect(searchPill).toHaveAttribute("aria-disabled", "true");
+    expect(searchPill).toHaveAttribute("tabIndex", "-1");
+    expect(searchPill?.className).toContain("pointer-events-none");
   });
 
   it("the composer pill is inert when composerTriggerProps is omitted (F006 default)", async () => {
