@@ -53,12 +53,18 @@ export default defineConfig({
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"], baseURL: "http://localhost:3000" },
-      testIgnore: /homepage-content|awards-content|prelaunch-countdown|i18n-content/,
+      testIgnore: /homepage-content|awards-content|prelaunch-countdown|i18n-content|layout-contract\.spec/,
     },
     {
       name: "chromium-authless",
       use: { ...devices["Desktop Chrome"], baseURL: "http://localhost:3100" },
-      testMatch: /homepage-content|awards-content|i18n-content/,
+      // `layout-contract.spec.ts` measures home/awards/kudos content (all
+      // protected routes) plus the public /login page — it needs the
+      // authless build so the protected pages render real content instead
+      // of redirecting to /login (see file header above). Matched on
+      // `\.spec` specifically so this pattern doesn't also sweep up
+      // `layout-contract-helpers.ts` (a non-test module it imports).
+      testMatch: /homepage-content|awards-content|i18n-content|layout-contract\.spec/,
     },
     {
       name: "chromium-prelaunch",
