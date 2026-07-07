@@ -44,8 +44,9 @@ Live board layout, không có backend/API thật lưu lượt tim.
   gắn click handler.
 - **FR-5**: Toggle là idempotent theo từng click (không có request nào có thể chạy đôi) —
   không cần cờ pending/loading riêng vì không có network call.
-- **FR-6**: Trạng thái đã-thích dùng chung 1 màu accent đã có sẵn của card (`#FFEA9E`) để
-  tô icon tim khi đã-thích — không thêm token màu mới.
+- **FR-6**: Trạng thái đã-thích tô icon tim màu đỏ `#D4271D` (đã sửa từ `#FFEA9E` — đo thật theo
+  MoMorph TC `7a7ec63e`, "toggles... gray to red") khi đã-thích, xám `#999999` khi chưa — không thêm
+  token màu mới ngoài 2 giá trị này.
 - **FR-7**: Icon tim có `aria-label` mô tả hành động ("Thả tim" / "Bỏ thả tim", i18n) và
   `aria-pressed` phản ánh trạng thái đã-thích, thay cho số lượt tim làm accessible name.
 

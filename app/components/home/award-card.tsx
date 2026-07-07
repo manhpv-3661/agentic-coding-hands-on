@@ -60,6 +60,10 @@ function IconUp({ className }: { className?: string }) {
  * title navigates exactly like clicking "Chi tiết" (FR-21) — a nested `<a>`
  * for "Chi tiết" would be invalid HTML, so that affordance is now a plain
  * `<span>` that keeps its original hover styling.
+ *
+ * FR-22 (TC ID-51): hovering anywhere on the card elevates the thumbnail
+ * slightly and intensifies its gold glow — `group`/`group-hover` on the
+ * `Link` so the whole card (not just the thumbnail) triggers it.
  */
 export function AwardCard({
   thumbnailSrc,
@@ -70,12 +74,14 @@ export function AwardCard({
 }: AwardCardProps) {
   return (
     // mm:214:1032
-    <Link href={detailsHref} className="flex w-full flex-col items-start gap-6">
+    <Link
+      href={detailsHref}
+      className="group flex w-full flex-col items-start gap-6"
+    >
       {/* mm:81:2443 — pre-composited thumbnail (background + gold-ring +
           name baked in), not a shared background with a text overlay. */}
       <div
-        className="relative aspect-square w-full overflow-hidden rounded-3xl border-[0.955px] border-[#FFEA9E]"
-        style={{ boxShadow: "0 4px 4px 0 rgba(0, 0, 0, 0.25), 0 0 6px 0 #FAE287" }}
+        className="relative aspect-square w-full overflow-hidden rounded-3xl border-[0.955px] border-[#FFEA9E] shadow-[0_4px_4px_0_rgba(0,0,0,0.25),0_0_6px_0_#FAE287] transition-[transform,box-shadow] duration-200 ease-out group-hover:-translate-y-1 group-hover:shadow-[0_8px_16px_0_rgba(0,0,0,0.35),0_0_14px_0_#FAE287]"
       >
         <Image
           src={thumbnailSrc}

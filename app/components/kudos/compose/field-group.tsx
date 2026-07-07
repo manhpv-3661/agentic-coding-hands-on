@@ -24,7 +24,10 @@ export interface FieldGroupProps {
  * out in a `flex-row` beside the control, 22px/700 Montserrat). */
 export function FieldGroup({ label, htmlFor, helper, required, children }: FieldGroupProps) {
   return (
-    <div className="flex flex-row items-center gap-4">
+    // items-start (not items-center): a helper line under the control would
+    // otherwise pull the centered label down, off the control's top edge —
+    // MoMorph ground truth keeps the label aligned with the control row.
+    <div className="flex flex-row items-start gap-4">
       <label
         htmlFor={htmlFor}
         className="flex shrink-0 items-center gap-0.5 whitespace-nowrap"

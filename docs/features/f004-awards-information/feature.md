@@ -90,9 +90,10 @@ Bố cục: header/footer (tái dùng nguyên từ F002) → hero keyvisual mini
   > duy kiến tạo và tinh thần "Creator" đặc trưng của Sun*, họ không chỉ phản ứng tích cực trước sự
   > thay đổi mà còn chủ động tạo ra cải tiến, góp phần định hình chuẩn mực mới cho cách mà người
   > Sun* tạo giá trị.
-- **FR-13**: Ảnh Picture-Award: dùng lại `Award-BG.png` (nền, giống Homepage — cùng ảnh cho cả 6 card,
-  không phải lỗi data) + `Award-Name-*.png` tương ứng (title graphic overlay) — asset thật đã có sẵn
-  ở `public/homepage-saa/` — decision Session 2026-07-06.
+- **FR-13**: Ảnh Picture-Award: **6 thumbnail riêng biệt** (`public/awards-saa/thumbnails/{slug}.png`,
+  crop từ full-frame render MoMorph, mỗi giải một ảnh khác nhau) — decision ban đầu Session 2026-07-06
+  (dùng chung `Award-BG.png`) đã bị đảo ngược ở lần pixel-conformance sau đó (commit `4e4bea1`) vì so
+  khớp lại với ground truth Figma cho thấy mỗi card có ảnh riêng, không phải nền chung + overlay tên.
 - **FR-14**: `id={slug}` trên mỗi card khớp 6 slug đã chốt F002, để hash-anchor từ Homepage
   (`/awards#<slug>`) scroll đúng vị trí.
 

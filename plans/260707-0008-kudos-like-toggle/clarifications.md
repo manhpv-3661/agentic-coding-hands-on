@@ -127,3 +127,17 @@ blocking on `AskUserQuestion`. Recorded below, one line per decision.
   since they are equally correct and reverting a stable, tested, green implementation
   back to an untested alternate shape carried more regression risk than value. Flag if a
   future reviewer prefers the extracted-component shape.
+
+## Session 2026-07-07 (doc-drift correction, found during cross-screen QA audit)
+
+- Q: Does the shipped code still match the reconciliation note above (`hooks/use-kudos-likes.ts`,
+  localStorage-backed persistence kept canonical)? → A: **No.** `hooks/use-kudos-likes.ts` does not
+  exist in the current codebase; `KudosPageClient` owns `likedIds` via a plain session-only
+  `useState<Set<string>>`, matching `docs/features/f008-like-kudos/feature.md` §4 exactly (which
+  explicitly states "session-only ... không có localStorage/backend"). The reconciliation note two
+  sections above is stale relative to what actually shipped.
+- Q: Why the discrepancy? → A: Unknown — no record of a later decision to drop the localStorage hook
+  was found in this plan dir or the journal. Flagging rather than guessing; feature.md's session-only
+  description is being treated as the source of truth since it matches the running code, but a human
+  should confirm reload-persistence was intentionally dropped (not silently regressed) before this
+  gap is considered resolved.

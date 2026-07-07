@@ -181,7 +181,7 @@ export function RichTextEditor({
             onInput={handleInput}
             onKeyDown={handleEditorKeyDown}
             onBlur={handleEditorBlur}
-            className="min-h-50 w-full rounded-b-lg border border-[#998C5F] bg-white pl-6 text-sm text-[#00101A] outline-none empty:before:text-[#999] empty:before:content-[attr(data-placeholder)]"
+            className="min-h-50 w-full rounded-b-lg border border-[#998C5F] bg-white pl-6 text-sm text-[#00101A] outline-none empty:before:whitespace-pre-line empty:before:text-[#999] empty:before:content-[attr(data-placeholder)]"
           />
           <MentionSuggestions
             names={mentionNames}

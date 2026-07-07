@@ -65,9 +65,10 @@ trang "Tiêu chuẩn cộng đồng" thật, backend/API lưu trữ thật.
   nào có sẵn của `KudosPost`/`KudosCard` variant khác).
 
 ### 2.4 Nội dung (rich text)
-- **FR-6**: Toolbar 6 nút tĩnh: Bold, Italic, Strikethrough, List (unordered), Link,
-  Quote — thao tác qua `document.execCommand` trên vùng `contentEditable`. Không dùng
-  thư viện rich-text ngoài (không có dependency phù hợp trong `package.json`).
+- **FR-6**: Toolbar 6 nút tĩnh: Bold, Italic, Strikethrough, List (**ordered/numbered** — đã sửa từ
+  "unordered" theo ground truth MoMorph, componentId `662:10338`), Link, Quote — thao tác qua
+  `document.execCommand` trên vùng `contentEditable`. Không dùng thư viện rich-text ngoài (không có
+  dependency phù hợp trong `package.json`).
 - **FR-7**: `@` + gõ tên → hiện gợi ý inline (lọc theo cùng danh sách người ở FR-3), chọn
   1 gợi ý → chèn `@Tên` dạng text thường vào nội dung (không phải object mention — giữ
   `KudosPost.content` là string như hợp đồng hiện có).

@@ -14,19 +14,21 @@ import { test, expect, type Page } from "@playwright/test";
 
 /**
  * Reads the digits rendered by a `CountdownTimer` unit (`app/components/home
- * /countdown-timer.tsx`'s `CountdownUnit`, `className="... w-29 ..."`).
- * `DigitBoxes` renders one `<span>` per character followed by the unit's
- * label `<span>` (e.g. "DAYS") as a sibling — `innerText()` on the whole
- * unit concatenates both (with whitespace from the block-level digit boxes),
- * so stripping whitespace then the trailing label leaves just the digits.
+ * /countdown-timer.tsx`'s `CountdownUnit`). The unit's width is now `w-fit`
+ * (sized to content, no fixed utility class to key off), so this locates
+ * the unit via its label `<span>` (e.g. "DAYS") instead: the label's parent
+ * is the `CountdownUnit` div, whose only direct child `<div>` is the
+ * `DigitBoxes` wrapper — reading `innerText()` on that wrapper alone (the
+ * label is a sibling, not a descendant) avoids needing to strip the label
+ * text back off.
  */
 async function readCountdownUnitDigits(
   page: Page,
   label: "DAYS" | "HOURS" | "MINUTES",
 ): Promise<string> {
-  const unit = page.locator("div.w-29").filter({ hasText: label });
-  const raw = (await unit.innerText()).replace(/\s+/g, "");
-  return raw.slice(0, raw.length - label.length);
+  const unit = page.getByText(label, { exact: true }).locator("..");
+  const digitBoxes = unit.locator("> div").first();
+  return (await digitBoxes.innerText()).replace(/\s+/g, "");
 }
 
 test.describe("Homepage content (authless)", () => {

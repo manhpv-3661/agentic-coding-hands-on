@@ -60,26 +60,19 @@ function CloseIcon() {
 }
 
 /**
- * Gift-box illustration for the dialog body (FR-19-rev). Real MoMorph media assets — not a
+ * Gift-box illustration for the dialog body (FR-19-rev). Real MoMorph media asset — not a
  * fabricated SVG/CSS mock. Purely decorative: `aria-hidden` so the heading + count remain the
- * sole source of information if an image fails to load.
+ * sole source of information if the image fails to load.
  *
- * Ground truth `C_Box image` (node 1466:7684) is a 557x557px container spanning nearly the full
- * 626px content column — sized here to match (`aspect-square w-full max-w-139.25`). It stacks two
- * real exported assets (confirmed downloadable via `get_media_files`, contrary to an earlier
- * session's "source raster isn't available" assumption). Figma's `childIds` order is back-to-front
- * (`[1466:7686, 1466:7687, 1466:7685]`), so paint order here is deliberately:
- * 1. `MM_MEDIA_box quà chưa mở` (1466:7686, ~558.5x558.5px, filling the container) — painted
- *    first/back. The photoreal black/gold gift-box render, saved as
- *    `/public/kudos/gift/box-illustration.jpg`.
- * 2. `MM_MEDIA_hiệu ứng box quà` (1466:7685, ~546.5x546.5px) — painted second/front, on top. GT
- *    declares this as a plain `background: url(...) -102.944px -102.487px / 138.527% 138.527%
- *    no-repeat` on a rect inset ~17.06%/19.39% within the container (98.12% of its size) — a
- *    zoomed-in crop, not a plain `object-cover` fill. Reproduced with a literal CSS background
- *    (not `next/image`, which has no percentage `background-size` equivalent) since this
- *    container renders the design at 1:1 scale (`max-w-139.25` = 557px = the GT frame width), so
- *    the design's raw px offset/size values apply unscaled. Saved as
- *    `/public/kudos/gift/box-backdrop.jpg`.
+ * Ground truth `C_Box image` (node 1466:7684) is a 557x557px container — sized here to match
+ * (`aspect-square w-full max-w-139.25`). `/public/kudos/gift/box-illustration.jpg` (the photoreal
+ * black/gold gift-box render, 1000x1000) already depicts the full composition (box, ribbon,
+ * podium, sparkle trail, light flare) pixel-for-pixel against the MoMorph frame render — a
+ * previous revision additionally layered `/public/kudos/gift/box-backdrop.jpg` (a mis-cropped
+ * plain dark background export, no sparkle content) zoomed and offset on top via a CSS
+ * `background-*` overlay, which visually blocked most of the box/sparkles under a solid dark
+ * rectangle. That second layer was dropped — confirmed via `get_frame_image` that the single
+ * base image alone matches ground truth.
  */
 function SecretBoxIllustration() {
   return (
@@ -91,15 +84,6 @@ function SecretBoxIllustration() {
           width={558}
           height={558}
           className="absolute inset-0 h-full w-full object-cover"
-        />
-        <div
-          className="absolute left-[17.06%] top-[19.39%] h-[98.12%] w-[98.12%]"
-          style={{
-            backgroundImage: "url(/kudos/gift/box-backdrop.jpg)",
-            backgroundPosition: "-102.944px -102.487px",
-            backgroundSize: "138.527% 138.527%",
-            backgroundRepeat: "no-repeat",
-          }}
         />
       </div>
     </div>
