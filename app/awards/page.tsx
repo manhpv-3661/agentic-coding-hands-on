@@ -8,7 +8,7 @@ import { AwardsHero } from "../components/awards/awards-hero";
 import { SiteFooter } from "../components/home/site-footer";
 import { SiteHeader } from "../components/home/site-header";
 import { SunKudosSection } from "../components/home/sun-kudos-section";
-import { PageGutter } from "../components/layout/page-layout";
+import { ContentFrame, PageGutter } from "../components/layout/page-layout";
 import { montserrat, montserratAlternates } from "../login/fonts";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -81,35 +81,40 @@ export default async function AwardsPage() {
       <main className="flex flex-1 flex-col gap-16 py-12 sm:gap-20 sm:py-16 lg:gap-[120px] lg:py-24">
         <AwardsHero />
 
-        {/* mm:awards-title-section (FR-5) + Phase 05 catalog — share one
-            padded container (full-width + `lg:px-36` gutter, same pattern as
-            `AwardsHero`/`site-header.tsx` — NOT a `max-w` + `mx-auto` cap,
-            which would double-apply the 144px gutter as inset padding on
-            top of a 1152px-capped box and shrink content to 864px) so the
-            catalog itself stays layout-only (no page-level gutter baked
-            in). Inner gap matches `Bìa` (313:8449)'s own 120px spacing
-            between the title block and the catalog (`mms_B`, 313:8458). */}
-        <PageGutter className="flex flex-col gap-10 lg:gap-[120px]">
-          {/* mm:313:8453 — both the eyebrow (313:8454) and the heading's
-              wrapping row (Frame 488, 313:8456, `justify-content: center`)
-              center their text within the full 1152px content width per
-              ground truth, rather than sitting flush against the left
-              gutter — `w-full text-center` on each reproduces that. */}
-          <div className="flex w-full flex-col items-start gap-4">
-            <p className="w-full font-montserrat text-[24px] leading-[32px] font-bold text-center text-white">
-              Sun* Annual Awards 2025
-            </p>
-            <div className="h-px w-full bg-[#2E3940]" />
-            <h1 className="w-full font-montserrat text-[57px] leading-[64px] font-bold tracking-[-0.25px] text-center text-[#FFEA9E]">
-              {dictionary.awards.title.heading}
-            </h1>
-          </div>
+        {/* mm:awards-title-section (FR-5) + Phase 05 catalog — `PageGutter`
+            owns the 144px viewport gutter, `ContentFrame width={1152}` owns
+            the max-width cap (matches "Bìa" 313:8449's 1152px content width
+            in the live MoMorph contract, phase-06). Without the cap, content
+            stretches unbounded past the native 1440px frame instead of
+            centering at 1152px above that width — the same
+            `PageGutter` → `ContentFrame` pattern every sibling section
+            (`awards-section.tsx`, `hero-section.tsx`, `sun-kudos-section.tsx`)
+            already uses. Inner gap matches `Bìa` (313:8449)'s own 120px
+            spacing between the title block and the catalog (`mms_B`,
+            313:8458). */}
+        <PageGutter>
+          <ContentFrame width={1152} className="flex flex-col gap-10 lg:gap-[120px]">
+            {/* mm:313:8453 — both the eyebrow (313:8454) and the heading's
+                wrapping row (Frame 488, 313:8456, `justify-content: center`)
+                center their text within the full 1152px content width per
+                ground truth, rather than sitting flush against the left
+                gutter — `w-full text-center` on each reproduces that. */}
+            <div className="flex w-full flex-col items-start gap-4">
+              <p className="w-full font-montserrat text-[24px] leading-[32px] font-bold text-center text-white">
+                Sun* Annual Awards 2025
+              </p>
+              <div className="h-px w-full bg-[#2E3940]" />
+              <h1 className="w-full font-montserrat text-[57px] leading-[64px] font-bold tracking-[-0.25px] text-center text-[#FFEA9E]">
+                {dictionary.awards.title.heading}
+              </h1>
+            </div>
 
-          <AwardsCatalog
-            entries={entries}
-            quantityLabel={dictionary.awards.detail.quantityLabel}
-            valueLabel={dictionary.awards.detail.valueLabel}
-          />
+            <AwardsCatalog
+              entries={entries}
+              quantityLabel={dictionary.awards.detail.quantityLabel}
+              valueLabel={dictionary.awards.detail.valueLabel}
+            />
+          </ContentFrame>
         </PageGutter>
 
         <SunKudosSection kudos={dictionary.homepage.kudos} detailsCta={dictionary.shared.detailsCta} />

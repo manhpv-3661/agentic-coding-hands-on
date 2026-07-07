@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { PageGutter } from "../layout/page-layout";
+import { ContentFrame, PageGutter } from "../layout/page-layout";
 
 /**
  * Awards page hero keyvisual mini — MoMorph "Hệ thống giải" screen.
@@ -66,8 +66,14 @@ export function AwardsHero() {
             "linear-gradient(0deg, #00101A -4.85%, rgba(0, 19, 32, 0.00) 60.51%)",
         }}
       />
-      {/* mm:313:8450 */}
-      <div className="relative z-10 flex flex-col items-start gap-3 sm:gap-4 lg:gap-[10px]">
+      {/* mm:313:8450 — capped at the design's 1152px content width (same
+          `ContentFrame` primitive every sibling section uses) so this
+          left-aligned content re-centers past the native 1440px frame
+          instead of staying pinned 144px from the viewport edge. */}
+      <ContentFrame
+        width={1152}
+        className="relative z-10 flex flex-col items-start gap-3 sm:gap-4 lg:gap-[10px]"
+      >
         {/* mm:2789:12915 */}
         <Image
           src="/homepage-saa/Root-Further-Logo.png"
@@ -80,7 +86,7 @@ export function AwardsHero() {
         <p className="font-montserrat text-base font-bold text-white sm:text-lg lg:text-2xl">
           Sun* Annual Awards 2025
         </p>
-      </div>
+      </ContentFrame>
     </PageGutter>
   );
 }
