@@ -27,6 +27,16 @@ export default async function RootLayout({
       lang={locale}
       className={`${montserrat.variable} ${montserratAlternates.variable} h-full antialiased`}
     >
+      {/*
+       * Body wrapper is intentionally gutter-free and max-width-free
+       * (site-wide layout system audit,
+       * `plans/260707-2337-site-layout-system-audit-fixes/`). `PageGutter`
+       * (`app/components/layout/page-layout.tsx`) is the single owner of
+       * viewport padding and `ContentFrame` the single owner of max-width —
+       * `SiteHeader`/page content apply those themselves. Do not add
+       * padding or a max-width here; that would create a second, competing
+       * container owner.
+       */}
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
