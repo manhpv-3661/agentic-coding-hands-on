@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { getLocale } from "@/lib/i18n/get-locale";
+import { PageGutter } from "../components/layout/page-layout";
 import { montserrat } from "../login/fonts";
 import { PrelaunchBackground } from "./components/prelaunch-background";
 import { PrelaunchContent, type PrelaunchCountdownContent } from "./components/prelaunch-content";
@@ -59,8 +60,8 @@ export default async function PrelaunchPage() {
   // responsively (the remaining space naturally falls below via flex-start),
   // matching the `lg:` sizing this frame was designed at.
   return (
-    <div
-      className={`${montserrat.variable} relative isolate flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-[#00101A] px-6 py-12 lg:justify-start lg:px-36 lg:pt-[29.2vh] lg:pb-24`}
+    <PageGutter
+      className={`${montserrat.variable} relative isolate flex min-h-screen flex-col items-center justify-center overflow-hidden bg-[#00101A] py-12 lg:justify-start lg:pt-[29.2vh] lg:pb-24`}
     >
       <PrelaunchBackground />
       <Suspense
@@ -68,6 +69,6 @@ export default async function PrelaunchPage() {
       >
         <PrelaunchCountdownClient content={content} />
       </Suspense>
-    </div>
+    </PageGutter>
   );
 }

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { filterKudos, getTopKudosByHearts } from "@/lib/kudos/kudos-selectors";
 import type { KudosFilterState, KudosPerson, KudosPost } from "@/lib/kudos/kudos-types";
 import type { Dictionary } from "@/lib/i18n/dictionary";
+import { ContentFrame, PageGutter } from "../layout/page-layout";
 import { AllKudosFeed } from "./all-kudos-feed";
 import { HighlightKudosCarousel } from "./highlight-kudos-carousel";
 import { KudosFilters } from "./kudos-filters";
@@ -65,47 +66,49 @@ export function KudosBoard({
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-[1152px] flex-col gap-16 px-6 sm:px-10 lg:gap-[120px] lg:px-36">
-      <HighlightKudosCarousel
-        posts={top5}
-        cardLabels={labels.card}
-        emptyLabel={labels.empty.kudos}
-        filtersSlot={
-          <KudosFilters
-            value={filter}
-            onChange={setFilter}
-            hashtagOptions={hashtagOptions}
-            departmentOptions={departmentOptions}
-            labels={labels.filters}
-          />
-        }
-        likedIds={likedIds}
-        currentUser={currentUser}
-        onToggleLike={onToggleLike}
-      />
+    <PageGutter>
+      <ContentFrame width={1152} className="flex flex-col gap-16 lg:gap-[120px]">
+        <HighlightKudosCarousel
+          posts={top5}
+          cardLabels={labels.card}
+          emptyLabel={labels.empty.kudos}
+          filtersSlot={
+            <KudosFilters
+              value={filter}
+              onChange={setFilter}
+              hashtagOptions={hashtagOptions}
+              departmentOptions={departmentOptions}
+              labels={labels.filters}
+            />
+          }
+          likedIds={likedIds}
+          currentUser={currentUser}
+          onToggleLike={onToggleLike}
+        />
 
-      {spotlight}
+        {spotlight}
 
-      {/* mm: `C_All kudos` (2940:13475) — full-width header sits alone
-       * above the feed/sidebar row (`Frame 502`, 2940:13481), so the
-       * sidebar's top edge lines up with the first feed card, not the
-       * heading. */}
-      <div className="flex w-full flex-col gap-10">
-        <KudosSectionHeading subtitle="Sun* Annual Awards 2025" title="ALL KUDOS" />
+        {/* mm: `C_All kudos` (2940:13475) — full-width header sits alone
+         * above the feed/sidebar row (`Frame 502`, 2940:13481), so the
+         * sidebar's top edge lines up with the first feed card, not the
+         * heading. */}
+        <div className="flex w-full flex-col gap-10">
+          <KudosSectionHeading subtitle="Sun* Annual Awards 2025" title="ALL KUDOS" />
 
-        <section className="flex w-full flex-col gap-8 lg:flex-row lg:items-start lg:gap-20">
-          <AllKudosFeed
-            posts={filtered}
-            cardLabels={labels.card}
-            emptyLabel={labels.empty.kudos}
-            onHashtagClick={setHashtag}
-            likedIds={likedIds}
-            currentUser={currentUser}
-            onToggleLike={onToggleLike}
-          />
-          {sidebar}
-        </section>
-      </div>
-    </div>
+          <section className="flex w-full flex-col gap-8 lg:flex-row lg:items-start lg:gap-20">
+            <AllKudosFeed
+              posts={filtered}
+              cardLabels={labels.card}
+              emptyLabel={labels.empty.kudos}
+              onHashtagClick={setHashtag}
+              likedIds={likedIds}
+              currentUser={currentUser}
+              onToggleLike={onToggleLike}
+            />
+            {sidebar}
+          </section>
+        </div>
+      </ContentFrame>
+    </PageGutter>
   );
 }

@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Montserrat } from "next/font/google";
 import type { Dictionary } from "@/lib/i18n/dictionary";
+import { ContentFrame, PageGutter } from "../layout/page-layout";
 
 const montserrat = Montserrat({
   subsets: ["latin", "vietnamese"],
@@ -77,13 +78,17 @@ function UpArrowIcon() {
 export function SunKudosSection({ kudos, detailsCta }: SunKudosSectionProps) {
   return (
     // mm:3390:10349
-    <section
+    <PageGutter
+      as="section"
       id="kudos-section"
-      className="flex w-full items-center justify-center px-6 sm:px-10 lg:px-36"
+      className="flex items-center justify-center"
     >
-      <div className="flex w-full max-w-[1224px] items-center justify-center">
+      <ContentFrame width={1224} className="flex items-center justify-center">
         {/* mm:I3390:10349;313:8415 */}
-        <div className="relative w-full max-w-[1120px] overflow-hidden rounded-2xl lg:aspect-[1120/500]">
+        <ContentFrame
+          width={1120}
+          className="relative overflow-hidden rounded-2xl lg:aspect-[1120/500]"
+        >
           {/* mm:I3390:10349;313:8416 */}
           <Image
             src="/homepage-saa/Kudos-Background.png"
@@ -131,13 +136,16 @@ export function SunKudosSection({ kudos, detailsCta }: SunKudosSectionProps) {
               back to normal document flow below `lg`, so it only renders at
               the breakpoint where the absolute overlay layout (and the
               design's exact positioning) is restored. */}
-          <img
+          <Image
             src="/homepage-saa/Kudos-Logo.svg"
             alt=""
+            width={364}
+            height={74}
+            sizes="364px"
             className="absolute top-[43%] left-[60%] hidden w-[32.5%] lg:block"
           />
-        </div>
-      </div>
-    </section>
+        </ContentFrame>
+      </ContentFrame>
+    </PageGutter>
   );
 }

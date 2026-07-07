@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Montserrat } from "next/font/google";
 import type { Dictionary } from "@/lib/i18n/dictionary";
+import { ContentFrame, PageGutter } from "../layout/page-layout";
 
 /**
  * "Root Further" narrative content block — Homepage SAA.
@@ -57,10 +58,11 @@ export interface RootFurtherContentProps {
 export function RootFurtherContent({ content }: RootFurtherContentProps) {
   return (
     // mm:3204:10152
-    <section
-      className={`${montserrat.className} flex w-full justify-center px-6 sm:px-10 lg:px-36`}
-    >
-      <div className="flex w-full max-w-[1152px] flex-col items-center justify-center gap-8 rounded-[8px] px-6 py-16 sm:px-10 sm:py-20 lg:px-[104px] lg:py-[120px]">
+    <PageGutter as="section" className={`${montserrat.className} flex justify-center`}>
+      <ContentFrame
+        width={1152}
+        className="flex flex-col items-center justify-center gap-8 rounded-[8px] px-6 py-16 sm:px-10 sm:py-20 lg:px-[104px] lg:py-[120px]"
+      >
         {/* mm:3204:10153 — "Root" / "Further" wordmark lockup */}
         <div className="relative h-[134px] w-[290px] shrink-0">
           {/* mm:3204:10155 */}
@@ -96,7 +98,7 @@ export function RootFurtherContent({ content }: RootFurtherContentProps) {
             {content.paragraph2}
           </p>
         </div>
-      </div>
-    </section>
+      </ContentFrame>
+    </PageGutter>
   );
 }

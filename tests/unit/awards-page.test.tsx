@@ -110,4 +110,15 @@ describe("AwardsPage", () => {
         Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
   });
+
+  it("keeps the title-and-catalog wrapper as a page-gutter container instead of a capped 1152px box", async () => {
+    vi.mocked(requireUser).mockResolvedValue(null as never);
+
+    const { container } = render(await AwardsPage());
+    const wrapper = container.querySelector("main > div");
+
+    expect(wrapper).not.toBeNull();
+    expect(wrapper?.className).toContain("lg:px-36");
+    expect(wrapper?.className).not.toContain("max-w-[1152px]");
+  });
 });

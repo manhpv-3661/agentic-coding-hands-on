@@ -102,6 +102,33 @@ describe("KudosBoard", () => {
     expect(screen.getByTestId("sidebar")).toBeInTheDocument();
   });
 
+  it("keeps page gutter and max-width on separate wrappers to avoid the 864px double-padding regression", () => {
+    const { container } = render(
+      <KudosBoard
+        posts={[makePost({})]}
+        hashtagOptions={[]}
+        departmentOptions={[]}
+        labels={viDictionary.kudos}
+        spotlight={<div data-testid="spotlight" />}
+        sidebar={<div data-testid="sidebar" />}
+        currentUser={CURRENT_USER}
+        likedIds={new Set()}
+        onToggleLike={vi.fn()}
+      />,
+    );
+
+    const gutter = container.firstElementChild as HTMLElement | null;
+    const content = gutter?.firstElementChild as HTMLElement | null;
+
+    expect(gutter).not.toBeNull();
+    expect(gutter?.className).toContain("lg:px-36");
+    expect(gutter?.className).not.toContain("max-w-[1152px]");
+
+    expect(content).not.toBeNull();
+    expect(content?.className).toContain("max-w-[1152px]");
+    expect(content?.className).not.toContain("lg:px-36");
+  });
+
   it("forwards likedIds/currentUser so a likeable post renders an interactive heart button (F008)", () => {
     const posts = [makePost({ id: "likeable", hearts: 5, content: "likeable post" })];
 

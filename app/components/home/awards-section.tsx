@@ -2,6 +2,7 @@ import { Montserrat } from "next/font/google";
 
 import { AWARD_CATEGORIES } from "@/lib/awards/award-categories";
 import type { Dictionary } from "@/lib/i18n/dictionary";
+import { ContentFrame, PageGutter } from "../layout/page-layout";
 import { AwardCard, type AwardCardProps } from "./award-card";
 
 /**
@@ -113,11 +114,12 @@ export function AwardsSection({ awards, detailsCta }: AwardsSectionProps) {
     // content width and centered — this section has no background art of
     // its own, so (unlike hero-section.tsx) there is nothing that needs to
     // bleed edge-to-edge.
-    <section
+    <PageGutter
+      as="section"
       id="awards-section"
-      className={`${montserrat.variable} flex w-full justify-center px-6 sm:px-10 lg:px-36`}
+      className={`${montserrat.variable} flex justify-center`}
     >
-      <div className="flex w-full max-w-[1224px] flex-col items-start gap-20">
+      <ContentFrame width={1224} className="flex flex-col items-start gap-20">
         {/* mm:2167:9069 */}
         <div className="flex w-full flex-col items-start gap-4">
           {/* mm:2167:9070 — "Sun* annual awards 2025" is a brand name, stays
@@ -147,7 +149,7 @@ export function AwardsSection({ awards, detailsCta }: AwardsSectionProps) {
             />
           ))}
         </div>
-      </div>
-    </section>
+      </ContentFrame>
+    </PageGutter>
   );
 }

@@ -8,6 +8,7 @@ import { useScrollToTopOnHomeClick } from "@/hooks/use-scroll-to-top-on-home-cli
 import type { Dictionary } from "@/lib/i18n/dictionary";
 import type { Locale } from "@/lib/i18n/locale";
 import { AccountMenuButton } from "./account-menu-button";
+import { PageGutter } from "../layout/page-layout";
 import { NavLink } from "./nav-link";
 import { NotificationBell } from "./notification-bell";
 
@@ -49,7 +50,10 @@ export function SiteHeader({ locale, nav, account, notifications }: SiteHeaderPr
 
   return (
     // mm:2167:9091
-    <header className="sticky top-0 z-20 flex min-h-20 w-full flex-wrap items-center justify-between gap-y-2 bg-[rgba(16,20,23,0.8)] px-6 py-3 sm:px-10 lg:px-36">
+    <PageGutter
+      as="header"
+      className="sticky top-0 z-20 flex min-h-20 flex-wrap items-center justify-between gap-y-2 bg-[rgba(16,20,23,0.8)] py-3"
+    >
       {/* mm:I2167:9091;186:2166 */}
       <div className="flex items-center gap-4 sm:gap-8 lg:gap-16">
         {/* mm:I2167:9091;178:1033 */}
@@ -108,6 +112,6 @@ export function SiteHeader({ locale, nav, account, notifications }: SiteHeaderPr
         <LanguageSelector initialLocale={locale} />
         <AccountMenuButton profile={account.profile} signOut={account.signOut} />
       </div>
-    </header>
+    </PageGutter>
   );
 }

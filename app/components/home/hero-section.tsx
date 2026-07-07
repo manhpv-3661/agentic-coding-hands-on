@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { Dictionary } from "@/lib/i18n/dictionary";
+import { ContentFrame, PageGutter } from "../layout/page-layout";
 import { CountdownTimer } from "./countdown-timer";
 import { EventInfo } from "./event-info";
 import { HeroCtaButtons } from "./hero-cta-buttons";
@@ -43,9 +44,9 @@ export interface HeroSectionProps {
 export function HeroSection({ hero, countdown }: HeroSectionProps) {
   return (
     // mm:2167:9030
-    <section className="relative flex w-full items-center justify-center px-6 sm:px-10 lg:px-36">
+    <PageGutter as="section" className="relative flex items-center justify-center">
       {/* mm:2167:9031 */}
-      <div className="flex w-full max-w-[1224px] flex-col items-start gap-10">
+      <ContentFrame width={1224} className="flex flex-col items-start gap-10">
         {/* mm:2167:9032 */}
         <div className="flex flex-col items-start">
           {/* mm:2788:12911 */}
@@ -69,7 +70,7 @@ export function HeroSection({ hero, countdown }: HeroSectionProps) {
           />
         </div>
         <HeroCtaButtons aboutAwards={hero.cta.aboutAwards} aboutKudos={hero.cta.aboutKudos} />
-      </div>
-    </section>
+      </ContentFrame>
+    </PageGutter>
   );
 }

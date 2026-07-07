@@ -17,7 +17,7 @@
  * Pure presentational.
  */
 
-import { SPOTLIGHT_NAME_SLOTS } from "./spotlight-name-cloud-slots";
+import { SPOTLIGHT_NAME_SLOTS } from "@/lib/kudos/spotlight-name-cloud-slots";
 
 export interface SpotlightNameCloudProps {
   names: string[];
@@ -46,6 +46,7 @@ export function SpotlightNameCloud({ names, query, panZoom }: SpotlightNameCloud
         return (
           <span
             key={`${name}-${index}`}
+            data-spotlight-index={index}
             data-matched={isMatch}
             className={`absolute font-montserrat font-bold whitespace-nowrap transition-colors duration-150 ${slot.size} ${
               isMatch ? "text-[#FFEA9E]" : isDimmed ? "text-white/20" : isAccent ? "text-[#F17676]" : "text-white"

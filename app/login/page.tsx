@@ -7,6 +7,7 @@ import { LoginButtonContainer } from "./components/login-button-container";
 import { LoginFooter } from "./components/login-footer";
 import { LoginHeader } from "./components/login-header";
 import { LoginHeroContent } from "./components/login-hero-content";
+import { PageGutter } from "../components/layout/page-layout";
 import { montserrat, montserratAlternates } from "./fonts";
 
 /** Locale-aware `<title>`/description — reads the `NEXT_LOCALE` cookie via
@@ -75,7 +76,7 @@ export default async function LoginPage({
       className={`${montserrat.variable} ${montserratAlternates.variable} relative flex min-h-screen w-full flex-col bg-[#00101A] bg-cover bg-right bg-no-repeat bg-[linear-gradient(to_right,#00101A_0%,#00101A_25.41%,rgba(0,16,26,0)_100%),url('/login/hero-waves.jpg')]`}
     >
       <LoginHeader initialLocale={locale} />
-      <main className="flex flex-1 items-center px-6 py-12 sm:px-10 lg:px-36 lg:py-24">
+      <PageGutter as="main" className="flex flex-1 items-center py-12 lg:py-24">
         <LoginHeroContent subtitle={d.login.hero.subtitle}>
           <LoginButtonContainer
             initialError={initialError}
@@ -85,7 +86,7 @@ export default async function LoginPage({
             google={d.login.button.google}
           />
         </LoginHeroContent>
-      </main>
+      </PageGutter>
       {/* Cover (662:14390): x-independent bottom fade to solid #00101A. Paints
           above the static <main> content and below the positioned <footer>
           (z-10) — see the JSDoc above for why that ordering falls out of the

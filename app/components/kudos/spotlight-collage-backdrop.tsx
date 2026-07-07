@@ -1,94 +1,28 @@
 import Image from "next/image";
 
-interface CollageTile {
-  src: string;
-  alt: string;
-  className: string;
-  rounded: string;
-}
-
-const COLLAGE_TILES: CollageTile[] = [
-  {
-    src: "/kudos/gallery/photo-1.jpg",
-    alt: "",
-    className: "left-[6%] top-[12%] h-24 w-24 rotate-[-6deg]",
-    rounded: "rounded-[22px]",
-  },
-  {
-    src: "/kudos/avatars/avatar-1.jpg",
-    alt: "",
-    className: "left-[18%] top-[44%] h-20 w-20",
-    rounded: "rounded-full",
-  },
-  {
-    src: "/kudos/avatars/avatar-2.jpg",
-    alt: "",
-    className: "left-[34%] top-[18%] h-16 w-16",
-    rounded: "rounded-full",
-  },
-  {
-    src: "/kudos/gallery/photo-1.jpg",
-    alt: "",
-    className: "left-[41%] top-[55%] h-28 w-28 rotate-[8deg]",
-    rounded: "rounded-[26px]",
-  },
-  {
-    src: "/kudos/avatars/avatar-3.jpg",
-    alt: "",
-    className: "left-[58%] top-[15%] h-18 w-18",
-    rounded: "rounded-full",
-  },
-  {
-    src: "/kudos/gallery/photo-1.jpg",
-    alt: "",
-    className: "left-[67%] top-[42%] h-24 w-24 rotate-[-10deg]",
-    rounded: "rounded-[24px]",
-  },
-  {
-    src: "/kudos/avatars/avatar-1.jpg",
-    alt: "",
-    className: "left-[79%] top-[20%] h-16 w-16",
-    rounded: "rounded-full",
-  },
-  {
-    src: "/kudos/avatars/avatar-2.jpg",
-    alt: "",
-    className: "left-[84%] top-[58%] h-20 w-20",
-    rounded: "rounded-full",
-  },
-];
-
 /**
- * Decorative member-photo collage for the Spotlight board. The real Figma
- * export path for this backdrop is unavailable in this repo, so this uses the
- * shipped local mock photos and arranges them into a dense, low-contrast
- * collage behind the name cloud and ticker.
+ * Decorative Spotlight backdrop reconstructed from the real rendered crop
+ * exported out of MoMorph. We do not have the isolated `image 25` background
+ * asset as a clean PNG, only the flattened board crop, so this uses that crop
+ * as a blurred/darkened reference layer. That preserves the true wave/network
+ * geometry much better than inventing a new collage from unrelated mock photos,
+ * while still pushing the baked text/UI far enough into the background that the
+ * real foreground layers stay dominant.
  */
 export function SpotlightCollageBackdrop() {
   return (
-    <div aria-hidden="true" className="absolute inset-0 -z-10 overflow-hidden rounded-[47px]">
-      <div className="absolute inset-0 bg-[#101317]" />
-      <div className="absolute inset-0 grid grid-cols-4 gap-4 px-10 py-8 opacity-18">
-        {Array.from({ length: 8 }).map((_, index) => (
-          <div
-            key={index}
-            className={`min-h-24 rounded-[28px] bg-[url('/kudos/gallery/photo-1.jpg')] bg-cover bg-center ${
-              index % 2 === 0 ? "translate-y-4" : "-translate-y-2"
-            }`}
-          />
-        ))}
-      </div>
-      <div className="absolute inset-0">
-        {COLLAGE_TILES.map((tile, index) => (
-          <div
-            key={index}
-            className={`absolute overflow-hidden border border-white/20 opacity-45 shadow-[0_0_24px_rgba(0,0,0,0.25)] ${tile.className} ${tile.rounded}`}
-          >
-            <Image src={tile.src} alt={tile.alt} fill sizes="128px" className="object-cover" />
-          </div>
-        ))}
-      </div>
-      <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(0,0,0,0.70)_0%,rgba(0,0,0,0.70)_100%)]" />
+    <div aria-hidden="true" className="absolute inset-0 z-0 overflow-hidden rounded-[47px]">
+      <Image
+        src="/kudos/spotlight-crop.png"
+        alt=""
+        fill
+        quality={100}
+        unoptimized
+        sizes="1157px"
+        className="object-cover object-center opacity-[0.96] saturate-[1.08] brightness-[0.76] contrast-[1.03]"
+      />
+      <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(0,0,0,0.34)_0%,rgba(0,0,0,0.34)_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_88%,rgba(228,117,33,0.18),transparent_21%),radial-gradient(circle_at_7%_22%,rgba(102,177,88,0.14),transparent_17%),radial-gradient(circle_at_34%_90%,rgba(166,64,38,0.16),transparent_19%)]" />
     </div>
   );
 }

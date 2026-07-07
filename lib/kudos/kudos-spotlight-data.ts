@@ -5,37 +5,10 @@
  * importing them from the "database" module.
  */
 
-/**
- * Names scattered across the Spotlight word-cloud (FR-10). A modest list
- * (not 388 — that would defeat the point of a static mock), with overlap
- * against `KUDOS_POSTS` recipients so the substring search demo feels real.
- */
-export const SPOTLIGHT_NAMES: string[] = [
-  "Nguyễn Văn An",
-  "Trần Thị Bình",
-  "Phạm Thị Hương",
-  "Vũ Thị Lan",
-  "Bùi Thị Mai",
-  "Ngô Thị Yến",
-  "Hoàng Văn Đức",
-  "Đỗ Minh Khôi",
-  "Lê Hoàng Nam",
-  "Đặng Văn Sơn",
-  "Trịnh Văn Hải",
-  "Huỳnh Dương Xuân",
-  "Lý Thị Ngọc",
-  "Phan Văn Quang",
-  "Dương Thị Thảo",
-  "Vương Minh Tuấn",
-  "Đinh Thị Hạnh",
-  "Tô Văn Phúc",
-  "Chu Thị Linh",
-  "Mai Văn Kiên",
-  "Lâm Thị Diệp",
-  "Cao Văn Thắng",
-  "Kiều Thị Vân",
-  "Đoàn Văn Long",
-];
+import { SPOTLIGHT_NAME_SLOTS } from "./spotlight-name-cloud-slots";
+
+/** Exact repeated-name texture exported from the real Figma spotlight board. */
+export const SPOTLIGHT_NAMES: string[] = SPOTLIGHT_NAME_SLOTS.map((slot) => slot.text);
 
 /** The "388 KUDOS" counter (FR-10) — a number, independent of the rendered
  * name-cloud item count. */

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { Locale } from "@/lib/i18n/locale";
+import { PageGutter } from "@/app/components/layout/page-layout";
 import { LanguageSelector } from "./language-selector";
 
 /**
@@ -18,7 +19,10 @@ import { LanguageSelector } from "./language-selector";
  */
 export function LoginHeader({ initialLocale }: { initialLocale: Locale }) {
   return (
-    <header className="sticky top-0 z-20 flex items-center justify-between bg-[rgba(11,15,18,0.8)] px-6 py-3 sm:px-10 lg:px-36">
+    <PageGutter
+      as="header"
+      className="sticky top-0 z-20 flex items-center justify-between bg-[rgba(11,15,18,0.8)] py-3"
+    >
       <Image
         src="/login/Logo.png"
         alt="Sun* Annual Awards 2025"
@@ -27,6 +31,6 @@ export function LoginHeader({ initialLocale }: { initialLocale: Locale }) {
         priority
       />
       <LanguageSelector initialLocale={initialLocale} />
-    </header>
+    </PageGutter>
   );
 }

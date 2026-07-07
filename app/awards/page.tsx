@@ -8,6 +8,7 @@ import { AwardsHero } from "../components/awards/awards-hero";
 import { SiteFooter } from "../components/home/site-footer";
 import { SiteHeader } from "../components/home/site-header";
 import { SunKudosSection } from "../components/home/sun-kudos-section";
+import { PageGutter } from "../components/layout/page-layout";
 import { montserrat, montserratAlternates } from "../login/fonts";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -88,7 +89,7 @@ export default async function AwardsPage() {
             catalog itself stays layout-only (no page-level gutter baked
             in). Inner gap matches `Bìa` (313:8449)'s own 120px spacing
             between the title block and the catalog (`mms_B`, 313:8458). */}
-        <div className="flex w-full flex-col gap-10 px-6 sm:px-10 lg:gap-[120px] lg:px-36">
+        <PageGutter className="flex flex-col gap-10 lg:gap-[120px]">
           {/* mm:313:8453 — both the eyebrow (313:8454) and the heading's
               wrapping row (Frame 488, 313:8456, `justify-content: center`)
               center their text within the full 1152px content width per
@@ -109,7 +110,7 @@ export default async function AwardsPage() {
             quantityLabel={dictionary.awards.detail.quantityLabel}
             valueLabel={dictionary.awards.detail.valueLabel}
           />
-        </div>
+        </PageGutter>
 
         <SunKudosSection kudos={dictionary.homepage.kudos} detailsCta={dictionary.shared.detailsCta} />
       </main>

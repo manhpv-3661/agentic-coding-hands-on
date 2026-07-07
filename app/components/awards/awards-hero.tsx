@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { PageGutter } from "../layout/page-layout";
 
 /**
  * Awards page hero keyvisual mini — MoMorph "Hệ thống giải" screen.
@@ -25,7 +26,10 @@ import Image from "next/image";
 export function AwardsHero() {
   return (
     // mm:313:8437 + mm:313:8439
-    <section className="relative flex h-[280px] w-full items-start overflow-hidden bg-[#00101A] px-6 pt-8 sm:h-[380px] sm:px-10 sm:pt-14 lg:h-[547px] lg:px-36 lg:pt-[104px]">
+    <PageGutter
+      as="section"
+      className="relative flex h-[280px] items-start overflow-hidden bg-[#00101A] pt-8 sm:h-[380px] sm:pt-14 lg:h-[547px] lg:pt-[104px]"
+    >
       <Image
         src="/homepage-saa/Keyvisual-BG.png"
         alt=""
@@ -77,6 +81,6 @@ export function AwardsHero() {
           Sun* Annual Awards 2025
         </p>
       </div>
-    </section>
+    </PageGutter>
   );
 }

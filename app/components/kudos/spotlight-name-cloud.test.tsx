@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { SpotlightNameCloud } from "./spotlight-name-cloud";
 import { SPOTLIGHT_NAMES } from "@/lib/kudos/kudos-spotlight-data";
-import { SPOTLIGHT_NAME_SLOTS } from "./spotlight-name-cloud-slots";
+import { SPOTLIGHT_NAME_SLOTS } from "@/lib/kudos/spotlight-name-cloud-slots";
 
 describe("SpotlightNameCloud", () => {
   it("renders every name", () => {
@@ -28,21 +28,28 @@ describe("SpotlightNameCloud", () => {
   });
 
   it("pins the production dataset to the fixed spotlight slots", () => {
-    render(<SpotlightNameCloud names={SPOTLIGHT_NAMES} query="" panZoom={false} />);
+    const { container } = render(<SpotlightNameCloud names={SPOTLIGHT_NAMES} query="" panZoom={false} />);
 
     SPOTLIGHT_NAMES.forEach((name, index) => {
-      const el = screen.getByText(name);
+      const el = container.querySelector<HTMLElement>(`[data-spotlight-index="${index}"]`);
       const slot = SPOTLIGHT_NAME_SLOTS[index];
+      expect(el).not.toBeNull();
+      expect(el).toHaveTextContent(name);
       expect(el).toHaveClass(slot.size);
-      expect(Number.parseFloat(el.style.top)).toBeCloseTo(Number.parseFloat(slot.top), 5);
-      expect(Number.parseFloat(el.style.left)).toBeCloseTo(Number.parseFloat(slot.left), 5);
+      expect(Number.parseFloat(el!.style.top)).toBeCloseTo(Number.parseFloat(slot.top), 5);
+      expect(Number.parseFloat(el!.style.left)).toBeCloseTo(Number.parseFloat(slot.left), 5);
     });
   });
 
   it("renders the accent color on the one fixed accent slot", () => {
-    render(<SpotlightNameCloud names={SPOTLIGHT_NAMES} query="" panZoom={false} />);
+    const { container } = render(<SpotlightNameCloud names={SPOTLIGHT_NAMES} query="" panZoom={false} />);
+    const accentIndex = SPOTLIGHT_NAME_SLOTS.findIndex((slot) => slot.tone === "accent");
+    const accentNode = container.querySelector<HTMLElement>(`[data-spotlight-index="${accentIndex}"]`);
+    const neighborNode = container.querySelector<HTMLElement>(`[data-spotlight-index="${accentIndex - 1}"]`);
 
-    expect(screen.getByText(SPOTLIGHT_NAMES[0])).toHaveClass("text-[#F17676]");
-    expect(screen.getByText(SPOTLIGHT_NAMES[1])).toHaveClass("text-white");
+    expect(accentNode).not.toBeNull();
+    expect(neighborNode).not.toBeNull();
+    expect(accentNode).toHaveClass("text-[#F17676]");
+    expect(neighborNode).toHaveClass("text-white");
   });
 });

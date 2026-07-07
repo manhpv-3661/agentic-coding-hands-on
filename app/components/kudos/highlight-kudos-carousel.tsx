@@ -63,13 +63,13 @@ export function HighlightKudosCarousel({
 
   return (
     <section className="flex w-full flex-col gap-10">
-      <div className="mx-auto flex w-full max-w-[1152px] flex-wrap items-end justify-between gap-4 px-6 sm:px-10 lg:px-36">
+      <div className="flex w-full flex-wrap items-end justify-between gap-4">
         <KudosSectionHeading subtitle="Sun* Annual Awards 2025" title="HIGHLIGHT KUDOS" />
         {filtersSlot}
       </div>
 
       {posts.length === 0 ? (
-        <p className="font-montserrat px-6 text-sm text-white/60 sm:px-10 lg:px-36">{emptyLabel}</p>
+        <p className="font-montserrat text-sm text-white/60">{emptyLabel}</p>
       ) : (
         <>
           {/* mm:2940:13463 — full-bleed row, breaking out of the page's
