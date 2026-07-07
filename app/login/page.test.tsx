@@ -57,7 +57,7 @@ describe("/app/login/page.tsx", () => {
     process.env = originalEnv;
   });
 
-  it("redirects to /todo when user is authenticated", async () => {
+  it("redirects to / when user is authenticated", async () => {
     vi.mocked(isSupabaseConfigured).mockReturnValue(true);
     vi.mocked(createClient).mockResolvedValueOnce({
       auth: {
@@ -71,7 +71,7 @@ describe("/app/login/page.tsx", () => {
       searchParams: Promise.resolve({}),
     });
 
-    expect(redirect).toHaveBeenCalledWith("/todo");
+    expect(redirect).toHaveBeenCalledWith("/");
   });
 
   it("does not redirect when user is not authenticated", async () => {

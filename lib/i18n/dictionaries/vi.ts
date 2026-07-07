@@ -65,7 +65,9 @@ export const vi = {
     },
     button: {
       loading: "Đang đăng nhập...",
-      google: "Đăng nhập với Google",
+      // Fixed English copy per MoMorph ground truth (mm:662:14425) — the
+      // button label is not translated across locales.
+      google: "LOGIN With Google",
     },
   },
   homepage: {
@@ -168,7 +170,9 @@ export const vi = {
       // Top Project Leader/Best Manager/MVP's bare value amount).
       entries: {
         topTalent: {
-          quantity: { number: "10", unit: "Đơn vị" },
+          // mm:I313:8467;214:3532 ground truth is "Cá nhân" — design was
+          // updated after this was first written; sync it.
+          quantity: { number: "10", unit: "Cá nhân" },
           value: { number: "7.000.000 VNĐ", unit: "cho mỗi giải thưởng" },
         },
         topProject: {
@@ -295,9 +299,12 @@ export const vi = {
       },
       content: {
         label: "Nội dung",
-        // Verbatim ground truth (node I520:11647;520:9886;186:2760) — no
-        // "VD: ..." example sentence, "gửi gắm"/"cám ơn" not "gửi"/"cảm ơn".
-        placeholder: "Hãy gửi gắm lời cám ơn và ghi nhận đến đồng đội tại đây nhé!",
+        // Verbatim ground truth from the canonical empty-state screen
+        // (JsTvi8KVQA, node I1612:5057;520:9886;186:2760) — two lines: the
+        // instruction plus a "VD: ..." example, rendered via
+        // `white-space: pre-line` on the placeholder pseudo-element.
+        placeholder:
+          "Hãy gửi lời cảm ơn và ghi nhận đến đồng đội tại đây nhé!\nVD: Cảm ơn bạn vì tinh thần dẫn dắt và khả năng \"giữ nhịp\" cực kỳ tốt trong giai đoạn nước rút của dự án...",
         mentionHint: 'Bạn có thể "@ + tên" để nhắc tới đồng nghiệp khác',
         counterMax: "1.000",
         error: "Vui lòng nhập nội dung.",

@@ -46,7 +46,7 @@ test.describe("Homepage Access Control (Auth Redirect Tests)", () => {
     const response = await page.goto("/login", { waitUntil: "networkidle" });
     expect(response?.status()).toBeLessThan(400);
 
-    const loginButton = page.locator("button:has-text('Đăng nhập với Google')");
+    const loginButton = page.locator("button:has-text('LOGIN With Google')");
     await expect(loginButton).toBeVisible();
   });
 });

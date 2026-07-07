@@ -15,7 +15,7 @@ status: active
 
 Màn hình đăng nhập của ứng dụng **SAA 2025** (Sun* Annual Awards 2025). Người dùng chưa
 xác thực đăng nhập bằng tài khoản Google (thông qua **Supabase Auth**). Sau khi xác thực
-thành công, hệ thống chuyển hướng về trang chính `/todo`.
+thành công, hệ thống chuyển hướng về trang chính `/` (cập nhật từ `/todo` — xem F002).
 
 Bố cục: header cố định (logo trái + bộ chọn ngôn ngữ phải), khu vực nội dung chính (hero
 visual + khối giới thiệu + nút đăng nhập), footer bản quyền ở cuối trang.
@@ -24,7 +24,8 @@ visual + khối giới thiệu + nút đăng nhập), footer bản quyền ở c
 
 ### 2.1 Kiểm soát truy cập (Access Control)
 - **FR-1**: Người dùng **chưa đăng nhập** truy cập `/login` → hiển thị màn hình đăng nhập.
-- **FR-2**: Người dùng **đã đăng nhập** truy cập `/login` → tự động chuyển hướng về `/todo`.
+- **FR-2**: Người dùng **đã đăng nhập** truy cập `/login` → tự động chuyển hướng về `/` (cập nhật từ
+  `/todo` — xem F002).
 - **FR-3**: Sau khi **đăng xuất** từ trang đã xác thực → chuyển hướng về `/login`.
 - **FR-4**: Trang `/todo` được bảo vệ: người dùng chưa đăng nhập → chuyển hướng về `/login`.
 
@@ -32,7 +33,8 @@ visual + khối giới thiệu + nút đăng nhập), footer bản quyền ở c
 - **FR-5**: Nhấn nút **"LOGIN With Google"** → khởi động luồng Google OAuth qua Supabase
   (`signInWithOAuth({ provider: 'google' })`), `redirectTo` trỏ về `/auth/callback`.
 - **FR-6**: Trong khi xử lý xác thực, nút **bị vô hiệu hóa** và hiển thị **loading indicator** (spinner).
-- **FR-7**: Xác thực thành công → route `/auth/callback` đổi code lấy session → chuyển hướng về `/todo`.
+- **FR-7**: Xác thực thành công → route `/auth/callback` đổi code lấy session → chuyển hướng về `/`
+  (cập nhật từ `/todo` — xem F002).
 - **FR-8**: Xác thực thất bại hoặc người dùng hủy → hiển thị thông báo lỗi:
   **"Đăng nhập không thành công. Vui lòng thử lại."**
 - **FR-9**: Mọi tài khoản Google đều được phép đăng nhập (không giới hạn domain).
@@ -67,15 +69,15 @@ visual + khối giới thiệu + nút đăng nhập), footer bản quyền ở c
 ## 5. Kiến trúc & luồng (tóm tắt — chi tiết ở docs/system)
 ```
 /login (chưa auth) --click Login--> supabase.signInWithOAuth(google, redirectTo=/auth/callback)
-   --> Google consent --> /auth/callback (exchangeCodeForSession) --> redirect /todo
-middleware: refresh session; /login + đã-auth -> /todo ; /todo + chưa-auth -> /login
+   --> Google consent --> /auth/callback (exchangeCodeForSession) --> redirect /
+middleware: refresh session; /login + đã-auth -> / ; /todo + chưa-auth -> /login
 ```
 
 ## 6. Tiêu chí chấp nhận (Acceptance Criteria)
 - [ ] Toàn bộ 8 design item hiển thị đúng vị trí, màu, font, spacing như Figma.
 - [ ] 17 test case của MoMorph đều pass (unit + E2E theo TDD).
 - [ ] Nút Login: click → loading/disabled → OAuth; lỗi hiển thị đúng thông báo.
-- [ ] Người dùng đã auth truy cập /login → redirect /todo; chưa auth truy cập /todo → redirect /login.
+- [ ] Người dùng đã auth truy cập /login → redirect /; chưa auth truy cập /todo → redirect /login.
 - [ ] Language selector mở dropdown, ghi cookie NEXT_LOCALE, mặc định VN.
 
 ## 7. Câu hỏi chưa giải quyết

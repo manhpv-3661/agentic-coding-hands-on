@@ -22,14 +22,16 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 /** Already-authenticated users skip the login screen (defense-in-depth
- * alongside proxy.ts). No-op when Supabase env is absent. */
+ * alongside proxy.ts, which redirects this same case to `/` — kept in sync
+ * so this fallback can never disagree with the real gate). No-op when
+ * Supabase env is absent. */
 async function redirectIfAuthenticated() {
   if (!isSupabaseConfigured()) return;
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (user) redirect("/todo");
+  if (user) redirect("/");
 }
 
 /**

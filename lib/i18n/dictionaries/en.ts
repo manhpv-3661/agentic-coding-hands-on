@@ -52,7 +52,9 @@ export const en = {
     },
     button: {
       loading: "Signing in...",
-      google: "Login with Google",
+      // Fixed English copy per MoMorph ground truth (mm:662:14425) — the
+      // button label is not translated across locales.
+      google: "LOGIN With Google",
     },
   },
   homepage: {
@@ -140,7 +142,9 @@ export const en = {
       // `{ number, unit }` to mirror MoMorph's two separate text nodes.
       entries: {
         topTalent: {
-          quantity: { number: "10", unit: "Units" },
+          // mm:I313:8467;214:3532 ground truth is "Cá nhân" (Individuals) —
+          // design was updated after this was first written; sync it.
+          quantity: { number: "10", unit: "Individuals" },
           value: { number: "7,000,000 VND", unit: "per award" },
         },
         topProject: {

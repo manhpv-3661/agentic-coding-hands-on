@@ -23,8 +23,8 @@ import { LoginButton } from "./login-button";
  *   forwarded to `<LoginButton>` as `loadingLabel`. Destructured under a
  *   local alias to avoid colliding with this component's own boolean
  *   `loading` state below.
- * @param google - dict-sourced "Login with Google" label
- *   (`login.button.google`), forwarded to `<LoginButton>`.
+ * @param google - dict-sourced "LOGIN With Google" label (fixed English
+ *   copy in both locales, `login.button.google`), forwarded to `<LoginButton>`.
  */
 export function LoginButtonContainer({
   initialError = null,

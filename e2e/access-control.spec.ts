@@ -8,7 +8,7 @@ test.describe("Access Control & Routing", () => {
     expect(response?.status()).toBeLessThan(400);
 
     // Should see login elements
-    const loginButton = page.locator("button:has-text('Đăng nhập với Google')");
+    const loginButton = page.locator("button:has-text('LOGIN With Google')");
     await expect(loginButton).toBeVisible();
   });
 
@@ -88,7 +88,7 @@ test.describe("Access Control & Routing", () => {
     // but we can test that the page doesn't crash
     await page.goto("/login");
 
-    const loginButton = page.locator("button:has-text('Đăng nhập với Google')");
+    const loginButton = page.locator("button:has-text('LOGIN With Google')");
     await expect(loginButton).toBeVisible();
   });
 
@@ -109,7 +109,7 @@ test.describe("Access Control & Routing", () => {
     await page.goto("/login");
 
     const loginButton = page.locator("main button");
-    await expect(loginButton).toContainText("Đăng nhập với Google");
+    await expect(loginButton).toContainText("LOGIN With Google");
     await loginButton.click();
 
     await expect.poll(() => authorizeRequested, { timeout: 5000 }).toBe(true);
