@@ -76,8 +76,14 @@ export function KudosCard({
       }
     >
       {/* mm:I2940:13464;335:9442 / mm:I3127:21871;256:4857 — 24px gap,
-       * space-between, in both variants (not gap-3/packed). */}
-      <div className="flex flex-wrap items-center justify-between gap-6">
+       * space-between, in both variants (not gap-3/packed). Ground truth
+       * never wraps this row to two lines even for its longest sample names
+       * ("Huỳnh Dương Xuân Nhật" / "Huỳnh Dương Xuân") — `flex-wrap` let the
+       * recipient block drop to its own line on the narrower "All Kudos"
+       * single-column card (confirmed via live-browser screenshot), so this
+       * stays a single non-wrapping row; `min-w-0` on each person block lets
+       * its name/department text truncate instead of forcing a wrap. */}
+      <div className="flex items-center justify-between gap-6">
         <KudosPersonBlock person={post.sender} />
         <SentArrowIcon />
         <KudosPersonBlock person={post.recipient} />

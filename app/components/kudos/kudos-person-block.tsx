@@ -18,9 +18,11 @@ export function KudosPersonBlock({ person }: KudosPersonBlockProps) {
   const badge = personBadge(person);
 
   return (
-    <div className="flex items-center gap-3">
-      <Avatar name={person.name} size={64} className="border-[1.869px] border-white" />
-      <div className="flex flex-col items-start gap-1">
+    <div className="flex min-w-0 items-center gap-3">
+      <Avatar name={person.name} size={64} className="shrink-0 border-[1.869px] border-white" />
+      <div className="flex min-w-0 flex-col items-start gap-1">
+        {/* Wrap (not truncate) on a tight card: a 2-line name stays fully
+         * readable, where an ellipsis after 2-3 characters would not. */}
         <span className="font-montserrat text-base leading-6 font-bold tracking-[0.15px] text-[#00101A]">
           {person.name}
         </span>
