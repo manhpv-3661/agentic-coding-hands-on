@@ -139,12 +139,15 @@ describe("/app/login/page.tsx", () => {
 
     // Walk down to LoginButtonContainer's initialError prop to confirm it
     // reads the single dict key instead of a hardcoded duplicate.
-    // div > [LoginHeader, main, LoginFooter] > main > LoginHeroContent > LoginButtonContainer
+    // div > [LoginHeader, main, LoginFooter] > main > ContentFrame (1152px
+    // MoMorph content cap, phase-04-login-screen.md) > LoginHeroContent >
+    // LoginButtonContainer
     const element = result as {
       props: { children: Array<{ props?: { children?: unknown } }> };
     };
     const main = element.props.children[1] as { props: { children: unknown } };
-    const loginHeroContent = main.props.children as { props: { children: unknown } };
+    const contentFrame = main.props.children as { props: { children: unknown } };
+    const loginHeroContent = contentFrame.props.children as { props: { children: unknown } };
     const loginButtonContainer = loginHeroContent.props.children as {
       props: { initialError: string };
     };

@@ -7,7 +7,7 @@ import { LoginButtonContainer } from "./components/login-button-container";
 import { LoginFooter } from "./components/login-footer";
 import { LoginHeader } from "./components/login-header";
 import { LoginHeroContent } from "./components/login-hero-content";
-import { PageGutter } from "../components/layout/page-layout";
+import { ContentFrame, PageGutter } from "../components/layout/page-layout";
 import { montserrat, montserratAlternates } from "./fonts";
 
 /** Locale-aware `<title>`/description — reads the `NEXT_LOCALE` cookie via
@@ -77,15 +77,21 @@ export default async function LoginPage({
     >
       <LoginHeader initialLocale={locale} />
       <PageGutter as="main" className="flex flex-1 items-center py-12 lg:py-24">
-        <LoginHeroContent subtitle={d.login.hero.subtitle}>
-          <LoginButtonContainer
-            initialError={initialError}
-            oauthFailed={d.login.error.oauthFailed}
-            notConfigured={d.login.error.notConfigured}
-            loading={d.login.button.loading}
-            google={d.login.button.google}
-          />
-        </LoginHeroContent>
+        {/* Content max-width cap (Figma `Main` node: 1152 = 1440 − 2×144 page
+            gutter) — without this, content grows unbounded past the native
+            1440px design frame on wider viewports. See
+            `.claude/rules/momorph/momorph-layout-system.md`. */}
+        <ContentFrame width={1152}>
+          <LoginHeroContent subtitle={d.login.hero.subtitle}>
+            <LoginButtonContainer
+              initialError={initialError}
+              oauthFailed={d.login.error.oauthFailed}
+              notConfigured={d.login.error.notConfigured}
+              loading={d.login.button.loading}
+              google={d.login.button.google}
+            />
+          </LoginHeroContent>
+        </ContentFrame>
       </PageGutter>
       {/* Cover (662:14390): x-independent bottom fade to solid #00101A. Paints
           above the static <main> content and below the positioned <footer>
