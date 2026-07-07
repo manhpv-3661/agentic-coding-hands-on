@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { KudosSectionHeading } from "./kudos-section-heading";
+import { SpotlightCollageBackdrop } from "./spotlight-collage-backdrop";
 import { SpotlightNameCloud } from "./spotlight-name-cloud";
 import { SpotlightTicker } from "./spotlight-ticker";
 
@@ -62,22 +63,11 @@ export function SpotlightBoard({ names, total, labels }: SpotlightBoardProps) {
        * near-full-height name texture. `overflow-hidden` clips the
        * oversized photo-collage backdrop below to this radius. */}
       <div className="relative flex h-137 w-full flex-col gap-4 overflow-hidden rounded-[47px] border border-[#998C5F] p-6">
-        {/* Photo-collage backdrop dimmed 70% black (`Root further mo rong 1`,
-         * node 2940:14173: `linear-gradient(0deg, rgba(0,0,0,.70) 0%,
-         * rgba(0,0,0,.70) 100%), url(...) lightgray 50% / cover no-repeat`).
-         * MoMorph's own image export is broken for this fileKey (redacted
-         * `<path-to-image>` token) — reuses the design's own already-cropped
-         * photo asset per the crop-from-render precedent established for
-         * `avatar.tsx`/`kudos-image-gallery.tsx` (clarifications.md). The
-         * design's second `background-blend-mode: screen` layer (node
-         * 2940:14181) is a near-duplicate photo crop from the same render;
-         * with only one distinct photo asset available in this repo's mock
-         * pool, blending it with itself adds no visible signal, so it's
-         * skipped (YAGNI). `-z-10` keeps this behind all board content. */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 -z-10 bg-[linear-gradient(0deg,rgba(0,0,0,0.70)_0%,rgba(0,0,0,0.70)_100%),url('/kudos/gallery/photo-1.jpg')] bg-[#101317] bg-cover bg-center bg-no-repeat"
-        />
+        {/* The exact Figma collage export is unavailable here, so the backdrop
+         * is reconstructed from the shipped mock photos: a low-contrast grid
+         * layer + a handful of larger portrait/photo tiles under the same 70%
+         * black overlay the design uses. */}
+        <SpotlightCollageBackdrop />
 
         <div className="relative flex flex-wrap items-center gap-4">
           {/* Search pill (`B.7.3_Tìm kiếm sunner`, node 2940:14833): wraps the

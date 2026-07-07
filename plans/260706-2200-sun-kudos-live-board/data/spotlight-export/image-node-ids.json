@@ -1,0 +1,32 @@
+[
+  {
+    "id": "2940:14174",
+    "name": "B.7_Spotlight",
+    "reason": "board frame"
+  },
+  {
+    "id": "3007:17482",
+    "name": "B.7.1_388 KUDOS",
+    "reason": "KUDOS counter badge"
+  },
+  {
+    "id": "3007:17479",
+    "name": "B.7.2_Pan zoom",
+    "reason": "pan/zoom control"
+  },
+  {
+    "id": "2940:14833",
+    "name": "B.7.3_Tìm kiếm sunner",
+    "reason": "search pill"
+  },
+  {
+    "id": "2940:14178",
+    "name": "image 24",
+    "reason": "overlay rectangle, 1098x617px, no fill data returned by API"
+  },
+  {
+    "id": "2940:14181",
+    "name": "image 25",
+    "reason": "CONFIRMED background image fill (background: url(...) lightgray 50% / cover no-repeat, background-blend-mode: screen), 1100x618px — this is the network/wave collage graphic. Could not export as isolated PNG: get_figma_image returned HTTP 500, get_media_file returned 401. See images/spotlight-crop.png for a rendered reference instead."
+  }
+]

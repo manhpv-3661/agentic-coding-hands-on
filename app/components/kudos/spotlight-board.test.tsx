@@ -52,4 +52,9 @@ describe("SpotlightBoard", () => {
     const { container } = render(<SpotlightBoard names={names} total={388} labels={labels} />);
     expect(container.querySelectorAll("li")).toHaveLength(6);
   });
+
+  it("renders the decorative collage backdrop", () => {
+    const { container } = render(<SpotlightBoard names={names} total={388} labels={labels} />);
+    expect(container.querySelectorAll("img")).not.toHaveLength(0);
+  });
 });

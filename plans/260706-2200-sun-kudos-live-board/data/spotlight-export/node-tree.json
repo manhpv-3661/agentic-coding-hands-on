@@ -1,0 +1,2067 @@
+{
+  "rootNodeName": "B.7_Spotlight",
+  "rootNodeId": "2940:14174",
+  "note": "Source data (get_frame_node_tree) only provides id/name/type/children (+ optional inline 'specs' object for design-item nodes) -- NO position (x/y/width/height), rotation, fills, strokes, fontSize, or textAlign fields exist anywhere in the source file. For TEXT nodes, the 'name' field IS the rendered text content (confirmed by spot-checking e.g. id I2940:13464;335:9443;256:4735 name='Huỳnh Dương Xuân' type=TEXT with no other fields). 'characters' below is a copy of 'name' for TEXT nodes for convenience. No node in this subtree carries an imageRef/image-fill field in the source; image-fill candidates were identified by naming convention only (nodes literally named 'image N') and are listed in image-node-ids.json with that caveat.",
+  "discrepancy": "Node named exactly 'SPOTLIGHT BOARD' (id 2940:13480, type TEXT) is a section-heading label, NOT a container -- it lives under sibling frame 'B.6_Header Giai thuong' (id 2940:13476), which is itself a sibling of 'B.7_Spotlight' (id 2940:14174) under common parent 'Frame 552' (id 2940:14170). 'B.7_Spotlight' is the actual board container: it directly holds 'B.7.1_388 KUDOS', 'B.7.2_Pan zoom', 'B.7.3_Tim kiem sunner', and ~110 flat name-cloud TEXT children (no extra 'Spotlight' wrapper node exists between them as the prompt assumed). Used id=2940:14174 ('B.7_Spotlight') as the extraction root since it is the closest match containing all requested descendants.",
+  "tree": {
+    "id": "2940:14174",
+    "name": "B.7_Spotlight",
+    "type": "FRAME",
+    "specs": {
+      "item": {
+        "name": "Spotlight",
+        "nameTrans": "Bảng Spotlight (word cloud/interactive board)",
+        "otherType": "info_block",
+        "buttonType": ""
+      },
+      "database": {
+        "note": "",
+        "tableName": "",
+        "columnName": ""
+      },
+      "navigation": {
+        "note": "",
+        "action": "",
+        "linkedFrameId": "",
+        "linkedFrameName": ""
+      },
+      "validation": {
+        "note": "",
+        "format": "",
+        "dataType": "",
+        "required": false,
+        "maxLength": null,
+        "minLength": null,
+        "defaultValue": ""
+      },
+      "description": "Bảng tương tác hiển thị tên người nhận Kudos dưới dạng word cloud/diagram.\n\nDisplay:\n  - Canvas: Vùng hiển thị nhiều tên nhỏ dàn trải - interactive\n  - Header: '388 KUDOS' và thanh tìm kiếm nhỏ - thông tin tổng quát, trong đó 388 là tổng số KUDOS của hệ thống được query từ DB\n\nFunction:\n- Hover: Hiển thị tooltip với tên và thời gian nhận Kudos\n- Click node: Mở chi tiết Kudos tương ứng\n- Pan/Zoom: Hỗ trợ pan và zoom bằng nút 'Pan/Zoom' và thao tác chuột\n- State: Hỗ trợ loading, empty (không dữ liệu) và interactive"
+    },
+    "children": [
+      {
+        "id": "2940:14178",
+        "name": "image 24",
+        "type": "RECTANGLE",
+        "children": []
+      },
+      {
+        "id": "2940:14181",
+        "name": "image 25",
+        "type": "RECTANGLE",
+        "children": []
+      },
+      {
+        "id": "2940:14173",
+        "name": "Root further mo rong 1",
+        "type": "RECTANGLE",
+        "children": []
+      },
+      {
+        "id": "3007:17482",
+        "name": "B.7.1_388 KUDOS",
+        "type": "TEXT",
+        "specs": {
+          "item": {
+            "name": "388 KUDOS",
+            "nameTrans": "Tiêu đề '388 KUDOS'",
+            "otherType": "",
+            "buttonType": ""
+          },
+          "database": {
+            "note": "",
+            "tableName": "",
+            "columnName": ""
+          },
+          "navigation": {
+            "note": "",
+            "action": "",
+            "linkedFrameId": "",
+            "linkedFrameName": ""
+          },
+          "validation": {
+            "note": "",
+            "format": "",
+            "dataType": "",
+            "required": false,
+            "maxLength": null,
+            "minLength": null,
+            "defaultValue": ""
+          },
+          "description": "Tiêu đề thông tin tổng quan của Spotlight board.\n\nFunction:\n- Display: Hiển thị tổng số '388 KUDOS' rõ ràng ở đầu khung Spotlight, số KUDOS được query từ DB."
+        },
+        "children": []
+      },
+      {
+        "id": "2940:14833",
+        "name": "B.7.3_Tìm kiếm sunner",
+        "type": "INSTANCE",
+        "specs": {
+          "item": {
+            "name": "Tìm kiếm sunner",
+            "nameTrans": "Thanh tìm kiếm Sunner",
+            "otherType": "",
+            "buttonType": ""
+          },
+          "database": {
+            "note": "",
+            "tableName": "",
+            "columnName": ""
+          },
+          "navigation": {
+            "note": "",
+            "action": "",
+            "linkedFrameId": "",
+            "linkedFrameName": ""
+          },
+          "validation": {
+            "note": "Tối đa 100 ký tự\nKhông bắt buộc",
+            "format": "",
+            "dataType": "string",
+            "required": false,
+            "maxLength": 100,
+            "minLength": null,
+            "defaultValue": ""
+          },
+          "description": "Thanh tìm kiếm để tìm profile Sunner.\n\nHiển thị:\n- Input: ô nhập, placeholder 'Tìm kiếm'\n- Icon: kính lúp\n\nChức năng:\n- Gõ: nhập từ khóa\n- Enter/Click icon: thực hiện tìm kiếm\n- Focus: hiển thị viền focus"
+        },
+        "children": [
+          {
+            "id": "I2940:14833;186:2758",
+            "name": "Frame 483",
+            "type": "FRAME",
+            "children": [
+              {
+                "id": "I2940:14833;186:2759",
+                "name": "MM_MEDIA_Search",
+                "type": "INSTANCE",
+                "children": []
+              },
+              {
+                "id": "I2940:14833;186:2760",
+                "name": "Awards Information Navigation Links",
+                "type": "TEXT",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "2995:15926",
+        "name": "Đỗ hoàng Hiệp",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14186",
+        "name": "Đỗ hoàng Hiệp",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15925",
+        "name": "Đỗ hoàng Hiệp",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14193",
+        "name": "Đỗ hoàng Hiệp",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15936",
+        "name": "Dương thúy An",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15935",
+        "name": "Dương thúy An",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14195",
+        "name": "Dương thúy An",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14188",
+        "name": "Dương thúy An",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15941",
+        "name": "Mai phương Thúy",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15940",
+        "name": "Mai phương Thúy",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14196",
+        "name": "Mai phương Thúy",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14189",
+        "name": "Mai phương Thúy",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15956",
+        "name": "Lê Kiều Trang",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15930",
+        "name": "Nguyễn Văn Quy",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15955",
+        "name": "Lê Kiều Trang",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15931",
+        "name": "Nguyễn Văn Quy",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14199",
+        "name": "Lê Kiều Trang",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14187",
+        "name": "Nguyễn Văn Quy",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14192",
+        "name": "Lê Kiều Trang",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14194",
+        "name": "Nguyễn Văn Quy",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15945",
+        "name": "Nguyễn Bá Chức",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15946",
+        "name": "Nguyễn Bá Chức",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14190",
+        "name": "Nguyễn Bá Chức",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14197",
+        "name": "Nguyễn Bá Chức",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15951",
+        "name": "Nguyễn Hoàng Linh",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15950",
+        "name": "Nguyễn Hoàng Linh",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14198",
+        "name": "Nguyễn Hoàng Linh",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14191",
+        "name": "Nguyễn Hoàng Linh",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15927",
+        "name": "Đỗ hoàng Hiệp",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15929",
+        "name": "Đỗ hoàng Hiệp",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14200",
+        "name": "Đỗ hoàng Hiệp",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14214",
+        "name": "Đỗ hoàng Hiệp",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15937",
+        "name": "Dương thúy An",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15939",
+        "name": "Dương thúy An",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15954",
+        "name": "Nguyễn Hoàng Linh",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14202",
+        "name": "Dương thúy An",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14216",
+        "name": "Dương thúy An",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14219",
+        "name": "Nguyễn Hoàng Linh",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15942",
+        "name": "Mai phương Thúy",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15944",
+        "name": "Mai phương Thúy",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14203",
+        "name": "Mai phương Thúy",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15957",
+        "name": "Lê Kiều Trang",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14217",
+        "name": "Mai phương Thúy",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15959",
+        "name": "Lê Kiều Trang",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15932",
+        "name": "Nguyễn Văn Quy",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15949",
+        "name": "Nguyễn Bá Chức",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14206",
+        "name": "Lê Kiều Trang",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14220",
+        "name": "Lê Kiều Trang",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14201",
+        "name": "Nguyễn Văn Quy",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14218",
+        "name": "Nguyễn Bá Chức",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15947",
+        "name": "Nguyễn Bá Chức",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15928",
+        "name": "Đỗ hoàng Hiệp",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14215",
+        "name": "Nguyễn Văn Quy",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15934",
+        "name": "Nguyễn Văn Quy",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14204",
+        "name": "Nguyễn Bá Chức",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14207",
+        "name": "Đỗ hoàng Hiệp",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15952",
+        "name": "Nguyễn Hoàng Linh",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15938",
+        "name": "Dương thúy An",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14205",
+        "name": "Nguyễn Hoàng Linh",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14209",
+        "name": "Dương thúy An",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15943",
+        "name": "Mai phương Thúy",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15984",
+        "name": "Nguyễn Bá Chức",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15979",
+        "name": "Mai phương Thúy",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14210",
+        "name": "Mai phương Thúy",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:16030",
+        "name": "Nguyễn Bá Chức",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15958",
+        "name": "Lê Kiều Trang",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15933",
+        "name": "Nguyễn Văn Quy",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14213",
+        "name": "Lê Kiều Trang",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14208",
+        "name": "Nguyễn Văn Quy",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15948",
+        "name": "Nguyễn Bá Chức",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15994",
+        "name": "Lê Kiều Trang",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14211",
+        "name": "Nguyễn Bá Chức",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15953",
+        "name": "Nguyễn Hoàng Linh",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14212",
+        "name": "Nguyễn Hoàng Linh",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15960",
+        "name": "Đỗ hoàng Hiệp",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15961",
+        "name": "Đỗ hoàng Hiệp",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15982",
+        "name": "Nguyễn Bá Chức",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15971",
+        "name": "Dương thúy An",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15970",
+        "name": "Dương thúy An",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15987",
+        "name": "Nguyễn Hoàng Linh",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15973",
+        "name": "Dương thúy An",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15976",
+        "name": "Mai phương Thúy",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15975",
+        "name": "Mai phương Thúy",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15978",
+        "name": "Mai phương Thúy",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15991",
+        "name": "Lê Kiều Trang",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15965",
+        "name": "Nguyễn Văn Quy",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15990",
+        "name": "Lê Kiều Trang",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15966",
+        "name": "Nguyễn Văn Quy",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15981",
+        "name": "Nguyễn Bá Chức",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "3004:15999",
+        "name": "08:30PM Nguyễn Bá Chức đã nhận được một Kudos mới",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15980",
+        "name": "Nguyễn Bá Chức",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15986",
+        "name": "Nguyễn Hoàng Linh",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "3004:15998",
+        "name": "08:30PM Nguyễn Bá Chức đã nhận được một Kudos mới",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15985",
+        "name": "Nguyễn Hoàng Linh",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15962",
+        "name": "Đỗ hoàng Hiệp",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15964",
+        "name": "Đỗ hoàng Hiệp",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "3004:15997",
+        "name": "08:30PM Nguyễn Bá Chức đã nhận được một Kudos mới",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15972",
+        "name": "Dương thúy An",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15989",
+        "name": "Nguyễn Hoàng Linh",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "3004:15996",
+        "name": "08:30PM Nguyễn Bá Chức đã nhận được một Kudos mới",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15974",
+        "name": "Dương thúy An",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15977",
+        "name": "Mai phương Thúy",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "3007:17479",
+        "name": "B.7.2_Pan zoom",
+        "type": "FRAME",
+        "specs": {
+          "item": {
+            "name": "Pan zoom",
+            "nameTrans": "Nút 'Pan/Zoom' (icon)",
+            "otherType": "",
+            "buttonType": "icon_text"
+          },
+          "database": {
+            "note": "",
+            "tableName": "",
+            "columnName": ""
+          },
+          "navigation": {
+            "note": "",
+            "action": "",
+            "linkedFrameId": "",
+            "linkedFrameName": ""
+          },
+          "validation": {
+            "note": "",
+            "format": "",
+            "dataType": "",
+            "required": false,
+            "maxLength": null,
+            "minLength": null,
+            "defaultValue": ""
+          },
+          "description": "Icon điều khiển chế độ pan/zoom trên bản đồ Spotlight.\n\nFunction:\n- Click: Toggle giữa chế độ pan và zoom trên Spotlight.\n- Hover: Hiển thị tooltip 'Pan/Zoom'."
+        },
+        "children": []
+      },
+      {
+        "id": "3004:15995",
+        "name": "08:30PM Nguyễn Bá Chức đã nhận được một Kudos mới",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15992",
+        "name": "Lê Kiều Trang",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15967",
+        "name": "Nguyễn Văn Quy",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15969",
+        "name": "Nguyễn Văn Quy",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2940:14230",
+        "name": "08:30PM Nguyễn Bá Chức đã nhận được một Kudos mới",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15963",
+        "name": "Đỗ hoàng Hiệp",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15993",
+        "name": "Lê Kiều Trang",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15968",
+        "name": "Nguyễn Văn Quy",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15983",
+        "name": "Nguyễn Bá Chức",
+        "type": "TEXT",
+        "children": []
+      },
+      {
+        "id": "2995:15988",
+        "name": "Nguyễn Hoàng Linh",
+        "type": "TEXT",
+        "children": []
+      }
+    ]
+  },
+  "flatNodes": [
+    {
+      "id": "2940:14174",
+      "name": "B.7_Spotlight",
+      "type": "FRAME",
+      "parent_id": null,
+      "children_ids": [
+        "2940:14178",
+        "2940:14181",
+        "2940:14173",
+        "3007:17482",
+        "2940:14833",
+        "2995:15926",
+        "2940:14186",
+        "2995:15925",
+        "2940:14193",
+        "2995:15936",
+        "2995:15935",
+        "2940:14195",
+        "2940:14188",
+        "2995:15941",
+        "2995:15940",
+        "2940:14196",
+        "2940:14189",
+        "2995:15956",
+        "2995:15930",
+        "2995:15955",
+        "2995:15931",
+        "2940:14199",
+        "2940:14187",
+        "2940:14192",
+        "2940:14194",
+        "2995:15945",
+        "2995:15946",
+        "2940:14190",
+        "2940:14197",
+        "2995:15951",
+        "2995:15950",
+        "2940:14198",
+        "2940:14191",
+        "2995:15927",
+        "2995:15929",
+        "2940:14200",
+        "2940:14214",
+        "2995:15937",
+        "2995:15939",
+        "2995:15954",
+        "2940:14202",
+        "2940:14216",
+        "2940:14219",
+        "2995:15942",
+        "2995:15944",
+        "2940:14203",
+        "2995:15957",
+        "2940:14217",
+        "2995:15959",
+        "2995:15932",
+        "2995:15949",
+        "2940:14206",
+        "2940:14220",
+        "2940:14201",
+        "2940:14218",
+        "2995:15947",
+        "2995:15928",
+        "2940:14215",
+        "2995:15934",
+        "2940:14204",
+        "2940:14207",
+        "2995:15952",
+        "2995:15938",
+        "2940:14205",
+        "2940:14209",
+        "2995:15943",
+        "2995:15984",
+        "2995:15979",
+        "2940:14210",
+        "2995:16030",
+        "2995:15958",
+        "2995:15933",
+        "2940:14213",
+        "2940:14208",
+        "2995:15948",
+        "2995:15994",
+        "2940:14211",
+        "2995:15953",
+        "2940:14212",
+        "2995:15960",
+        "2995:15961",
+        "2995:15982",
+        "2995:15971",
+        "2995:15970",
+        "2995:15987",
+        "2995:15973",
+        "2995:15976",
+        "2995:15975",
+        "2995:15978",
+        "2995:15991",
+        "2995:15965",
+        "2995:15990",
+        "2995:15966",
+        "2995:15981",
+        "3004:15999",
+        "2995:15980",
+        "2995:15986",
+        "3004:15998",
+        "2995:15985",
+        "2995:15962",
+        "2995:15964",
+        "3004:15997",
+        "2995:15972",
+        "2995:15989",
+        "3004:15996",
+        "2995:15974",
+        "2995:15977",
+        "3007:17479",
+        "3004:15995",
+        "2995:15992",
+        "2995:15967",
+        "2995:15969",
+        "2940:14230",
+        "2995:15963",
+        "2995:15993",
+        "2995:15968",
+        "2995:15983",
+        "2995:15988"
+      ],
+      "specs_inline": {
+        "item": {
+          "name": "Spotlight",
+          "nameTrans": "Bảng Spotlight (word cloud/interactive board)",
+          "otherType": "info_block",
+          "buttonType": ""
+        },
+        "database": {
+          "note": "",
+          "tableName": "",
+          "columnName": ""
+        },
+        "navigation": {
+          "note": "",
+          "action": "",
+          "linkedFrameId": "",
+          "linkedFrameName": ""
+        },
+        "validation": {
+          "note": "",
+          "format": "",
+          "dataType": "",
+          "required": false,
+          "maxLength": null,
+          "minLength": null,
+          "defaultValue": ""
+        },
+        "description": "Bảng tương tác hiển thị tên người nhận Kudos dưới dạng word cloud/diagram.\n\nDisplay:\n  - Canvas: Vùng hiển thị nhiều tên nhỏ dàn trải - interactive\n  - Header: '388 KUDOS' và thanh tìm kiếm nhỏ - thông tin tổng quát, trong đó 388 là tổng số KUDOS của hệ thống được query từ DB\n\nFunction:\n- Hover: Hiển thị tooltip với tên và thời gian nhận Kudos\n- Click node: Mở chi tiết Kudos tương ứng\n- Pan/Zoom: Hỗ trợ pan và zoom bằng nút 'Pan/Zoom' và thao tác chuột\n- State: Hỗ trợ loading, empty (không dữ liệu) và interactive"
+      }
+    },
+    {
+      "id": "2940:14178",
+      "name": "image 24",
+      "type": "RECTANGLE",
+      "parent_id": "2940:14174",
+      "children_ids": []
+    },
+    {
+      "id": "2940:14181",
+      "name": "image 25",
+      "type": "RECTANGLE",
+      "parent_id": "2940:14174",
+      "children_ids": []
+    },
+    {
+      "id": "2940:14173",
+      "name": "Root further mo rong 1",
+      "type": "RECTANGLE",
+      "parent_id": "2940:14174",
+      "children_ids": []
+    },
+    {
+      "id": "3007:17482",
+      "name": "B.7.1_388 KUDOS",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "B.7.1_388 KUDOS",
+      "specs_inline": {
+        "item": {
+          "name": "388 KUDOS",
+          "nameTrans": "Tiêu đề '388 KUDOS'",
+          "otherType": "",
+          "buttonType": ""
+        },
+        "database": {
+          "note": "",
+          "tableName": "",
+          "columnName": ""
+        },
+        "navigation": {
+          "note": "",
+          "action": "",
+          "linkedFrameId": "",
+          "linkedFrameName": ""
+        },
+        "validation": {
+          "note": "",
+          "format": "",
+          "dataType": "",
+          "required": false,
+          "maxLength": null,
+          "minLength": null,
+          "defaultValue": ""
+        },
+        "description": "Tiêu đề thông tin tổng quan của Spotlight board.\n\nFunction:\n- Display: Hiển thị tổng số '388 KUDOS' rõ ràng ở đầu khung Spotlight, số KUDOS được query từ DB."
+      }
+    },
+    {
+      "id": "2940:14833",
+      "name": "B.7.3_Tìm kiếm sunner",
+      "type": "INSTANCE",
+      "parent_id": "2940:14174",
+      "children_ids": [
+        "I2940:14833;186:2758"
+      ],
+      "specs_inline": {
+        "item": {
+          "name": "Tìm kiếm sunner",
+          "nameTrans": "Thanh tìm kiếm Sunner",
+          "otherType": "",
+          "buttonType": ""
+        },
+        "database": {
+          "note": "",
+          "tableName": "",
+          "columnName": ""
+        },
+        "navigation": {
+          "note": "",
+          "action": "",
+          "linkedFrameId": "",
+          "linkedFrameName": ""
+        },
+        "validation": {
+          "note": "Tối đa 100 ký tự\nKhông bắt buộc",
+          "format": "",
+          "dataType": "string",
+          "required": false,
+          "maxLength": 100,
+          "minLength": null,
+          "defaultValue": ""
+        },
+        "description": "Thanh tìm kiếm để tìm profile Sunner.\n\nHiển thị:\n- Input: ô nhập, placeholder 'Tìm kiếm'\n- Icon: kính lúp\n\nChức năng:\n- Gõ: nhập từ khóa\n- Enter/Click icon: thực hiện tìm kiếm\n- Focus: hiển thị viền focus"
+      }
+    },
+    {
+      "id": "I2940:14833;186:2758",
+      "name": "Frame 483",
+      "type": "FRAME",
+      "parent_id": "2940:14833",
+      "children_ids": [
+        "I2940:14833;186:2759",
+        "I2940:14833;186:2760"
+      ]
+    },
+    {
+      "id": "I2940:14833;186:2759",
+      "name": "MM_MEDIA_Search",
+      "type": "INSTANCE",
+      "parent_id": "I2940:14833;186:2758",
+      "children_ids": []
+    },
+    {
+      "id": "I2940:14833;186:2760",
+      "name": "Awards Information Navigation Links",
+      "type": "TEXT",
+      "parent_id": "I2940:14833;186:2758",
+      "children_ids": [],
+      "characters": "Awards Information Navigation Links"
+    },
+    {
+      "id": "2995:15926",
+      "name": "Đỗ hoàng Hiệp",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Đỗ hoàng Hiệp"
+    },
+    {
+      "id": "2940:14186",
+      "name": "Đỗ hoàng Hiệp",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Đỗ hoàng Hiệp"
+    },
+    {
+      "id": "2995:15925",
+      "name": "Đỗ hoàng Hiệp",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Đỗ hoàng Hiệp"
+    },
+    {
+      "id": "2940:14193",
+      "name": "Đỗ hoàng Hiệp",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Đỗ hoàng Hiệp"
+    },
+    {
+      "id": "2995:15936",
+      "name": "Dương thúy An",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Dương thúy An"
+    },
+    {
+      "id": "2995:15935",
+      "name": "Dương thúy An",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Dương thúy An"
+    },
+    {
+      "id": "2940:14195",
+      "name": "Dương thúy An",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Dương thúy An"
+    },
+    {
+      "id": "2940:14188",
+      "name": "Dương thúy An",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Dương thúy An"
+    },
+    {
+      "id": "2995:15941",
+      "name": "Mai phương Thúy",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Mai phương Thúy"
+    },
+    {
+      "id": "2995:15940",
+      "name": "Mai phương Thúy",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Mai phương Thúy"
+    },
+    {
+      "id": "2940:14196",
+      "name": "Mai phương Thúy",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Mai phương Thúy"
+    },
+    {
+      "id": "2940:14189",
+      "name": "Mai phương Thúy",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Mai phương Thúy"
+    },
+    {
+      "id": "2995:15956",
+      "name": "Lê Kiều Trang",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Lê Kiều Trang"
+    },
+    {
+      "id": "2995:15930",
+      "name": "Nguyễn Văn Quy",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Văn Quy"
+    },
+    {
+      "id": "2995:15955",
+      "name": "Lê Kiều Trang",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Lê Kiều Trang"
+    },
+    {
+      "id": "2995:15931",
+      "name": "Nguyễn Văn Quy",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Văn Quy"
+    },
+    {
+      "id": "2940:14199",
+      "name": "Lê Kiều Trang",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Lê Kiều Trang"
+    },
+    {
+      "id": "2940:14187",
+      "name": "Nguyễn Văn Quy",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Văn Quy"
+    },
+    {
+      "id": "2940:14192",
+      "name": "Lê Kiều Trang",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Lê Kiều Trang"
+    },
+    {
+      "id": "2940:14194",
+      "name": "Nguyễn Văn Quy",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Văn Quy"
+    },
+    {
+      "id": "2995:15945",
+      "name": "Nguyễn Bá Chức",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Bá Chức"
+    },
+    {
+      "id": "2995:15946",
+      "name": "Nguyễn Bá Chức",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Bá Chức"
+    },
+    {
+      "id": "2940:14190",
+      "name": "Nguyễn Bá Chức",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Bá Chức"
+    },
+    {
+      "id": "2940:14197",
+      "name": "Nguyễn Bá Chức",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Bá Chức"
+    },
+    {
+      "id": "2995:15951",
+      "name": "Nguyễn Hoàng Linh",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Hoàng Linh"
+    },
+    {
+      "id": "2995:15950",
+      "name": "Nguyễn Hoàng Linh",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Hoàng Linh"
+    },
+    {
+      "id": "2940:14198",
+      "name": "Nguyễn Hoàng Linh",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Hoàng Linh"
+    },
+    {
+      "id": "2940:14191",
+      "name": "Nguyễn Hoàng Linh",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Hoàng Linh"
+    },
+    {
+      "id": "2995:15927",
+      "name": "Đỗ hoàng Hiệp",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Đỗ hoàng Hiệp"
+    },
+    {
+      "id": "2995:15929",
+      "name": "Đỗ hoàng Hiệp",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Đỗ hoàng Hiệp"
+    },
+    {
+      "id": "2940:14200",
+      "name": "Đỗ hoàng Hiệp",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Đỗ hoàng Hiệp"
+    },
+    {
+      "id": "2940:14214",
+      "name": "Đỗ hoàng Hiệp",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Đỗ hoàng Hiệp"
+    },
+    {
+      "id": "2995:15937",
+      "name": "Dương thúy An",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Dương thúy An"
+    },
+    {
+      "id": "2995:15939",
+      "name": "Dương thúy An",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Dương thúy An"
+    },
+    {
+      "id": "2995:15954",
+      "name": "Nguyễn Hoàng Linh",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Hoàng Linh"
+    },
+    {
+      "id": "2940:14202",
+      "name": "Dương thúy An",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Dương thúy An"
+    },
+    {
+      "id": "2940:14216",
+      "name": "Dương thúy An",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Dương thúy An"
+    },
+    {
+      "id": "2940:14219",
+      "name": "Nguyễn Hoàng Linh",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Hoàng Linh"
+    },
+    {
+      "id": "2995:15942",
+      "name": "Mai phương Thúy",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Mai phương Thúy"
+    },
+    {
+      "id": "2995:15944",
+      "name": "Mai phương Thúy",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Mai phương Thúy"
+    },
+    {
+      "id": "2940:14203",
+      "name": "Mai phương Thúy",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Mai phương Thúy"
+    },
+    {
+      "id": "2995:15957",
+      "name": "Lê Kiều Trang",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Lê Kiều Trang"
+    },
+    {
+      "id": "2940:14217",
+      "name": "Mai phương Thúy",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Mai phương Thúy"
+    },
+    {
+      "id": "2995:15959",
+      "name": "Lê Kiều Trang",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Lê Kiều Trang"
+    },
+    {
+      "id": "2995:15932",
+      "name": "Nguyễn Văn Quy",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Văn Quy"
+    },
+    {
+      "id": "2995:15949",
+      "name": "Nguyễn Bá Chức",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Bá Chức"
+    },
+    {
+      "id": "2940:14206",
+      "name": "Lê Kiều Trang",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Lê Kiều Trang"
+    },
+    {
+      "id": "2940:14220",
+      "name": "Lê Kiều Trang",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Lê Kiều Trang"
+    },
+    {
+      "id": "2940:14201",
+      "name": "Nguyễn Văn Quy",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Văn Quy"
+    },
+    {
+      "id": "2940:14218",
+      "name": "Nguyễn Bá Chức",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Bá Chức"
+    },
+    {
+      "id": "2995:15947",
+      "name": "Nguyễn Bá Chức",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Bá Chức"
+    },
+    {
+      "id": "2995:15928",
+      "name": "Đỗ hoàng Hiệp",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Đỗ hoàng Hiệp"
+    },
+    {
+      "id": "2940:14215",
+      "name": "Nguyễn Văn Quy",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Văn Quy"
+    },
+    {
+      "id": "2995:15934",
+      "name": "Nguyễn Văn Quy",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Văn Quy"
+    },
+    {
+      "id": "2940:14204",
+      "name": "Nguyễn Bá Chức",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Bá Chức"
+    },
+    {
+      "id": "2940:14207",
+      "name": "Đỗ hoàng Hiệp",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Đỗ hoàng Hiệp"
+    },
+    {
+      "id": "2995:15952",
+      "name": "Nguyễn Hoàng Linh",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Hoàng Linh"
+    },
+    {
+      "id": "2995:15938",
+      "name": "Dương thúy An",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Dương thúy An"
+    },
+    {
+      "id": "2940:14205",
+      "name": "Nguyễn Hoàng Linh",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Hoàng Linh"
+    },
+    {
+      "id": "2940:14209",
+      "name": "Dương thúy An",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Dương thúy An"
+    },
+    {
+      "id": "2995:15943",
+      "name": "Mai phương Thúy",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Mai phương Thúy"
+    },
+    {
+      "id": "2995:15984",
+      "name": "Nguyễn Bá Chức",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Bá Chức"
+    },
+    {
+      "id": "2995:15979",
+      "name": "Mai phương Thúy",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Mai phương Thúy"
+    },
+    {
+      "id": "2940:14210",
+      "name": "Mai phương Thúy",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Mai phương Thúy"
+    },
+    {
+      "id": "2995:16030",
+      "name": "Nguyễn Bá Chức",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Bá Chức"
+    },
+    {
+      "id": "2995:15958",
+      "name": "Lê Kiều Trang",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Lê Kiều Trang"
+    },
+    {
+      "id": "2995:15933",
+      "name": "Nguyễn Văn Quy",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Văn Quy"
+    },
+    {
+      "id": "2940:14213",
+      "name": "Lê Kiều Trang",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Lê Kiều Trang"
+    },
+    {
+      "id": "2940:14208",
+      "name": "Nguyễn Văn Quy",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Văn Quy"
+    },
+    {
+      "id": "2995:15948",
+      "name": "Nguyễn Bá Chức",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Bá Chức"
+    },
+    {
+      "id": "2995:15994",
+      "name": "Lê Kiều Trang",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Lê Kiều Trang"
+    },
+    {
+      "id": "2940:14211",
+      "name": "Nguyễn Bá Chức",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Bá Chức"
+    },
+    {
+      "id": "2995:15953",
+      "name": "Nguyễn Hoàng Linh",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Hoàng Linh"
+    },
+    {
+      "id": "2940:14212",
+      "name": "Nguyễn Hoàng Linh",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Hoàng Linh"
+    },
+    {
+      "id": "2995:15960",
+      "name": "Đỗ hoàng Hiệp",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Đỗ hoàng Hiệp"
+    },
+    {
+      "id": "2995:15961",
+      "name": "Đỗ hoàng Hiệp",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Đỗ hoàng Hiệp"
+    },
+    {
+      "id": "2995:15982",
+      "name": "Nguyễn Bá Chức",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Bá Chức"
+    },
+    {
+      "id": "2995:15971",
+      "name": "Dương thúy An",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Dương thúy An"
+    },
+    {
+      "id": "2995:15970",
+      "name": "Dương thúy An",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Dương thúy An"
+    },
+    {
+      "id": "2995:15987",
+      "name": "Nguyễn Hoàng Linh",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Hoàng Linh"
+    },
+    {
+      "id": "2995:15973",
+      "name": "Dương thúy An",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Dương thúy An"
+    },
+    {
+      "id": "2995:15976",
+      "name": "Mai phương Thúy",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Mai phương Thúy"
+    },
+    {
+      "id": "2995:15975",
+      "name": "Mai phương Thúy",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Mai phương Thúy"
+    },
+    {
+      "id": "2995:15978",
+      "name": "Mai phương Thúy",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Mai phương Thúy"
+    },
+    {
+      "id": "2995:15991",
+      "name": "Lê Kiều Trang",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Lê Kiều Trang"
+    },
+    {
+      "id": "2995:15965",
+      "name": "Nguyễn Văn Quy",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Văn Quy"
+    },
+    {
+      "id": "2995:15990",
+      "name": "Lê Kiều Trang",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Lê Kiều Trang"
+    },
+    {
+      "id": "2995:15966",
+      "name": "Nguyễn Văn Quy",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Văn Quy"
+    },
+    {
+      "id": "2995:15981",
+      "name": "Nguyễn Bá Chức",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Bá Chức"
+    },
+    {
+      "id": "3004:15999",
+      "name": "08:30PM Nguyễn Bá Chức đã nhận được một Kudos mới",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "08:30PM Nguyễn Bá Chức đã nhận được một Kudos mới"
+    },
+    {
+      "id": "2995:15980",
+      "name": "Nguyễn Bá Chức",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Bá Chức"
+    },
+    {
+      "id": "2995:15986",
+      "name": "Nguyễn Hoàng Linh",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Hoàng Linh"
+    },
+    {
+      "id": "3004:15998",
+      "name": "08:30PM Nguyễn Bá Chức đã nhận được một Kudos mới",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "08:30PM Nguyễn Bá Chức đã nhận được một Kudos mới"
+    },
+    {
+      "id": "2995:15985",
+      "name": "Nguyễn Hoàng Linh",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Hoàng Linh"
+    },
+    {
+      "id": "2995:15962",
+      "name": "Đỗ hoàng Hiệp",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Đỗ hoàng Hiệp"
+    },
+    {
+      "id": "2995:15964",
+      "name": "Đỗ hoàng Hiệp",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Đỗ hoàng Hiệp"
+    },
+    {
+      "id": "3004:15997",
+      "name": "08:30PM Nguyễn Bá Chức đã nhận được một Kudos mới",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "08:30PM Nguyễn Bá Chức đã nhận được một Kudos mới"
+    },
+    {
+      "id": "2995:15972",
+      "name": "Dương thúy An",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Dương thúy An"
+    },
+    {
+      "id": "2995:15989",
+      "name": "Nguyễn Hoàng Linh",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Hoàng Linh"
+    },
+    {
+      "id": "3004:15996",
+      "name": "08:30PM Nguyễn Bá Chức đã nhận được một Kudos mới",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "08:30PM Nguyễn Bá Chức đã nhận được một Kudos mới"
+    },
+    {
+      "id": "2995:15974",
+      "name": "Dương thúy An",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Dương thúy An"
+    },
+    {
+      "id": "2995:15977",
+      "name": "Mai phương Thúy",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Mai phương Thúy"
+    },
+    {
+      "id": "3007:17479",
+      "name": "B.7.2_Pan zoom",
+      "type": "FRAME",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "specs_inline": {
+        "item": {
+          "name": "Pan zoom",
+          "nameTrans": "Nút 'Pan/Zoom' (icon)",
+          "otherType": "",
+          "buttonType": "icon_text"
+        },
+        "database": {
+          "note": "",
+          "tableName": "",
+          "columnName": ""
+        },
+        "navigation": {
+          "note": "",
+          "action": "",
+          "linkedFrameId": "",
+          "linkedFrameName": ""
+        },
+        "validation": {
+          "note": "",
+          "format": "",
+          "dataType": "",
+          "required": false,
+          "maxLength": null,
+          "minLength": null,
+          "defaultValue": ""
+        },
+        "description": "Icon điều khiển chế độ pan/zoom trên bản đồ Spotlight.\n\nFunction:\n- Click: Toggle giữa chế độ pan và zoom trên Spotlight.\n- Hover: Hiển thị tooltip 'Pan/Zoom'."
+      }
+    },
+    {
+      "id": "3004:15995",
+      "name": "08:30PM Nguyễn Bá Chức đã nhận được một Kudos mới",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "08:30PM Nguyễn Bá Chức đã nhận được một Kudos mới"
+    },
+    {
+      "id": "2995:15992",
+      "name": "Lê Kiều Trang",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Lê Kiều Trang"
+    },
+    {
+      "id": "2995:15967",
+      "name": "Nguyễn Văn Quy",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Văn Quy"
+    },
+    {
+      "id": "2995:15969",
+      "name": "Nguyễn Văn Quy",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Văn Quy"
+    },
+    {
+      "id": "2940:14230",
+      "name": "08:30PM Nguyễn Bá Chức đã nhận được một Kudos mới",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "08:30PM Nguyễn Bá Chức đã nhận được một Kudos mới"
+    },
+    {
+      "id": "2995:15963",
+      "name": "Đỗ hoàng Hiệp",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Đỗ hoàng Hiệp"
+    },
+    {
+      "id": "2995:15993",
+      "name": "Lê Kiều Trang",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Lê Kiều Trang"
+    },
+    {
+      "id": "2995:15968",
+      "name": "Nguyễn Văn Quy",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Văn Quy"
+    },
+    {
+      "id": "2995:15983",
+      "name": "Nguyễn Bá Chức",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Bá Chức"
+    },
+    {
+      "id": "2995:15988",
+      "name": "Nguyễn Hoàng Linh",
+      "type": "TEXT",
+      "parent_id": "2940:14174",
+      "children_ids": [],
+      "characters": "Nguyễn Hoàng Linh"
+    }
+  ]
+}
