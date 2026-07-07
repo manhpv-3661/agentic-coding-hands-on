@@ -3,7 +3,6 @@
 import { canLikeKudos } from "@/lib/kudos/kudos-selectors";
 import type { KudosPerson, KudosPost } from "@/lib/kudos/kudos-types";
 import { KudosCard, type KudosCardLabels } from "./kudos-card";
-import { KudosSectionHeading } from "./kudos-section-heading";
 
 export interface AllKudosFeedProps {
   /** Already-filtered posts, computed by the board (`kudos-board.tsx`,
@@ -28,6 +27,12 @@ export interface AllKudosFeedProps {
  * posts + the hashtag-click callback from the board — the sidebar
  * (stats/top-10) is a separate, server-renderable slot (Phase 07/08), NOT
  * a child of this component, so it never enters this client bundle.
+ *
+ * Cards-only: the "ALL KUDOS" section heading is owned and rendered by
+ * `kudos-board.tsx`, full-width above this feed and the sidebar (mm:
+ * `C_All kudos` 2940:13475 — `C.1_Header` sits alone above the row of
+ * feed + sidebar, so the sidebar's top edge lines up with the first card,
+ * not with the heading).
  */
 export function AllKudosFeed({
   posts,
@@ -40,12 +45,10 @@ export function AllKudosFeed({
 }: AllKudosFeedProps) {
   return (
     <div className="flex min-w-0 flex-1 flex-col gap-6">
-      <KudosSectionHeading subtitle="Sun* Annual Awards 2025" title="ALL KUDOS" />
-
       {posts.length === 0 ? (
         <p className="font-montserrat text-sm text-white/60">{emptyLabel}</p>
       ) : (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-6">
           {posts.map((post) => (
             <KudosCard
               key={post.id}

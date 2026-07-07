@@ -9,16 +9,27 @@ const labels = {
   cancel: "Hủy",
   submit: "Gửi",
   successToast: "Đã gửi Kudos!",
-  recipient: { label: "Người nhận", placeholder: "Chọn người nhận", search: "Tìm đồng nghiệp", error: "Vui lòng chọn người nhận." },
-  title: { label: "Danh hiệu", placeholder: "Dành tặng một danh hiệu cho đồng đội.", helper: "Ví dụ...", error: "Vui lòng nhập danh hiệu." },
+  recipient: { label: "Người nhận", placeholder: "Tìm kiếm", search: "Tìm đồng nghiệp", error: "Vui lòng chọn người nhận." },
+  title: { label: "Danh hiệu", placeholder: "Dành tặng một danh hiệu cho đồng đội", helper: "Ví dụ...", error: "Vui lòng nhập danh hiệu." },
   content: {
     label: "Nội dung",
     placeholder: "Viết lời cảm ơn...",
     mentionHint: 'Bạn có thể "@ + tên" để nhắc tới đồng nghiệp khác',
     counterMax: "1.000",
     error: "Vui lòng nhập nội dung.",
-    toolbar: { bold: "In đậm", italic: "In nghiêng", strikethrough: "Gạch ngang", list: "Danh sách", link: "Chèn liên kết", quote: "Trích dẫn" },
-    communityStandards: "Tiêu chuẩn cộng đồng",
+    toolbar: {
+      bold: "In đậm", italic: "In nghiêng", strikethrough: "Gạch ngang", list: "Danh sách",
+      link: "Chèn liên kết", linkPrompt: "Đường dẫn liên kết", quote: "Trích dẫn",
+      addLink: { title: "Thêm đường dẫn", contentLabel: "Nội dung", urlLabel: "URL", save: "Lưu", cancel: "Hủy", urlError: "Vui lòng nhập URL." },
+    },
+  },
+  // Moved out of `content` (Phase 1, FR-23) — `trigger` is the label this
+  // dialog's stub button has always shown; the rest is Phase 3's panel copy,
+  // not exercised by this dialog's own tests.
+  communityStandards: {
+    trigger: "Tiêu chuẩn cộng đồng", panelTitle: "Thể lệ", recipientHeading: "", senderHeading: "",
+    nationalHeading: "", heroTiers: [], collectionIcons: [], collectFullSetText: "", nationalText: "",
+    footerClose: "Đóng", footerCompose: "Viết KUDOS",
   },
   hashtags: { label: "Hashtag", placeholder: "Nhập hashtag", add: "+Hashtag", max: "Tối đa 5", error: "Thêm ít nhất 1 hashtag.", remove: "Xóa hashtag" },
   images: {
@@ -57,15 +68,16 @@ function renderDialog(onSubmit = vi.fn(), onClose = vi.fn()) {
 }
 
 async function fillRequiredFields(user: ReturnType<typeof userEvent.setup>) {
-  await user.click(screen.getByRole("button", { name: /chọn người nhận/i }));
+  await user.click(screen.getByRole("button", { name: /tìm kiếm/i }));
   await user.click(screen.getByRole("option", { name: /Nguyễn Văn An/ }));
 
-  await user.type(screen.getByPlaceholderText("Dành tặng một danh hiệu cho đồng đội."), "Người truyền động lực");
+  await user.type(screen.getByPlaceholderText("Dành tặng một danh hiệu cho đồng đội"), "Người truyền động lực");
 
   const editor = screen.getByRole("textbox", { name: "Viết lời cảm ơn..." });
   editor.textContent = "Cảm ơn bạn rất nhiều!";
   fireEvent.input(editor);
 
+  await user.click(screen.getByRole("button", { name: "+Hashtag" }));
   await user.type(screen.getByPlaceholderText("Nhập hashtag"), "teamwork{Enter}");
 }
 
@@ -112,7 +124,7 @@ describe("ComposeDialog", () => {
     await user.click(screen.getByRole("button", { name: "Gửi" }));
     expect(screen.getByText("Vui lòng nhập danh hiệu.")).toBeInTheDocument();
 
-    await user.type(screen.getByPlaceholderText("Dành tặng một danh hiệu cho đồng đội."), "X");
+    await user.type(screen.getByPlaceholderText("Dành tặng một danh hiệu cho đồng đội"), "X");
     expect(screen.queryByText("Vui lòng nhập danh hiệu.")).not.toBeInTheDocument();
     // Untouched fields keep their error until their own value changes.
     expect(screen.getByText("Vui lòng nhập nội dung.")).toBeInTheDocument();
@@ -151,6 +163,25 @@ describe("ComposeDialog", () => {
     expect(post.sender).toEqual({ name: "Doraemon", department: "", stars: 0 });
   });
 
+  it("two rapid submit clicks on a valid form produce exactly one onSubmit call (double-submit guard)", async () => {
+    const user = userEvent.setup();
+    const { onSubmit, onClose } = renderDialog();
+
+    await fillRequiredFields(user);
+
+    const submitButton = screen.getByRole("button", { name: "Gửi" });
+    // Fire both clicks synchronously (no `await` between them) to
+    // simulate the two-clicks-in-one-tick race the guard protects
+    // against — `userEvent.click` awaits its own event dispatch, so two
+    // sequential `await`s would let React settle in between and never
+    // actually race.
+    fireEvent.click(submitButton);
+    fireEvent.click(submitButton);
+
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
   it("cancel closes the dialog without calling onSubmit", async () => {
     const user = userEvent.setup();
     const { onSubmit, onClose } = renderDialog();
@@ -160,5 +191,24 @@ describe("ComposeDialog", () => {
 
     expect(onSubmit).not.toHaveBeenCalled();
     expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("preserves the draft (title + content) across opening and closing the Community Standards panel (FR-23 edge case: panel is a sibling overlay, never a remount of the compose form)", async () => {
+    const user = userEvent.setup();
+    renderDialog();
+
+    const titleInput = screen.getByPlaceholderText("Dành tặng một danh hiệu cho đồng đội");
+    await user.type(titleInput, "Người truyền động lực");
+    const editor = screen.getByRole("textbox", { name: "Viết lời cảm ơn..." });
+    editor.textContent = "Cảm ơn bạn rất nhiều!";
+    fireEvent.input(editor);
+
+    await user.click(screen.getByRole("button", { name: "Tiêu chuẩn cộng đồng" }));
+    expect(screen.getByRole("dialog", { name: "Thể lệ" })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Đóng" }));
+    expect(screen.queryByRole("dialog", { name: "Thể lệ" })).not.toBeInTheDocument();
+
+    expect(titleInput).toHaveValue("Người truyền động lực");
+    expect(editor.textContent).toBe("Cảm ơn bạn rất nhiều!");
   });
 });

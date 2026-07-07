@@ -180,6 +180,24 @@ describe("canLikeKudos", () => {
     });
     expect(canLikeKudos(post, currentUser)).toBe(true);
   });
+
+  it("blocks the author's own anonymous post, even though the sender name differs (self-like loophole fix)", () => {
+    const post = makePost({
+      sender: { name: "Doraemon", department: "", stars: 0 },
+      sentByCurrentUser: true,
+      anonymous: true,
+    });
+    expect(canLikeKudos(post, currentUser)).toBe(false);
+  });
+
+  it("allows liking another person's anonymous post even when the nickname matches the current user's real name (M5 fix)", () => {
+    const post = makePost({
+      sender: { name: currentUser.name, department: "", stars: 0 },
+      sentByCurrentUser: false,
+      anonymous: true,
+    });
+    expect(canLikeKudos(post, currentUser)).toBe(true);
+  });
 });
 
 describe("getDistinctRecipients", () => {

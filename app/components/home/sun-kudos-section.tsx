@@ -58,72 +58,85 @@ function UpArrowIcon() {
  * Layout note: Figma models this as an absolute overlay (background image +
  * text block + logo mark) inside a 1120x500 card, itself centered in a
  * 1224px frame. Reproduced with percentage-based absolute positioning + a
- * fixed `aspect-ratio` so the card keeps the design's proportions at any
- * viewport width instead of a hardcoded design-px size (code-rules.md rule
- * 3, Sizing). `Frame 367` (`I3390:10349;313:8417`) is an empty layout frame
- * in the design (no children, no fill) and is intentionally not rendered.
+ * fixed `aspect-ratio` at the `lg` breakpoint (the width the Figma frame was
+ * authored at) so the card keeps the design's exact proportions there.
+ * Below `lg` there is no design source to scale the overlay from (`list_frames`
+ * confirms no mobile/tablet variant of this screen exists), so the promo copy
+ * instead falls back to normal document flow with responsive text sizes —
+ * the card's height grows with its content rather than being clipped by a
+ * fixed aspect-ratio + `overflow-hidden` (code-rules.md rule 3, Sizing).
+ * `Frame 367` (`I3390:10349;313:8417`) is an empty layout frame in the
+ * design (no children, no fill) and is intentionally not rendered.
+ *
+ * Gutter note: the outer `<section>` reproduces the same responsive edge
+ * padding as `hero-section.tsx` / `awards-section.tsx` (`px-6 sm:px-10
+ * lg:px-36`) since all three sections share the same 1224px Figma content
+ * column — the inner `max-w-[1224px]` wrapper matches that column, and the
+ * card itself is capped at the design's 1120px width inside it.
  */
 export function SunKudosSection({ kudos, detailsCta }: SunKudosSectionProps) {
   return (
     // mm:3390:10349
     <section
       id="kudos-section"
-      className="mx-auto flex w-full max-w-[1224px] items-center justify-center px-4"
+      className="flex w-full items-center justify-center px-6 sm:px-10 lg:px-36"
     >
-      {/* mm:I3390:10349;313:8415 */}
-      <div
-        className="relative w-full max-w-[1120px] overflow-hidden rounded-2xl"
-        style={{ aspectRatio: "1120 / 500" }}
-      >
-        {/* mm:I3390:10349;313:8416 */}
-        <Image
-          src="/homepage-saa/Kudos-Background.png"
-          alt=""
-          fill
-          sizes="(max-width: 1120px) 100vw, 1120px"
-          className="object-cover"
-        />
+      <div className="flex w-full max-w-[1224px] items-center justify-center">
+        {/* mm:I3390:10349;313:8415 */}
+        <div className="relative w-full max-w-[1120px] overflow-hidden rounded-2xl lg:aspect-[1120/500]">
+          {/* mm:I3390:10349;313:8416 */}
+          <Image
+            src="/homepage-saa/Kudos-Background.png"
+            alt=""
+            fill
+            sizes="(max-width: 1120px) 100vw, 1120px"
+            className="object-cover"
+          />
 
-        {/* mm:I3390:10349;313:8419 */}
-        <div
-          className={`${montserrat.className} absolute top-1/2 left-[5.71%] flex w-[40.8%] -translate-y-1/2 flex-col items-start gap-8`}
-        >
-          {/* mm:I3390:10349;313:8420 */}
-          <div className="flex flex-col items-start gap-4">
-            {/* mm:I3390:10349;313:8421 */}
-            <p className="text-2xl leading-8 font-bold text-white">
-              {kudos.eyebrow}
-            </p>
-            {/* mm:I3390:10349;313:8422 — brand name, untranslated (clarifications.md Q4) */}
-            <p className="text-[57px] leading-[64px] font-bold tracking-[-0.25px] text-[#FFEA9E]">
-              Sun* Kudos
-            </p>
-            {/* mm:I3390:10349;313:8423 */}
-            <p className="text-justify text-base leading-6 font-bold tracking-[0.5px] whitespace-pre-line text-white">
-              {kudos.description}
-            </p>
+          {/* mm:I3390:10349;313:8419 */}
+          <div
+            className={`${montserrat.className} relative z-10 flex w-full flex-col items-start gap-6 px-6 py-10 sm:gap-8 sm:px-10 sm:py-12 lg:absolute lg:top-1/2 lg:left-[5.71%] lg:w-[40.8%] lg:-translate-y-1/2 lg:px-0 lg:py-0`}
+          >
+            {/* mm:I3390:10349;313:8420 */}
+            <div className="flex flex-col items-start gap-4">
+              {/* mm:I3390:10349;313:8421 */}
+              <p className="text-lg leading-6 font-bold text-white sm:text-xl sm:leading-7 lg:text-2xl lg:leading-8">
+                {kudos.eyebrow}
+              </p>
+              {/* mm:I3390:10349;313:8422 — brand name, untranslated (clarifications.md Q4) */}
+              <p className="text-3xl leading-9 font-bold tracking-[-0.25px] text-[#FFEA9E] sm:text-5xl sm:leading-tight lg:text-[57px] lg:leading-[64px]">
+                Sun* Kudos
+              </p>
+              {/* mm:I3390:10349;313:8423 */}
+              <p className="text-justify text-sm leading-5 font-bold tracking-[0.5px] whitespace-pre-line text-white sm:text-base sm:leading-6">
+                {kudos.description}
+              </p>
+            </div>
+
+            {/* mm:I3390:10349;313:8424 */}
+            {/* mm:I3390:10349;313:8426 */}
+            <Link
+              href="/kudos"
+              className="flex items-center gap-2 rounded-[4px] bg-[#FFEA9E] px-3 py-3 text-[#00101A] transition-shadow duration-200 ease-out hover:shadow-[0_8px_24px_rgba(255,234,158,0.35)] sm:px-4 sm:py-4"
+            >
+              {/* mm:I3390:10349;313:8426;186:1568 */}
+              <span className="text-sm leading-5 font-bold tracking-[0.15px] sm:text-base sm:leading-6">
+                {detailsCta}
+              </span>
+              <UpArrowIcon />
+            </Link>
           </div>
 
-          {/* mm:I3390:10349;313:8424 */}
-          {/* mm:I3390:10349;313:8426 */}
-          <Link
-            href="/kudos"
-            className="flex items-center gap-2 rounded-[4px] bg-[#FFEA9E] px-4 py-4 text-[#00101A] transition-shadow duration-200 ease-out hover:shadow-[0_8px_24px_rgba(255,234,158,0.35)]"
-          >
-            {/* mm:I3390:10349;313:8426;186:1568 */}
-            <span className="text-base leading-6 font-bold tracking-[0.15px]">
-              {detailsCta}
-            </span>
-            <UpArrowIcon />
-          </Link>
+          {/* mm:I3390:10349;329:2948 — overlaps the promo copy once it falls
+              back to normal document flow below `lg`, so it only renders at
+              the breakpoint where the absolute overlay layout (and the
+              design's exact positioning) is restored. */}
+          <img
+            src="/homepage-saa/Kudos-Logo.svg"
+            alt=""
+            className="absolute top-[43%] left-[60%] hidden w-[32.5%] lg:block"
+          />
         </div>
-
-        {/* mm:I3390:10349;329:2948 */}
-        <img
-          src="/homepage-saa/Kudos-Logo.svg"
-          alt=""
-          className="absolute top-[43%] left-[60%] w-[32.5%]"
-        />
       </div>
     </section>
   );

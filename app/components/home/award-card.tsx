@@ -2,12 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 
 export interface AwardCardProps {
-  /** Award photo behind the title graphic (same placeholder photo for every
-   * award in the current design — that is intentional, not a data error). */
+  /** Per-award thumbnail (background + gold-ring + name pre-composited),
+   * cropped from the MoMorph full-frame render — distinct per award, same
+   * asset reused from the awards detail page's `award-detail-data.ts`
+   * (single-node export of this layer 401/500s, so the crop-from-full-render
+   * fallback is used instead — same technique as the avatar/gallery fix). */
   thumbnailSrc: string;
-  /** Stylized title graphic overlaid on the thumbnail (e.g. "Top Talent"). */
-  titleImageSrc: string;
-  /** Award name — used as the title image's alt text and repeated as the
+  /** Award name — used as the thumbnail's alt text and repeated as the
    * plain-text heading rendered below the thumbnail. */
   titleAlt: string;
   /** Award description copy. */
@@ -62,7 +63,6 @@ function IconUp({ className }: { className?: string }) {
  */
 export function AwardCard({
   thumbnailSrc,
-  titleImageSrc,
   titleAlt,
   description,
   detailsHref,
@@ -71,35 +71,19 @@ export function AwardCard({
   return (
     // mm:214:1032
     <Link href={detailsHref} className="flex w-full flex-col items-start gap-6">
-      {/* mm:81:2443 */}
+      {/* mm:81:2443 — pre-composited thumbnail (background + gold-ring +
+          name baked in), not a shared background with a text overlay. */}
       <div
-        className="relative aspect-square w-full overflow-hidden rounded-3xl"
+        className="relative aspect-square w-full overflow-hidden rounded-3xl border-[0.955px] border-[#FFEA9E]"
         style={{ boxShadow: "0 4px 4px 0 rgba(0, 0, 0, 0.25), 0 0 6px 0 #FAE287" }}
       >
-        <div
-          className="absolute inset-0 rounded-3xl border-[0.955px] border-[#FFEA9E] bg-no-repeat"
-          style={{
-            backgroundImage: `url(${thumbnailSrc})`,
-            backgroundPosition: "-33.807px -26.646px",
-            backgroundSize: "121.672% 123.049%",
-          }}
+        <Image
+          src={thumbnailSrc}
+          alt={titleAlt}
+          fill
+          sizes="(min-width: 1024px) 336px, 45vw"
+          className="object-cover object-center"
         />
-        {/* mm:214:664 */}
-        <div className="absolute inset-0 flex items-center justify-center px-8">
-          {/* Bounding box only — each award's title graphic has its own
-           * intrinsic aspect ratio (e.g. 221x35 vs 116x52), so `fill` +
-           * `object-contain` scales it correctly instead of assuming one
-           * fixed width/height for all 6 assets. */}
-          <div className="relative h-16 w-full max-w-[232px]">
-            <Image
-              src={titleImageSrc}
-              alt={titleAlt}
-              fill
-              sizes="232px"
-              className="object-contain object-center"
-            />
-          </div>
-        </div>
       </div>
       {/* mm:214:1020 */}
       <div className="flex w-full flex-col items-start gap-1">

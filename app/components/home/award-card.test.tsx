@@ -6,8 +6,7 @@ describe("AwardCard", () => {
   it("renders the description and detailsCta props verbatim (F005)", () => {
     render(
       <AwardCard
-        thumbnailSrc="/homepage-saa/Award-BG.png"
-        titleImageSrc="/homepage-saa/Award-Name-TopTalent.png"
+        thumbnailSrc="/awards-saa/thumbnails/top-talent.png"
         titleAlt="Top Talent"
         description="Honoring the top individuals who excel across every dimension"
         detailsHref="/awards#top-talent"
@@ -25,8 +24,7 @@ describe("AwardCard", () => {
   it("links the whole card to detailsHref", () => {
     render(
       <AwardCard
-        thumbnailSrc="/homepage-saa/Award-BG.png"
-        titleImageSrc="/homepage-saa/Award-Name-TopTalent.png"
+        thumbnailSrc="/awards-saa/thumbnails/top-talent.png"
         titleAlt="Top Talent"
         description="Vinh danh top cá nhân xuất sắc trên mọi phương diện"
         detailsHref="/awards#top-talent"

@@ -31,13 +31,19 @@ export interface HeroSectionProps {
  * Containered layout (code-rules.md rule 3): the Figma artboard is 1512px
  * wide with a 1224px content frame centered via 144px side padding
  * (1512 - 2*144 = 1224) — reproduced as `max-w-[1224px]` inside responsive
- * padding, not a hardcoded 1512px-wide wrapper, so the section fills the
- * real viewport at any width.
+ * horizontal padding, not a hardcoded 1512px-wide wrapper, so the section
+ * fills the real viewport at any width. Only horizontal padding is
+ * reproduced here (mirrors `awards-section.tsx`'s established pattern,
+ * since `<main>` has no horizontal padding of its own) — vertical spacing
+ * is intentionally NOT duplicated here because `app/page.tsx`'s `<main>`
+ * already supplies the Bìa's 96/120px vertical rhythm for all of its
+ * children (see that file's note 1); re-adding it here would double the
+ * whitespace above/below the hero card.
  */
 export function HeroSection({ hero, countdown }: HeroSectionProps) {
   return (
     // mm:2167:9030
-    <section className="relative flex w-full items-center justify-center px-6 py-12 sm:px-10 lg:px-36 lg:py-24">
+    <section className="relative flex w-full items-center justify-center px-6 sm:px-10 lg:px-36">
       {/* mm:2167:9031 */}
       <div className="flex w-full max-w-[1224px] flex-col items-start gap-10">
         {/* mm:2167:9032 */}

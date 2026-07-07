@@ -11,6 +11,10 @@ vi.mock("next/font/google", () => ({
   })),
 }));
 
+vi.mock("next/font/local", () => ({
+  default: vi.fn(() => ({ className: "font-digital-numbers" })),
+}));
+
 // Mock next/navigation
 vi.mock("next/navigation", () => ({
   redirect: vi.fn(),
@@ -61,7 +65,7 @@ describe("/app/login/page.tsx", () => {
           .fn()
           .mockResolvedValue({ data: { user: { id: "user-123" } } }),
       },
-    } as any);
+    } as unknown as Awaited<ReturnType<typeof createClient>>);
 
     await LoginPage({
       searchParams: Promise.resolve({}),
@@ -78,7 +82,7 @@ describe("/app/login/page.tsx", () => {
           .fn()
           .mockResolvedValue({ data: { user: null } }),
       },
-    } as any);
+    } as unknown as Awaited<ReturnType<typeof createClient>>);
 
     const result = await LoginPage({
       searchParams: Promise.resolve({}),
@@ -107,7 +111,7 @@ describe("/app/login/page.tsx", () => {
           .fn()
           .mockResolvedValue({ data: { user: null } }),
       },
-    } as any);
+    } as unknown as Awaited<ReturnType<typeof createClient>>);
 
     const result = await LoginPage({
       searchParams: Promise.resolve({}),
@@ -127,7 +131,7 @@ describe("/app/login/page.tsx", () => {
           .fn()
           .mockResolvedValue({ data: { user: null } }),
       },
-    } as any);
+    } as unknown as Awaited<ReturnType<typeof createClient>>);
 
     const result = await LoginPage({
       searchParams: Promise.resolve({ error: "auth_callback_failed" }),
@@ -155,7 +159,7 @@ describe("/app/login/page.tsx", () => {
           .fn()
           .mockResolvedValue({ data: { user: null } }),
       },
-    } as any);
+    } as unknown as Awaited<ReturnType<typeof createClient>>);
 
     const result = await LoginPage({
       searchParams: Promise.resolve({ error: "some_other_error" }),

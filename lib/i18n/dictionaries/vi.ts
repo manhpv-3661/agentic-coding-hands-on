@@ -148,6 +148,9 @@ export const vi = {
     detail: {
       quantityLabel: "Số lượng giải thưởng: ",
       valueLabel: "Giá trị giải thưởng: ",
+      // Divider label between Signature 2025 - Creator's two value rows
+      // (individual vs. collective) — mm:313:8499.
+      orLabel: "Hoặc",
       descriptions: {
         // Unfinished Figma placeholder copy reused verbatim across 5 of the
         // 6 award categories — preserve the "Top Talent" mismatch as-is.
@@ -156,31 +159,49 @@ export const vi = {
         signatureCreator:
           'Giải thưởng Signature vinh danh cá nhân hoặc tập thể thể hiện tinh thần đặc trưng mà Sun* hướng tới trong từng thời kỳ. Trong năm 2025, giải thưởng Signature vinh danh Creator - cá nhân/tập thể mang tư duy chủ động và nhạy bén, luôn nhìn thấy cơ hội trong thách thức và tiên phong trong hành động. Họ là những người nhạy bén với vấn đề, nhanh chóng nhận diện và đưa ra những giải pháp thực tiễn, mang lại giá trị rõ rệt cho dự án, khách hàng hoặc tổ chức. Với tư duy kiến tạo và tinh thần "Creator" đặc trưng của Sun*, họ không chỉ phản ứng tích cực trước sự thay đổi mà còn chủ động tạo ra cải tiến, góp phần định hình chuẩn mực mới cho cách mà người Sun* tạo giá trị.',
       },
+      // `quantity`/`value` are each split into a `{ number, unit }` pair —
+      // MoMorph gives the hero figure (36px/44 bold white,
+      // mm:I313:8467;214:2538/2546) and its unit/qualifier caption
+      // (14px/20 bold white, mm:I313:8467;214:3532/2547) as two distinct
+      // text nodes, not one concatenated string. `unit` is `""` when the
+      // ground truth has no trailing caption (MVP's bare quantity "01",
+      // Top Project Leader/Best Manager/MVP's bare value amount).
       entries: {
         topTalent: {
-          quantity: "10 Đơn vị",
-          value: "7.000.000 VNĐ cho mỗi giải thưởng",
+          quantity: { number: "10", unit: "Đơn vị" },
+          value: { number: "7.000.000 VNĐ", unit: "cho mỗi giải thưởng" },
         },
         topProject: {
-          quantity: "02 Tập thể",
-          value: "15.000.000 VNĐ mỗi giải",
+          quantity: { number: "02", unit: "Tập thể" },
+          value: { number: "15.000.000 VNĐ", unit: "mỗi giải" },
         },
         topProjectLeader: {
-          quantity: "03 Cá nhân",
-          value: "7.000.000 VNĐ",
+          quantity: { number: "03", unit: "Cá nhân" },
+          value: { number: "7.000.000 VNĐ", unit: "" },
         },
         bestManager: {
-          quantity: "01 Cá nhân",
-          value: "10.000.000 VNĐ",
+          quantity: { number: "01", unit: "Cá nhân" },
+          value: { number: "10.000.000 VNĐ", unit: "" },
         },
+        // Signature 2025 - Creator is the one category with a dual value
+        // structure (individual vs. collective award, mm:313:8490/8498/8501)
+        // — two distinct value rows split by an "orLabel" divider, not one
+        // concatenated sentence. See `AwardDetailEntry.valueVariants`
+        // (individual/collectiveValue+Suffix were already separate fields).
         signatureCreator: {
-          quantity: "01 (cá nhân hoặc tập thể)",
-          value: "5.000.000 VNĐ (cá nhân) HOẶC 8.000.000 VNĐ (tập thể)",
+          // mm:313:8488 ground truth is "Cá nhân hoặc tập thể" — capitalized,
+          // no surrounding parentheses (unlike the previous copy here).
+          quantity: { number: "01", unit: "Cá nhân hoặc tập thể" },
+          individualValue: "5.000.000 VNĐ",
+          individualSuffix: "cho giải cá nhân",
+          collectiveValue: "8.000.000 VNĐ",
+          collectiveSuffix: "cho giải tập thể",
         },
         mvp: {
-          // Bare numeral, no VI content — identical in both locales.
-          quantity: "01",
-          value: "15.000.000 VNĐ",
+          // Bare numeral, no VI content — identical in both locales. No unit
+          // caption in the ground truth, so `unit` is empty.
+          quantity: { number: "01", unit: "" },
+          value: { number: "15.000.000 VNĐ", unit: "" },
         },
       },
     },
@@ -197,6 +218,7 @@ export const vi = {
     },
     banner: {
       title: "Hệ thống ghi nhận và cảm ơn",
+      searchPlaceholder: "Tìm kiếm profile Sunner",
     },
     composer: {
       placeholder: "Hôm nay, bạn muốn gửi lời cảm ơn và ghi nhận đến ai?",
@@ -210,6 +232,7 @@ export const vi = {
       viewDetail: "Xem chi tiết",
       copyLink: "Copy Link",
       copied: "Đã sao chép liên kết",
+      copyFailed: "Sao chép thất bại",
       like: "Thả tim",
       unlike: "Bỏ thả tim",
     },
@@ -220,6 +243,7 @@ export const vi = {
     spotlight: {
       searchPlaceholder: "Tìm kiếm",
       panZoom: "Pan/Zoom",
+      tickerSuffix: "đã nhận được một Kudos mới",
     },
     stats: {
       received: "Số Kudos nhận được",
@@ -237,33 +261,43 @@ export const vi = {
       dialogBody:
         "Phần thưởng thật sẽ được cập nhật sau. Đây là màn hình xem trước dành cho bản mock.",
       close: "Đóng",
+      // FR-19-rev (F006 visual upgrade) — MoMorph `J3-4YFIpMM`, verbatim.
+      // P5 decides which of close/dialogTitle/dialogBody stay used.
+      heading: "KHÁM PHÁ SECRET BOX CỦA BẠN",
+      subtitle: "Click vào box để mở",
+      unopenedCount: "Secretbox chưa mở",
+      closeAria: "Đóng hộp quà bí ẩn",
     },
     recent: {
       heading: "10 SUNNER NHẬN QUÀ MỚI NHẤT",
     },
     // F007 — form "Viết Kudos" mở từ pill "Ghi nhận" (thanh composer trên).
     compose: {
-      dialogTitle: "Viết Kudos",
+      dialogTitle: "Gửi lời cám ơn và ghi nhận đến đồng đội",
       cancel: "Hủy",
       submit: "Gửi",
       successToast: "Đã gửi Kudos!",
       recipient: {
         label: "Người nhận",
-        placeholder: "Chọn người nhận",
+        // Ground truth (node I520:11647;520:9873;186:2760) is the trigger's
+        // literal placeholder — "Tìm kiếm", not "Chọn người nhận".
+        placeholder: "Tìm kiếm",
         search: "Tìm đồng nghiệp",
         error: "Vui lòng chọn người nhận.",
       },
       title: {
         label: "Danh hiệu",
-        placeholder: "Dành tặng một danh hiệu cho đồng đội.",
+        // No trailing period in ground truth (node I520:11647;1688:10437;186:2760).
+        placeholder: "Dành tặng một danh hiệu cho đồng đội",
         helper:
           "Ví dụ: Người truyền động lực cho tôi.\nDanh hiệu sẽ hiển thị làm tiêu đề Kudos của bạn.",
         error: "Vui lòng nhập danh hiệu.",
       },
       content: {
         label: "Nội dung",
-        placeholder:
-          'Hãy gửi lời cảm ơn và ghi nhận đến đồng đội tại đây nhé!\nVD: Cảm ơn bạn vì tinh thần dẫn dắt và khả năng "giữ nhịp" cực kỳ tốt trong giai đoạn nước rút của dự án...',
+        // Verbatim ground truth (node I520:11647;520:9886;186:2760) — no
+        // "VD: ..." example sentence, "gửi gắm"/"cám ơn" not "gửi"/"cảm ơn".
+        placeholder: "Hãy gửi gắm lời cám ơn và ghi nhận đến đồng đội tại đây nhé!",
         mentionHint: 'Bạn có thể "@ + tên" để nhắc tới đồng nghiệp khác',
         counterMax: "1.000",
         error: "Vui lòng nhập nội dung.",
@@ -275,9 +309,81 @@ export const vi = {
           strikethrough: "Gạch ngang",
           list: "Danh sách",
           link: "Chèn liên kết",
+          linkPrompt: "Đường dẫn liên kết",
           quote: "Trích dẫn",
+          // FR-24 (F007 conformance) — MoMorph `OyDLDuSGEa` ("Addlink Box",
+          // done), verbatim. Replaces the bare `window.prompt()` with a
+          // 2-field mini-dialog (P4 owns the wiring).
+          addLink: {
+            title: "Thêm đường dẫn",
+            contentLabel: "Nội dung",
+            urlLabel: "URL",
+            save: "Lưu",
+            cancel: "Hủy",
+            urlError: "Vui lòng nhập URL.",
+          },
         },
-        communityStandards: "Tiêu chuẩn cộng đồng",
+      },
+      // FR-23 (revises FR-10, F007 conformance) — MoMorph `b1Filzi9i6`
+      // ("Thể lệ UPDATE", done), verbatim. Promoted out of `content` (was
+      // `content.communityStandards`, a dead-stub string) into its own
+      // object at the `compose` level, since this is now a full 2nd-layer
+      // panel, not just toolbar content. `trigger` carries the old string
+      // value. Static content only (BR-2) — no real badge computation.
+      communityStandards: {
+        trigger: "Tiêu chuẩn cộng đồng",
+        panelTitle: "Thể lệ",
+        recipientHeading:
+          "NGƯỜI NHẬN KUDOS: HUY HIỆU HERO CHO NHỮNG ẢNH HƯỞNG TÍCH CỰC\nDựa trên số lượng đồng đội gửi trao Kudos, bạn sẽ sở hữu Huy hiệu Hero tương ứng, được hiển thị trực tiếp cạnh tên profile",
+        senderHeading:
+          "NGƯỜI GỬI KUDOS: SƯU TẬP TRỌN BỘ 6 ICON, NHẬN NGAY PHẦN QUÀ BÍ ẨN\nMỗi lời Kudos bạn gửi sẽ được đăng tải trên hệ thống và nhận về những lượt ❤️ từ cộng đồng Sunner. Cứ mỗi 5 lượt ❤️, bạn sẽ được mở 1 Secret Box, với cơ hội nhận về một trong 6 icon độc quyền của SAA.",
+        nationalHeading: "KUDOS QUỐC DÂN",
+        heroTiers: [
+          {
+            name: "New Hero",
+            condition: "Có 1-4 người gửi Kudos cho bạn",
+            description:
+              "Hành trình lan tỏa điều tốt đẹp bắt đầu – những lời cảm ơn và ghi nhận đầu tiên đã tìm đến bạn.",
+          },
+          {
+            name: "Rising Hero",
+            condition: "Có 5-9 người gửi Kudos cho bạn",
+            description:
+              "Hình ảnh bạn đang lớn dần trong trái tim đồng đội bằng sự tử tế và cống hiến của mình.",
+          },
+          {
+            name: "Super Hero",
+            condition: "Có 10–20 người gửi Kudos cho bạn",
+            description:
+              "Bạn đã trở thành biểu tượng được tin tưởng và yêu quý, người luôn sẵn sàng hỗ trợ và được nhiều đồng đội nhớ đến.",
+          },
+          {
+            name: "Legend Hero",
+            condition: "Có hơn 20 người gửi Kudos cho bạn",
+            description:
+              "Bạn đã trở thành huyền thoại – người để lại dấu ấn khó quên trong tập thể bằng trái tim và hành động của mình.",
+          },
+        ],
+        // Collection-icon badge names — proper nouns, kept identical across
+        // VI/EN per the same convention as brand/wordmark strings elsewhere
+        // in this file (nav labels, "KUDOS" wordmark). Design asset for the
+        // 6th badge renders "ROOT FUTHER" (a Figma typo); display copy here
+        // uses the correct "Root Further" to match the already-established
+        // Sun* Annual Awards 2025 theme name (see `homepage.rootFurther`).
+        collectionIcons: [
+          "Revival",
+          "Touch of Light",
+          "Stay Gold",
+          "Flow to Horizon",
+          "Beyond the Boundary",
+          "Root Further",
+        ],
+        collectFullSetText:
+          "Những Sunner thu thập trọn bộ 6 icon sẽ nhận về một phần quà bí ẩn từ SAA 2025.",
+        nationalText:
+          "5 Kudos nhận về nhiều ❤️ nhất toàn Sun* sẽ chính thức trở thành Kudos Quốc Dân và được trao phần quà đặc biệt từ SAA 2025: Root Further.",
+        footerClose: "Đóng",
+        footerCompose: "Viết KUDOS",
       },
       hashtags: {
         label: "Hashtag",
@@ -288,14 +394,18 @@ export const vi = {
         remove: "Xóa hashtag",
       },
       images: {
-        label: "Hình ảnh",
+        // Ground truth (node I520:11647;520:9897;416:5534) literally reads
+        // "Image" in English even on this Vietnamese screen — sibling
+        // labels ("Người nhận", "Danh hiệu") are Vietnamese, so this is a
+        // deliberate design string, not a shared-component artifact.
+        label: "Image",
         add: "+Ảnh",
         max: "Tối đa 5",
         remove: "Xóa ảnh",
         truncated: "Đã đạt giới hạn ảnh, một số ảnh không được thêm.",
       },
       anonymous: {
-        checkbox: "Gửi lời cảm ơn và ghi nhận ẩn danh",
+        checkbox: "Gửi lời cám ơn và ghi nhận ẩn danh",
         nicknameLabel: "Nickname ẩn danh",
         nicknamePlaceholder: "Doraemon",
         error: "Vui lòng nhập nickname.",

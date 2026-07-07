@@ -28,14 +28,15 @@ interface AwardEntry extends Omit<AwardCardProps, "detailsHref" | "description" 
 }
 
 /**
- * Mock award data extracted verbatim from the Figma design (MoMorph node
- * `5005:14974`, "mms_C2_Award list"). All 6 cards intentionally share the
- * same `Award-BG.png` placeholder photo — the design itself reuses one
- * image, this is not a data error. Descriptions for "Best Manager",
- * "Signature 2025 - Creator" and "MVP" are also identical in the source
- * design (unfinished copy) — the dictionary mirrors that duplication
- * (`homepage.awards.items.*`), reproduced as-is per "do not invent data".
- * Replace with real award/CMS data once the backend track lands.
+ * Award data extracted from the Figma design (MoMorph node `5005:14974`,
+ * "mms_C2_Award list"). Each card's thumbnail is a distinct per-award image
+ * (background + gold-ring + name pre-composited), cropped from the MoMorph
+ * full-frame render — the awards detail page (`award-detail-data.ts`) uses
+ * the same 6 assets. Descriptions for "Best Manager", "Signature 2025 -
+ * Creator" and "MVP" are identical in the source design (unfinished copy) —
+ * the dictionary mirrors that duplication (`homepage.awards.items.*`),
+ * reproduced as-is per "do not invent data". Replace with real award/CMS
+ * data once the backend track lands.
  *
  * Order MUST match `AWARD_CATEGORIES` (lib/awards/award-categories.ts) —
  * `detailsHref` is derived from that array by index below (FR-20/FR-21), not
@@ -45,54 +46,42 @@ const AWARDS: AwardEntry[] = [
   {
     nodeId: "2167:9075",
     // mm:I2167:9075;214:1019;81:2442
-    thumbnailSrc: "/homepage-saa/Award-BG.png",
-    // mm:I2167:9075;214:1019;214:666;10:951
-    titleImageSrc: "/homepage-saa/Award-Name-TopTalent.png",
+    thumbnailSrc: "/awards-saa/thumbnails/top-talent.png",
     titleAlt: "Top Talent",
     slug: "topTalent",
   },
   {
     nodeId: "2167:9076",
     // mm:I2167:9076;214:1019;81:2442
-    thumbnailSrc: "/homepage-saa/Award-BG.png",
-    // mm:I2167:9076;214:1019;214:666;214:654
-    titleImageSrc: "/homepage-saa/Award-Name-TopProject.png",
+    thumbnailSrc: "/awards-saa/thumbnails/top-project.png",
     titleAlt: "Top Project",
     slug: "topProject",
   },
   {
     nodeId: "2167:9077",
     // mm:I2167:9077;214:1019;81:2442
-    thumbnailSrc: "/homepage-saa/Award-BG.png",
-    // mm:I2167:9077;214:1019;214:666;214:655
-    titleImageSrc: "/homepage-saa/Award-Name-TopProjectLeader.png",
+    thumbnailSrc: "/awards-saa/thumbnails/top-project-leader.png",
     titleAlt: "Top Project Leader",
     slug: "topProjectLeader",
   },
   {
     nodeId: "2167:9079",
     // mm:I2167:9079;214:1019;81:2442
-    thumbnailSrc: "/homepage-saa/Award-BG.png",
-    // mm:I2167:9079;214:1019;214:666;214:656
-    titleImageSrc: "/homepage-saa/Award-Name-BestManager.png",
+    thumbnailSrc: "/awards-saa/thumbnails/best-manager.png",
     titleAlt: "Best Manager",
     slug: "bestManager",
   },
   {
     nodeId: "2167:9080",
     // mm:I2167:9080;214:1019;81:2442
-    thumbnailSrc: "/homepage-saa/Award-BG.png",
-    // mm:I2167:9080;214:1019;214:666;214:657
-    titleImageSrc: "/homepage-saa/Award-Name-Signature2025Creator.png",
+    thumbnailSrc: "/awards-saa/thumbnails/signature-2025-creator.png",
     titleAlt: "Signature 2025 - Creator",
     slug: "signatureCreator",
   },
   {
     nodeId: "2167:9081",
     // mm:I2167:9081;214:1019;81:2442
-    thumbnailSrc: "/homepage-saa/Award-BG.png",
-    // mm:I2167:9081;214:1019;214:666;214:653
-    titleImageSrc: "/homepage-saa/Award-Name-MVP.png",
+    thumbnailSrc: "/awards-saa/thumbnails/mvp.png",
     titleAlt: "MVP (Most Valuable Person)",
     slug: "mvp",
   },

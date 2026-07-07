@@ -59,4 +59,52 @@ describe("SiteHeader", () => {
 
     expect(window.scrollTo).not.toHaveBeenCalled();
   });
+
+  it("highlights only 'Về SAA 2025' as active on / (bug fix regression)", () => {
+    mockUsePathname.mockReturnValue("/");
+    render(
+      <SiteHeader
+        locale="vi"
+        nav={viDictionary.shared.nav}
+        account={viDictionary.shared.account}
+        notifications={viDictionary.shared.notifications}
+      />,
+    );
+
+    expect(screen.getByRole("link", { name: "Về SAA 2025" })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("link", { name: "Thông tin giải thưởng" })).not.toHaveAttribute("aria-current");
+    expect(screen.getByRole("link", { name: "Sun* Kudos" })).not.toHaveAttribute("aria-current");
+  });
+
+  it("highlights 'Thông tin giải thưởng' as active on /awards", () => {
+    mockUsePathname.mockReturnValue("/awards");
+    render(
+      <SiteHeader
+        locale="vi"
+        nav={viDictionary.shared.nav}
+        account={viDictionary.shared.account}
+        notifications={viDictionary.shared.notifications}
+      />,
+    );
+
+    expect(screen.getByRole("link", { name: "Thông tin giải thưởng" })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("link", { name: "Về SAA 2025" })).not.toHaveAttribute("aria-current");
+    expect(screen.getByRole("link", { name: "Sun* Kudos" })).not.toHaveAttribute("aria-current");
+  });
+
+  it("highlights 'Sun* Kudos' as active on /kudos", () => {
+    mockUsePathname.mockReturnValue("/kudos");
+    render(
+      <SiteHeader
+        locale="vi"
+        nav={viDictionary.shared.nav}
+        account={viDictionary.shared.account}
+        notifications={viDictionary.shared.notifications}
+      />,
+    );
+
+    expect(screen.getByRole("link", { name: "Sun* Kudos" })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("link", { name: "Về SAA 2025" })).not.toHaveAttribute("aria-current");
+    expect(screen.getByRole("link", { name: "Thông tin giải thưởng" })).not.toHaveAttribute("aria-current");
+  });
 });

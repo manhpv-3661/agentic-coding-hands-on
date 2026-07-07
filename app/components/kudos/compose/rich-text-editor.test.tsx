@@ -14,9 +14,22 @@ const labels = {
     strikethrough: "Gạch ngang",
     list: "Danh sách",
     link: "Chèn liên kết",
+    linkPrompt: "Đường dẫn liên kết",
     quote: "Trích dẫn",
+    addLink: {
+      title: "Thêm đường dẫn",
+      contentLabel: "Nội dung",
+      urlLabel: "URL",
+      save: "Lưu",
+      cancel: "Hủy",
+      urlError: "Vui lòng nhập URL.",
+    },
   },
-  communityStandards: "Tiêu chuẩn cộng đồng",
+  communityStandards: {
+    trigger: "Tiêu chuẩn cộng đồng", panelTitle: "Thể lệ", recipientHeading: "", senderHeading: "",
+    nationalHeading: "", heroTiers: [], collectionIcons: [], collectFullSetText: "", nationalText: "",
+    footerClose: "Đóng", footerCompose: "Viết KUDOS",
+  },
 };
 
 describe("RichTextEditor", () => {

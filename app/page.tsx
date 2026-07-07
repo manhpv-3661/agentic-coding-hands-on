@@ -44,6 +44,17 @@ export const metadata: Metadata = {
  *    would clip it to the hero's own box and leave a hard seam under the
  *    header). The root frame's own solid fill (`rgba(0,16,26,1)` = `#00101A`,
  *    confirmed via `get_node("2167:9026")`) covers the rest of the page.
+ *    The photo (`2167:9028`, 1512x1392 at the lg/1512px frame) and the
+ *    gradient (`2167:9029` "Cover", 1512x1480 — same x/y origin but 88px
+ *    taller) are independent siblings in Figma, not one nested inside the
+ *    other's box — confirmed via `get_node`. They're rendered below as two
+ *    separate absolutely-positioned boxes sharing the same top-left origin
+ *    so the gradient's declared color stops (`23.7% / 38.34% / 48.92%`) land
+ *    at the same coordinates as the design; nesting the gradient inside the
+ *    shorter photo box would compress those stops upward. The sm/mobile
+ *    heights have no dedicated Figma frame to source from, so the gradient
+ *    box scales them by the same 1480/1392 ratio as the lg breakpoint to
+ *    keep the two boxes proportionate at every size.
  * 3. Fonts — `app/login/fonts.ts` is reused (not duplicated) for Montserrat /
  *    Montserrat Alternates. Applying `.variable` here makes the shared
  *    `--font-montserrat` / `--font-montserrat-alternates` custom properties
@@ -75,9 +86,12 @@ export default async function HomePage() {
       className={`${montserrat.variable} ${montserratAlternates.variable} relative isolate flex min-h-screen w-full flex-col bg-[#00101A]`}
     >
       {/* mm:2167:9027 + mm:2167:9029 — shared keyvisual backdrop behind the
-          header and hero (see note 2 above) */}
+          header and hero (see note 2 above). Photo and gradient are two
+          independent boxes (matching their independent Figma nodes) sharing
+          the same top-left origin, rather than one nested inside the
+          other's (shorter) box. */}
+      {/* mm:2167:9028 — keyvisual photo, clipped to its own box */}
       <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[560px] overflow-hidden sm:h-[760px] lg:h-[1392px]">
-        {/* mm:2167:9028 */}
         <Image
           src="/homepage-saa/Keyvisual-BG.png"
           alt=""
@@ -85,15 +99,17 @@ export default async function HomePage() {
           priority
           className="object-cover"
         />
-        {/* mm:2167:9029 */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(12deg, #00101A 23.7%, rgba(0, 18, 29, 0.46) 38.34%, rgba(0, 19, 32, 0.00) 48.92%)",
-          }}
-        />
       </div>
+      {/* mm:2167:9029 — darkening gradient ("Cover"), its own taller box
+          (1512x1480 vs the photo's 1512x1392 at the lg frame) so its color
+          stops land where Figma places them */}
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-148.75 sm:h-202 lg:h-370"
+        style={{
+          background:
+            "linear-gradient(12deg, #00101A 23.7%, rgba(0, 18, 29, 0.46) 38.34%, rgba(0, 19, 32, 0.00) 48.92%)",
+        }}
+      />
 
       <SiteHeader
         locale={locale}

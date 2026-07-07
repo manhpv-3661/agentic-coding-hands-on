@@ -8,10 +8,10 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  /* Scoped to /login (see app/login/fonts.ts) — these variables only exist
-     on pages that apply that route's font className. */
+  /* Montserrat is the site-wide default (applied on <html> in
+     app/layout.tsx via app/fonts.ts) — every element inherits it through
+     --font-sans unless it opts into a different face explicitly. */
+  --font-sans: var(--font-montserrat);
   --font-montserrat: var(--font-montserrat);
   --font-montserrat-alternates: var(--font-montserrat-alternates);
 }
@@ -26,5 +26,5 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-montserrat), system-ui, sans-serif;
 }

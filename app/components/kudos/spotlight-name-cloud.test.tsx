@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { SpotlightNameCloud } from "./spotlight-name-cloud";
+import { SPOTLIGHT_NAMES } from "@/lib/kudos/kudos-spotlight-data";
 
 describe("SpotlightNameCloud", () => {
   it("renders every name", () => {
@@ -23,5 +24,26 @@ describe("SpotlightNameCloud", () => {
 
     expect(screen.getByText("An")).toHaveAttribute("data-matched", "false");
     expect(screen.getByText("Bình")).toHaveAttribute("data-matched", "false");
+  });
+
+  it("gives every name a distinct position, even past 12 names (regression: a fixed 12-slot table made index i and i+12 land on the identical top/left)", () => {
+    const names = Array.from({ length: 24 }, (_, i) => `Name ${i}`);
+    render(<SpotlightNameCloud names={names} query="" panZoom={false} />);
+
+    const positions = names.map((name) => {
+      const el = screen.getByText(name);
+      return `${el.style.top}|${el.style.left}`;
+    });
+    expect(new Set(positions).size).toBe(names.length);
+  });
+
+  it("gives every name a distinct position for the real production dataset (regression: the collision retry loop froze at a clamped corner once radius growth saturated, pinning multiple names to the identical top/left)", () => {
+    render(<SpotlightNameCloud names={SPOTLIGHT_NAMES} query="" panZoom={false} />);
+
+    const positions = SPOTLIGHT_NAMES.map((name) => {
+      const el = screen.getByText(name);
+      return `${el.style.top}|${el.style.left}`;
+    });
+    expect(new Set(positions).size).toBe(SPOTLIGHT_NAMES.length);
   });
 });

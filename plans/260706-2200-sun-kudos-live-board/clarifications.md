@@ -89,3 +89,32 @@ blocking on `AskUserQuestion`. Recorded below, one line per decision.
 - Q: Highlight Kudos carousel — build with a library (embla/swiper) or custom? → A:
   custom (no carousel lib in `package.json`; mirrors `hooks/use-scroll-spy.ts`'s
   plain-state-and-effect style) — YAGNI, 5 static slides don't need a dependency.
+
+## Session 2026-07-07
+
+- Q: Correction to 2026-07-06's "Avatar images — real photos?" and "Gallery/attachment
+  images" entries (lines 74-81 above) — are those conclusions still accurate? → A: **No,
+  those two entries were wrong and are superseded** (see `plans/260707-0813-site-visual-fidelity-fixes/phase-02-real-avatar-gallery-images.md`).
+  `get_node` on the avatar node (`I2940:13516;256:7460`, `MM_MEDIA_Avatar`, ELLIPSE) and the
+  gallery node (`I3127:21871;256:5177;513:8436`, `MM_MEDIA_Sample Image`, RECTANGLE) both
+  return a real image fill — `background: url(<path-to-image>) ... no-repeat` — not a plain
+  color/stroke placeholder. The earlier "plain ELLIPSE/RECTANGLE placeholders, not exported
+  images" claim came from `list_media_nodes`, which is stale/unreliable for this file; fills
+  must be verified via `get_node` instead. The product owner has explicitly reversed the
+  "render initials/generic placeholder as the default" decision: real mock photos are
+  required for named people, with initials/empty-tile staying as a **per-missing-image**
+  fallback only (never the global default).
+- Q: Can the real photo fill be exported directly? → A: **No, both export paths are
+  confirmed broken for file `9ypp4enmFmdK3YAFJLIu6C`.** `get_figma_image`/`get_media_file`
+  return 401/500 across 5+ nodes and 2 screens (documented in this session's research
+  report). The one remaining untested lead — fetching the `get_node`-embedded
+  `background: url(...)` directly — was attempted once this session and also fails: the
+  URL MoMorph returns is the literal redacted token `<path-to-image>`, not a real
+  fetchable asset URL, for both the avatar and gallery nodes. Per phase-02's directive, this
+  lead is not retried further.
+- Q: How are real photos delivered given both export paths are broken? → A: crop-from-
+  full-page-render, already implemented and shipped: `/public/kudos/avatars/avatar-{1,2,3}.jpg`
+  (3-person pool, `app/components/kudos/avatar.tsx`) and `/public/kudos/gallery/photo-1.jpg`
+  (1-photo pool, `app/components/kudos/kudos-image-gallery.tsx`) — both crops taken from the
+  design's own full-page render, matching the design's own repetition of the same people/photo
+  across every mock slot. This is the accepted, permanent fallback, not an interim placeholder.

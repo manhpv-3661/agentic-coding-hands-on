@@ -16,6 +16,42 @@ export interface KudosFiltersProps {
 
 const ALL_VALUE = "__all__";
 
+/** 24x24 chevron-down glyph embedded in each filter pill (mm:
+ * `I2940:13459;186:2761`, "MM_MEDIA_Down"). Overlaid on top of the native
+ * `<select>` — a native control can't host an inline icon — while
+ * `appearance-none` on the select strips the browser's own arrow, so this
+ * is the only dropdown affordance rendered. */
+function ChevronDownIcon() {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-white"
+    >
+      <path
+        d="M6 9L12 15L18 9"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+/** Shared pill chrome (mm: "Frame 483" INSTANCE `186:2757`) — 1px
+ * `#998C5F` border, translucent gold fill, 4px radius, uniform 16px
+ * padding (widened on the right for the embedded chevron). The design has
+ * no separate field-label text node: the pill's own value doubles as its
+ * label, so the accessible name is carried via `aria-label` instead of
+ * visible label copy. */
+const PILL_SELECT_CLASSNAME =
+  "font-montserrat w-full appearance-none rounded-[4px] border border-[#998C5F] bg-[rgba(255,234,158,0.10)] py-4 pl-4 pr-12 text-base font-bold tracking-[0.15px] text-white";
+
 /**
  * Two independent dropdowns (Hashtag, Phòng ban — FR-5/15). Purely
  * presentational: controlled by `value`/`onChange` props supplied by
@@ -32,9 +68,9 @@ export function KudosFilters({
 }: KudosFiltersProps) {
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <label className="flex items-center gap-2 text-sm text-white/70">
-        {labels.hashtagLabel}
+      <div className="relative">
         <select
+          aria-label={labels.hashtagLabel}
           value={value.hashtag ?? ALL_VALUE}
           onChange={(event) =>
             onChange({
@@ -42,7 +78,7 @@ export function KudosFilters({
               hashtag: event.target.value === ALL_VALUE ? null : event.target.value,
             })
           }
-          className="rounded-md border border-white/20 bg-[#101317] px-3 py-2 text-white"
+          className={PILL_SELECT_CLASSNAME}
         >
           <option value={ALL_VALUE}>{labels.allOption}</option>
           {hashtagOptions.map((tag) => (
@@ -51,11 +87,12 @@ export function KudosFilters({
             </option>
           ))}
         </select>
-      </label>
+        <ChevronDownIcon />
+      </div>
 
-      <label className="flex items-center gap-2 text-sm text-white/70">
-        {labels.departmentLabel}
+      <div className="relative">
         <select
+          aria-label={labels.departmentLabel}
           value={value.department ?? ALL_VALUE}
           onChange={(event) =>
             onChange({
@@ -63,7 +100,7 @@ export function KudosFilters({
               department: event.target.value === ALL_VALUE ? null : event.target.value,
             })
           }
-          className="rounded-md border border-white/20 bg-[#101317] px-3 py-2 text-white"
+          className={PILL_SELECT_CLASSNAME}
         >
           <option value={ALL_VALUE}>{labels.allOption}</option>
           {departmentOptions.map((department) => (
@@ -72,7 +109,8 @@ export function KudosFilters({
             </option>
           ))}
         </select>
-      </label>
+        <ChevronDownIcon />
+      </div>
     </div>
   );
 }

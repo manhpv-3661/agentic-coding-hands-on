@@ -1,0 +1,7 @@
+{
+  "mode": "single",
+  "intents": [
+    {"actor": "Sunner mở Secret Box", "action_domain": "secret-box dialog visual", "outcome": "dialog khớp pixel với MoMorph 'Open secret box- chưa mở' (done) — heading vàng, ảnh hộp quà + hiệu ứng, số đếm — không đổi behavior mock đã lock"}
+  ],
+  "justification": "Update duy nhất cho 1 feature đã ship (F006 sun-kudos-live-board) — chỉ sửa visual của 1 dialog, giữ nguyên quyết định 'không reward logic thật' đã chốt."
+}

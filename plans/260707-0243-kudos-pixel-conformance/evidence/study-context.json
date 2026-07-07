@@ -1,0 +1,48 @@
+{
+  "task": "Fix 4 confirmed MoMorph pixel-conformance gaps in two shipped Kudos features (F007 compose form, F006 live board), found by measuring getComputedStyle/getBoundingClientRect against MoMorph get_node values instead of eyeballing screenshots",
+  "mode": "auto",
+  "acceptanceCriteria": [
+    "compose dialog background measures rgb(255, 248, 225)",
+    "Community Standards panel opens exactly one new dialog with 4 hero tiers and 6 collection icons",
+    "Escape closes only the Community Standards panel, compose dialog stays open",
+    "Insert-link dialog has two fields and blank URL blocks save without calling exec",
+    "Secret Box dialog count reflects stats.secretBoxUnopened",
+    "no pre-existing F007 FR-1..21 behavior or aria regression from the restyle"
+  ],
+  "touchpoints": [
+    "app/components/kudos/compose/compose-dialog.tsx",
+    "app/components/kudos/compose/compose-dialog-fields.tsx",
+    "app/components/kudos/compose/field-group.tsx",
+    "app/components/kudos/compose/hashtag-input.tsx",
+    "app/components/kudos/compose/image-upload.tsx",
+    "app/components/kudos/compose/anonymous-toggle.tsx",
+    "app/components/kudos/compose/recipient-select.tsx",
+    "app/components/kudos/compose/rich-text-editor.tsx",
+    "app/components/kudos/compose/rich-text-caret-helpers.ts",
+    "app/components/kudos/compose/rich-text-toolbar.tsx",
+    "app/components/kudos/compose/community-standards-link.tsx",
+    "app/components/kudos/compose/community-standards-panel.tsx",
+    "app/components/kudos/compose/community-standards-content.ts",
+    "app/components/kudos/compose/insert-link-dialog.tsx",
+    "app/components/kudos/open-gift-button.tsx",
+    "app/components/kudos/kudos-stats-box.tsx",
+    "app/components/kudos/spotlight-name-cloud.tsx",
+    "lib/i18n/dictionaries/vi.ts",
+    "lib/i18n/dictionaries/en.ts",
+    "docs/features/f006-sun-kudos-live-board/feature.md",
+    "docs/features/f007-kudos-compose-form/feature.md"
+  ],
+  "blastRadius": [
+    "F007 compose form validation/submit/aria behavior (FR-1..21)",
+    "F007 rich-text editor mention/link/counter behavior",
+    "F006 Secret Box open/close, no reward-logic regression",
+    "lib/i18n dictionary vi/en parity",
+    "Spotlight Board name-cloud layout (same-session unrelated fix)"
+  ],
+  "contracts": [
+    "getComputedStyle(composeDialog).backgroundColor === 'rgb(255, 248, 225)'",
+    "document.querySelectorAll('[role=\"dialog\"]').length increases by exactly 1 when Community Standards trigger is clicked",
+    "exec(\"createLink\", url) called exactly once on valid Insert-link save, never on blank URL",
+    "OpenGiftButton unopenedCount === stats.secretBoxUnopened (no duplicate/hardcoded constant)"
+  ]
+}

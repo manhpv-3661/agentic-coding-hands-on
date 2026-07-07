@@ -14,18 +14,18 @@ describe("AwardsHero", () => {
     expect(bg).toHaveAttribute("alt", "");
   });
 
-  it("renders the ROOT FURTHER logo with the FR-4 alt text (Keyvisual Sun* Annual Award 2025)", () => {
+  it("renders the ROOT FURTHER logo with the FR-4 alt text (Keyvisual Sun* Annual Awards 2025)", () => {
     render(<AwardsHero />);
 
-    const logo = screen.getByAltText("Keyvisual Sun* Annual Award 2025");
+    const logo = screen.getByAltText("Keyvisual Sun* Annual Awards 2025");
     expect(logo).toBeInTheDocument();
     expect(logo.getAttribute("src")).toContain("Root-Further-Logo");
   });
 
-  it("renders the subtitle text 'Sun* Annual Award 2025'", () => {
+  it("renders the subtitle text 'Sun* Annual Awards 2025'", () => {
     render(<AwardsHero />);
 
-    expect(screen.getByText("Sun* Annual Award 2025")).toBeInTheDocument();
+    expect(screen.getByText("Sun* Annual Awards 2025")).toBeInTheDocument();
   });
 
   it("does not render countdown, CTA, or event-info widgets (FR-4 scope)", () => {

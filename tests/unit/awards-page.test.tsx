@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 
 vi.mock("next/font/google", () => ({
   Montserrat: vi.fn(() => ({
@@ -10,6 +10,10 @@ vi.mock("next/font/google", () => ({
     variable: "--font-montserrat-alternates",
     className: "font-montserrat-alternates",
   })),
+}));
+
+vi.mock("next/font/local", () => ({
+  default: vi.fn(() => ({ className: "font-digital-numbers" })),
 }));
 
 vi.mock("@/lib/auth/require-user", () => ({
@@ -51,9 +55,17 @@ describe("AwardsPage", () => {
 
     render(await AwardsPage());
 
-    expect(screen.getByText("Sun* annual awards 2025")).toBeInTheDocument();
+    // "Sun* Annual Awards 2025" legitimately renders twice on this page:
+    // once as AwardsHero's keyvisual subtitle, once as the title section's
+    // own eyebrow caption (mm:313:8453/313:8454) — both centered per ground
+    // truth. Assert the title-section instance specifically via its heading
+    // sibling rather than an ambiguous getByText across the whole page.
+    const heading = screen.getByRole("heading", { name: "Hệ thống giải thưởng SAA 2025" });
+    expect(heading).toBeInTheDocument();
+    const titleSection = heading.parentElement;
+    expect(titleSection).not.toBeNull();
     expect(
-      screen.getByRole("heading", { name: "Hệ thống giải thưởng SAA 2025" }),
+      within(titleSection as HTMLElement).getByText("Sun* Annual Awards 2025"),
     ).toBeInTheDocument();
   });
 

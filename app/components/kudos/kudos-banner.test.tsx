@@ -3,14 +3,15 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { KudosBanner } from "./kudos-banner";
 
+const labels = {
+  title: "Hệ thống ghi nhận và cảm ơn",
+  searchPlaceholder: "Tìm kiếm profile Sunner",
+};
+const composer = { placeholder: "Hôm nay, bạn muốn gửi lời cảm ơn và ghi nhận đến ai?" };
+
 describe("KudosBanner", () => {
   it("renders the banner title, the KUDOS wordmark, and the composer placeholder", () => {
-    render(
-      <KudosBanner
-        labels={{ title: "Hệ thống ghi nhận và cảm ơn" }}
-        composer={{ placeholder: "Hôm nay, bạn muốn gửi lời cảm ơn và ghi nhận đến ai?" }}
-      />,
-    );
+    render(<KudosBanner labels={labels} composer={composer} />);
 
     expect(screen.getByText("Hệ thống ghi nhận và cảm ơn")).toBeInTheDocument();
     expect(screen.getByText("KUDOS")).toBeInTheDocument();
@@ -19,14 +20,18 @@ describe("KudosBanner", () => {
     ).toBeInTheDocument();
   });
 
+  it("renders the search pill placeholder from the dictionary, disabled and inert", () => {
+    render(<KudosBanner labels={labels} composer={composer} />);
+
+    const searchPill = screen.getByText("Tìm kiếm profile Sunner").closest("button");
+    expect(searchPill).not.toBeNull();
+    expect(searchPill).toBeDisabled();
+    expect(searchPill).toHaveAttribute("aria-disabled", "true");
+  });
+
   it("the composer pill is inert when composerTriggerProps is omitted (F006 default)", async () => {
     const user = userEvent.setup();
-    render(
-      <KudosBanner
-        labels={{ title: "Hệ thống ghi nhận và cảm ơn" }}
-        composer={{ placeholder: "Hôm nay, bạn muốn gửi lời cảm ơn và ghi nhận đến ai?" }}
-      />,
-    );
+    render(<KudosBanner labels={labels} composer={composer} />);
 
     const pill = screen.getByText("Hôm nay, bạn muốn gửi lời cảm ơn và ghi nhận đến ai?").closest("button");
     expect(pill).not.toBeNull();
@@ -39,8 +44,8 @@ describe("KudosBanner", () => {
     const user = userEvent.setup();
     render(
       <KudosBanner
-        labels={{ title: "Hệ thống ghi nhận và cảm ơn" }}
-        composer={{ placeholder: "Hôm nay, bạn muốn gửi lời cảm ơn và ghi nhận đến ai?" }}
+        labels={labels}
+        composer={composer}
         composerTriggerProps={{ onClick, "aria-expanded": false, "aria-haspopup": "dialog" }}
       />,
     );

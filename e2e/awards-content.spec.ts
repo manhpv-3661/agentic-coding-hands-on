@@ -19,12 +19,15 @@ test.describe("Awards content (authless)", () => {
     // Header and hero visible
     await expect(page.locator("header")).toBeVisible();
     await expect(
-      page.locator('img[alt="Keyvisual Sun* Annual Award 2025"]'),
+      page.locator('img[alt="Keyvisual Sun* Annual Awards 2025"]'),
     ).toBeVisible();
 
-    // Title section (FR-5)
+    // Title section (FR-5) — the phrase "Sun* Annual Awards 2025" now
+    // appears twice on this page (AwardsHero subtitle, then this eyebrow
+    // caption), so `.last()` targets the title-section occurrence
+    // specifically and avoids a Playwright strict-mode multi-match error.
     await expect(
-      page.getByText("Sun* annual awards 2025", { exact: true }),
+      page.getByText("Sun* Annual Awards 2025", { exact: true }).last(),
     ).toBeVisible();
     await expect(
       page.getByText("Hệ thống giải thưởng SAA 2025", { exact: true }),

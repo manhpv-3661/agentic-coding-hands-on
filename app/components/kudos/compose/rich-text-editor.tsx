@@ -3,6 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import { CommunityStandardsLink } from "./community-standards-link";
 import { filterMentionNames, MentionSuggestions } from "./mention-suggestions";
+import {
+  computeMentionInsertion,
+  getCaretMentionToken,
+  MENTION_TOKEN_REGEX,
+  placeCaretAt,
+  placeCaretAtEnd,
+} from "./rich-text-caret-helpers";
 import { RichTextToolbar, type RichTextToolbarLabels } from "./rich-text-toolbar";
 
 export interface RichTextEditorLabels {
@@ -11,7 +18,7 @@ export interface RichTextEditorLabels {
   counterMax: string;
   error: string;
   toolbar: RichTextToolbarLabels;
-  communityStandards: string;
+  communityStandards: Parameters<typeof CommunityStandardsLink>[0]["labels"];
 }
 
 export interface RichTextEditorProps {
@@ -26,60 +33,15 @@ export interface RichTextEditorProps {
   labels: RichTextEditorLabels;
 }
 
-/** Matches an "@token" ending at whatever position it's tested against —
- * used both against the text up to the live caret (the common case) and,
- * as a fallback, against the full text when no live caret position is
- * available (e.g. a test/integration writing `textContent` directly). */
-const MENTION_TOKEN_REGEX = /@(\w*)$/;
-
-type CaretMentionToken =
-  | { kind: "no-caret" }
-  | { kind: "no-match" }
-  | { kind: "match"; query: string; start: number; end: number };
-
 /**
- * Locates the "@token" immediately before the live caret, if any — so
- * `@name` triggers suggestions no matter where in the message it's typed,
- * not just at the very end. `kind: "no-caret"` means the current selection
- * isn't positioned inside `el` at all (e.g. a programmatic `textContent`
- * write with no real caret); callers fall back to trailing-text matching
- * in that case instead of treating "no caret" as "no mention".
- */
-function getCaretMentionToken(el: HTMLElement): CaretMentionToken {
-  const selection = window.getSelection();
-  if (!selection || selection.rangeCount === 0) return { kind: "no-caret" };
-
-  const liveRange = selection.getRangeAt(0);
-  if (!el.contains(liveRange.startContainer)) return { kind: "no-caret" };
-
-  const preCaretRange = liveRange.cloneRange();
-  preCaretRange.selectNodeContents(el);
-  preCaretRange.setEnd(liveRange.startContainer, liveRange.startOffset);
-  const textBeforeCaret = preCaretRange.toString();
-
-  const match = MENTION_TOKEN_REGEX.exec(textBeforeCaret);
-  if (!match) return { kind: "no-match" };
-
-  return {
-    kind: "match",
-    query: match[1],
-    start: textBeforeCaret.length - match[0].length,
-    end: textBeforeCaret.length,
-  };
-}
-
-/**
- * Minimal `contentEditable`-based rich text editor (F007, FR-6..10). No
- * rich-text library exists in this repo (clarifications.md) — formatting
- * is applied via `document.execCommand`, purely visual; only the element's
- * `textContent` is ever persisted (`onChange`), so `KudosPost.content`
- * stays a plain string and no HTML is stored or rendered downstream.
- *
- * The editable region is intentionally NOT re-synced from `value` after
- * mount (only used once, as the initial seed) — a fully-controlled
- * `contentEditable` fights the browser over caret position on every
- * keystroke. The compose dialog always mounts this fresh (empty `value`)
- * after a reset/close, which is sufficient for this feature's needs.
+ * Minimal `contentEditable`-based rich text editor (F007, FR-6..10, style
+ * per FR-22). No rich-text library exists in this repo — formatting is
+ * applied via `document.execCommand`, visual only; `textContent` is the
+ * sole persisted value (`onChange`). Not re-synced from `value` after
+ * mount (initial seed only) — a fully-controlled `contentEditable` fights
+ * the browser over caret position on every keystroke. Caret/mention string
+ * math lives in `rich-text-caret-helpers.ts` (pure functions) so this
+ * component only wires DOM reads/writes to them.
  */
 export function RichTextEditor({
   value,
@@ -103,11 +65,8 @@ export function RichTextEditor({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // A new query means the filtered candidate list likely changed —
-  // re-highlight the top match rather than keeping a now-stale index.
-  // Adjusted during render (React's documented pattern for "reset state
-  // when a value changes") instead of in an effect, so this doesn't cause
-  // an extra commit-then-recommit render pass.
+  // Re-highlight the top match whenever the query changes (render-phase
+  // reset, avoids an extra commit-then-recommit render pass).
   const [trackedMentionQuery, setTrackedMentionQuery] = useState<string | null>(null);
   if (mentionQuery !== trackedMentionQuery) {
     setTrackedMentionQuery(mentionQuery);
@@ -160,16 +119,7 @@ export function RichTextEditor({
     if (!el) return;
     const text = el.textContent ?? "";
     const caretToken = getCaretMentionToken(el);
-
-    let nextText: string;
-    let caretOffset: number;
-    if (caretToken.kind === "match") {
-      nextText = `${text.slice(0, caretToken.start)}@${name} ${text.slice(caretToken.end)}`;
-      caretOffset = caretToken.start + name.length + 2;
-    } else {
-      nextText = text.replace(MENTION_TOKEN_REGEX, `@${name} `);
-      caretOffset = nextText.length;
-    }
+    const { nextText, caretOffset } = computeMentionInsertion(text, caretToken, name);
 
     el.textContent = nextText;
     placeCaretAt(el, caretOffset);
@@ -202,72 +152,59 @@ export function RichTextEditor({
   }
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex items-center justify-between gap-4">
-        <RichTextToolbar exec={exec} labels={labels.toolbar} />
-        <CommunityStandardsLink label={labels.communityStandards} />
+    <div className="flex flex-col gap-1">
+      {/* Toolbar row + textarea share no gap (ground truth: toolbar endY ==
+       * textarea startY, one continuous bordered card) — grouped in their
+       * own gap-less wrapper so the outer flex-col's gap only applies
+       * between this unit and the hint/counter row below it. */}
+      <div className="flex flex-col">
+        {/* One continuous 672px bordered strip (ground truth: 6 icon cells
+         * + the community-standards cell sum to exactly 672px, no gap) —
+         * this container owns the single border and the top-left/top-right
+         * rounding; `RichTextToolbar` and `CommunityStandardsLink` render
+         * their cells borderless/gapless inside it. */}
+        <div className="flex items-stretch overflow-hidden rounded-t-lg border border-[#998C5F] bg-white">
+          <RichTextToolbar exec={exec} labels={labels.toolbar} />
+          <CommunityStandardsLink labels={labels.communityStandards} />
+        </div>
+
+        <div className="relative">
+          <div
+            ref={editorRef}
+            contentEditable
+            role="textbox"
+            aria-multiline="true"
+            aria-label={labels.placeholder}
+            aria-invalid={Boolean(error)}
+            aria-describedby={error ? "compose-content-error" : undefined}
+            data-placeholder={labels.placeholder}
+            onInput={handleInput}
+            onKeyDown={handleEditorKeyDown}
+            onBlur={handleEditorBlur}
+            className="min-h-50 w-full rounded-b-lg border border-[#998C5F] bg-white pl-6 text-sm text-[#00101A] outline-none empty:before:text-[#999] empty:before:content-[attr(data-placeholder)]"
+          />
+          <MentionSuggestions
+            names={mentionNames}
+            query={mentionQuery ?? ""}
+            onSelect={handleMentionSelect}
+            open={mentionQuery !== null}
+            highlightedIndex={highlightedMentionIndex}
+          />
+        </div>
       </div>
 
-      <div className="relative">
-        <div
-          ref={editorRef}
-          contentEditable
-          role="textbox"
-          aria-multiline="true"
-          aria-label={labels.placeholder}
-          aria-invalid={Boolean(error)}
-          aria-describedby={error ? "compose-content-error" : undefined}
-          data-placeholder={labels.placeholder}
-          onInput={handleInput}
-          onKeyDown={handleEditorKeyDown}
-          onBlur={handleEditorBlur}
-          className="min-h-[140px] w-full rounded-lg border border-white/20 bg-[#101317] p-3 text-sm text-white outline-none empty:before:text-white/40 empty:before:content-[attr(data-placeholder)]"
-        />
-        <MentionSuggestions
-          names={mentionNames}
-          query={mentionQuery ?? ""}
-          onSelect={handleMentionSelect}
-          open={mentionQuery !== null}
-          highlightedIndex={highlightedMentionIndex}
-        />
-      </div>
-
-      <div className="flex items-center justify-between text-xs text-white/50">
-        <span>{labels.mentionHint}</span>
-        <span>
+      <div className="flex items-center justify-between text-[#00101A]">
+        <span className="text-base font-bold leading-6 tracking-[0.5px]">{labels.mentionHint}</span>
+        <span className="text-xs text-[#999]">
           {count}/{labels.counterMax}
         </span>
       </div>
 
       {error && (
-        <p id="compose-content-error" className="text-xs text-red-400">
+        <p id="compose-content-error" className="text-xs font-semibold text-[#CF1322]">
           {error}
         </p>
       )}
     </div>
   );
-}
-
-function placeCaretAtEnd(el: HTMLElement) {
-  placeCaretAt(el, el.textContent?.length ?? 0);
-}
-
-/** Places the caret at a plain character offset within `el`'s text. Only
- * called right after `el.textContent` is fully reassigned (truncation,
- * mention insertion), so `el` always has at most one text-node child at
- * that point — no multi-node offset math needed. */
-function placeCaretAt(el: HTMLElement, offset: number) {
-  if (typeof window === "undefined" || typeof document.createRange !== "function") return;
-  const range = document.createRange();
-  const textNode = el.firstChild;
-  if (textNode) {
-    const safeOffset = Math.min(offset, textNode.textContent?.length ?? 0);
-    range.setStart(textNode, safeOffset);
-  } else {
-    range.selectNodeContents(el);
-  }
-  range.collapse(true);
-  const selection = window.getSelection();
-  selection?.removeAllRanges();
-  selection?.addRange(range);
 }

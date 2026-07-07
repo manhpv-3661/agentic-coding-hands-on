@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { ImageUpload } from "./image-upload";
 
 const labels = {
+  label: "Image",
   add: "+Image",
   max: "Tối đa 5",
   remove: "Xóa ảnh",

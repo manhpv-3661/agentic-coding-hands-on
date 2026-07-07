@@ -29,7 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
  * unauthenticated request never renders this tree.
  *
  * Composition (spec §1): `SiteHeader` → `AwardsHero` (Phase 04, keyvisual
- * mini) → inline title section (FR-5: "Sun* annual awards 2025" caption +
+ * mini) → inline title section (FR-5: "Sun* Annual Awards 2025" caption +
  * gold "Hệ thống giải thưởng SAA 2025" heading — same `mms_A_Title`
  * component the homepage's `AwardsSection` uses, reproduced inline here
  * rather than via a shared component since it is the only consumer outside
@@ -48,7 +48,7 @@ export async function generateMetadata(): Promise<Metadata> {
  * take their dictionary slices per the Phase 02 shell contract;
  * `buildAwardDetailEntries(dictionary.awards.detail)` builds the 6
  * locale-aware award entries consumed by `AwardsCatalog`. The eyebrow
- * caption "Sun* annual awards 2025" stays hardcoded (brand+year, excluded
+ * caption "Sun* Annual Awards 2025" stays hardcoded (brand+year, excluded
  * from translation per clarifications.md).
  *
  * Fonts: `app/login/fonts.ts` is reused (not duplicated) for Montserrat /
@@ -77,19 +77,29 @@ export default async function AwardsPage() {
         notifications={dictionary.shared.notifications}
       />
 
-      <main className="flex flex-1 flex-col gap-16 py-12 sm:gap-20 sm:py-16 lg:gap-24 lg:py-24">
+      <main className="flex flex-1 flex-col gap-16 py-12 sm:gap-20 sm:py-16 lg:gap-[120px] lg:py-24">
         <AwardsHero />
 
         {/* mm:awards-title-section (FR-5) + Phase 05 catalog — share one
-            padded, max-width container so the catalog itself stays
-            layout-only (no page-level gutter baked in). */}
-        <div className="mx-auto flex w-full max-w-[1224px] flex-col gap-10 px-6 sm:px-10 lg:px-36">
+            padded container (full-width + `lg:px-36` gutter, same pattern as
+            `AwardsHero`/`site-header.tsx` — NOT a `max-w` + `mx-auto` cap,
+            which would double-apply the 144px gutter as inset padding on
+            top of a 1152px-capped box and shrink content to 864px) so the
+            catalog itself stays layout-only (no page-level gutter baked
+            in). Inner gap matches `Bìa` (313:8449)'s own 120px spacing
+            between the title block and the catalog (`mms_B`, 313:8458). */}
+        <div className="flex w-full flex-col gap-10 px-6 sm:px-10 lg:gap-[120px] lg:px-36">
+          {/* mm:313:8453 — both the eyebrow (313:8454) and the heading's
+              wrapping row (Frame 488, 313:8456, `justify-content: center`)
+              center their text within the full 1152px content width per
+              ground truth, rather than sitting flush against the left
+              gutter — `w-full text-center` on each reproduces that. */}
           <div className="flex w-full flex-col items-start gap-4">
-            <p className="font-montserrat text-[24px] leading-[32px] font-bold text-white">
-              Sun* annual awards 2025
+            <p className="w-full font-montserrat text-[24px] leading-[32px] font-bold text-center text-white">
+              Sun* Annual Awards 2025
             </p>
             <div className="h-px w-full bg-[#2E3940]" />
-            <h1 className="font-montserrat text-[57px] leading-[64px] font-bold tracking-[-0.25px] text-[#FFEA9E]">
+            <h1 className="w-full font-montserrat text-[57px] leading-[64px] font-bold tracking-[-0.25px] text-center text-[#FFEA9E]">
               {dictionary.awards.title.heading}
             </h1>
           </div>

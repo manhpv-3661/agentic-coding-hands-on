@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { proxy } from "@/proxy";
 
 // Mock Supabase server client
@@ -46,7 +46,7 @@ describe("proxy.ts", () => {
           data: { user: { id: "user-123", email: "test@example.com" } },
         }),
       },
-    } as any);
+    } as unknown as ReturnType<typeof createServerClient>);
 
     const request = new NextRequest(new URL("http://localhost:3000/login"));
     const response = await proxy(request);
@@ -65,7 +65,7 @@ describe("proxy.ts", () => {
           data: { user: null },
         }),
       },
-    } as any);
+    } as unknown as ReturnType<typeof createServerClient>);
 
     const request = new NextRequest(new URL("http://localhost:3000/todo"));
     const response = await proxy(request);
@@ -84,7 +84,7 @@ describe("proxy.ts", () => {
           data: { user: { id: "user-123", email: "test@example.com" } },
         }),
       },
-    } as any);
+    } as unknown as ReturnType<typeof createServerClient>);
 
     const request = new NextRequest(new URL("http://localhost:3000/todo"));
     const response = await proxy(request);
@@ -103,7 +103,7 @@ describe("proxy.ts", () => {
           data: { user: null },
         }),
       },
-    } as any);
+    } as unknown as ReturnType<typeof createServerClient>);
 
     const request = new NextRequest(new URL("http://localhost:3000/login"));
     const response = await proxy(request);
@@ -122,7 +122,7 @@ describe("proxy.ts", () => {
           data: { user: null },
         }),
       },
-    } as any);
+    } as unknown as ReturnType<typeof createServerClient>);
 
     const request = new NextRequest(new URL("http://localhost:3000/some-public"));
     const response = await proxy(request);
@@ -141,7 +141,7 @@ describe("proxy.ts", () => {
           data: { user: null },
         }),
       },
-    } as any);
+    } as unknown as ReturnType<typeof createServerClient>);
 
     const request = new NextRequest(new URL("http://localhost:3000/"));
     const response = await proxy(request);
@@ -160,7 +160,7 @@ describe("proxy.ts", () => {
           data: { user: null },
         }),
       },
-    } as any);
+    } as unknown as ReturnType<typeof createServerClient>);
 
     const request = new NextRequest(new URL("http://localhost:3000/awards"));
     const response = await proxy(request);
@@ -179,7 +179,7 @@ describe("proxy.ts", () => {
           data: { user: null },
         }),
       },
-    } as any);
+    } as unknown as ReturnType<typeof createServerClient>);
 
     const request = new NextRequest(new URL("http://localhost:3000/kudos"));
     const response = await proxy(request);
@@ -198,7 +198,7 @@ describe("proxy.ts", () => {
           data: { user: { id: "user-123", email: "test@example.com" } },
         }),
       },
-    } as any);
+    } as unknown as ReturnType<typeof createServerClient>);
 
     const request = new NextRequest(new URL("http://localhost:3000/"));
     const response = await proxy(request);
@@ -216,7 +216,7 @@ describe("proxy.ts", () => {
           data: { user: null },
         }),
       },
-    } as any);
+    } as unknown as ReturnType<typeof createServerClient>);
 
     const request = new NextRequest(
       new URL("http://localhost:3000/todo/some-subpath")
@@ -237,7 +237,7 @@ describe("proxy.ts", () => {
 
     vi.mocked(createServerClient).mockReturnValue({
       auth: { getUser: mockGetUser },
-    } as any);
+    } as unknown as ReturnType<typeof createServerClient>);
 
     const request = new NextRequest(new URL("http://localhost:3000/login"));
     await proxy(request);
@@ -259,7 +259,7 @@ describe("proxy.ts", () => {
 
       vi.mocked(createServerClient).mockReturnValue({
         auth: { getUser: vi.fn().mockResolvedValue({ data: { user: null } }) },
-      } as any);
+      } as unknown as ReturnType<typeof createServerClient>);
 
       const request = new NextRequest(new URL("http://localhost:3000/"));
       const response = await proxy(request);
@@ -276,7 +276,7 @@ describe("proxy.ts", () => {
 
       vi.mocked(createServerClient).mockReturnValue({
         auth: { getUser: vi.fn().mockResolvedValue({ data: { user: null } }) },
-      } as any);
+      } as unknown as ReturnType<typeof createServerClient>);
 
       const request = new NextRequest(new URL("http://localhost:3000/login"));
       const response = await proxy(request);
@@ -293,7 +293,7 @@ describe("proxy.ts", () => {
 
       vi.mocked(createServerClient).mockReturnValue({
         auth: { getUser: vi.fn().mockResolvedValue({ data: { user: null } }) },
-      } as any);
+      } as unknown as ReturnType<typeof createServerClient>);
 
       const request = new NextRequest(new URL("http://localhost:3000/awards"));
       const response = await proxy(request);
@@ -310,7 +310,7 @@ describe("proxy.ts", () => {
 
       vi.mocked(createServerClient).mockReturnValue({
         auth: { getUser: vi.fn().mockResolvedValue({ data: { user: null } }) },
-      } as any);
+      } as unknown as ReturnType<typeof createServerClient>);
 
       const request = new NextRequest(new URL("http://localhost:3000/kudos"));
       const response = await proxy(request);
@@ -327,7 +327,7 @@ describe("proxy.ts", () => {
 
       vi.mocked(createServerClient).mockReturnValue({
         auth: { getUser: vi.fn().mockResolvedValue({ data: { user: null } }) },
-      } as any);
+      } as unknown as ReturnType<typeof createServerClient>);
 
       const request = new NextRequest(new URL("http://localhost:3000/todo"));
       const response = await proxy(request);
@@ -344,7 +344,7 @@ describe("proxy.ts", () => {
 
       vi.mocked(createServerClient).mockReturnValue({
         auth: { getUser: vi.fn().mockResolvedValue({ data: { user: null } }) },
-      } as any);
+      } as unknown as ReturnType<typeof createServerClient>);
 
       const request = new NextRequest(new URL("http://localhost:3000/prelaunch"));
       const response = await proxy(request);
@@ -359,7 +359,7 @@ describe("proxy.ts", () => {
 
       vi.mocked(createServerClient).mockReturnValue({
         auth: { getUser: vi.fn().mockResolvedValue({ data: { user: null } }) },
-      } as any);
+      } as unknown as ReturnType<typeof createServerClient>);
 
       const request = new NextRequest(
         new URL("http://localhost:3000/awards?foo=bar&baz=qux")
@@ -394,7 +394,7 @@ describe("proxy.ts", () => {
             data: { user: null },
           }),
         },
-      } as any);
+      } as unknown as ReturnType<typeof createServerClient>);
 
       // Unauthenticated access to protected route should redirect to /login, NOT /prelaunch
       const request = new NextRequest(new URL("http://localhost:3000/awards"));
@@ -417,7 +417,7 @@ describe("proxy.ts", () => {
             data: { user: null },
           }),
         },
-      } as any);
+      } as unknown as ReturnType<typeof createServerClient>);
 
       // Unauthenticated access to protected route should redirect to /login, NOT /prelaunch
       const request = new NextRequest(new URL("http://localhost:3000/awards"));
@@ -441,7 +441,7 @@ describe("proxy.ts", () => {
             data: { user: { id: "user-123", email: "test@example.com" } },
           }),
         },
-      } as any);
+      } as unknown as ReturnType<typeof createServerClient>);
 
       const request = new NextRequest(new URL("http://localhost:3000/awards"));
       const response = await proxy(request);

@@ -1,5 +1,6 @@
 "use client";
 
+import { Fragment } from "react";
 import { useScrollSpy } from "@/hooks/use-scroll-spy";
 import { AWARD_CATEGORIES } from "@/lib/awards/award-categories";
 import type { AwardDetailEntry } from "./award-detail-card";
@@ -33,33 +34,66 @@ interface AwardsCatalogProps {
  *
  * Layout: two columns at `lg` — nav sticky on the left, cards stacked on the
  * right; single column (nav above cards) below `lg`, matching the phase
- * spec's "two-column desktop / stack on tablet+mobile" requirement. No
- * exact sidebar width or gap is specified anywhere in the plan/spec set, so
- * `lg:w-[280px]` (sidebar) and `lg:gap-16` (column gap) are this
- * implementation's own reasonable defaults, sized to comfortably fit the
- * longest nav label ("Top Project Leader") without wrapping.
+ * spec's "two-column desktop / stack on tablet+mobile" requirement.
+ * `lg:w-[178px]` (sidebar) matches the measured MoMorph width for
+ * `mms_C_Menu list` (`313:8459`). `lg:gap-[121px]` (column gap) is the
+ * *effective* gap once `mms_B_Hệ thống giải thưởng`'s (`313:8458`)
+ * `justify-content: space-between` is accounted for — its declared `gap`
+ * style is 80px, but with two fixed-width children (nav 178px, content
+ * `D.Danh sách giải thưởng` `313:8466` authored at a fixed 853px) inside a
+ * 1152px `space-between` row, the rendered gap is actually
+ * `1152 - 178 - 853 = 121px` (confirmed via node position deltas, not the
+ * declared `gap` property). Using `gap-[121px]` here with a flexible
+ * (`w-full min-w-0`) content column reproduces that same 853px effective
+ * content width without hard-coding it, so responsive/overflow behavior at
+ * other breakpoints is unaffected. (RE-VERIFY@P7 from Phase 04's report —
+ * confirmed analytically via `get_node`, not a text-flow risk.)
  *
  * Each section carries both the scroll-spy anchor id AND `scroll-mt-24` so
  * hash-anchor deep links from the homepage (`/awards#<slug>`, FR-14) land
  * clear of the sticky header (`min-h-20` in `site-header.tsx`).
  */
 export function AwardsCatalog({ entries, quantityLabel, valueLabel }: AwardsCatalogProps) {
-  const activeSlug = useScrollSpy(CATEGORY_SLUGS);
+  // `useScrollSpy` returns `null` until an `IntersectionObserver` entry
+  // actually intersects — i.e. before the user has scrolled at all. Per the
+  // MoMorph ground truth (`313:8459`, item C.1 "Top Talent" marked active
+  // in the initial/top-of-page state), the first category defaults active
+  // rather than showing no active item on load.
+  const activeSlug = useScrollSpy(CATEGORY_SLUGS) ?? CATEGORY_SLUGS[0];
 
   return (
-    <div className="flex w-full flex-col gap-10 lg:flex-row lg:items-start lg:gap-16">
-      <div className="w-full lg:w-[280px] lg:shrink-0">
+    <div className="flex w-full flex-col gap-10 lg:flex-row lg:items-start lg:gap-[121px]">
+      <div className="w-full lg:w-[178px] lg:shrink-0">
         <AwardsNavMenu items={AWARD_CATEGORIES} activeSlug={activeSlug} />
       </div>
       <div className="flex w-full min-w-0 flex-col gap-16 lg:gap-20">
-        {entries.map((entry) => (
-          <section key={entry.slug} id={entry.slug} className="scroll-mt-24">
-            <AwardDetailCard
-              {...entry}
-              quantityLabel={quantityLabel}
-              valueLabel={valueLabel}
-            />
-          </section>
+        {entries.map((entry, index) => (
+          // Fragment (not a bare array) so the trailing divider shares
+          // `entry.slug` as its React key without introducing a second
+          // mapped key namespace.
+          <Fragment key={entry.slug}>
+            <section id={entry.slug} className="scroll-mt-24">
+              <AwardDetailCard
+                {...entry}
+                quantityLabel={quantityLabel}
+                valueLabel={valueLabel}
+                // Design alternates the 336×336 image slot left/right per
+                // card (D.1 left, D.2 right, D.3 left, ...) — see
+                // `award-detail-card.tsx`'s `imageSide` prop doc.
+                imageSide={index % 2 === 0 ? "left" : "right"}
+              />
+            </section>
+            {/* mm:Rectangle 14 (313:8467/8468/8471 last child, etc.) — a
+                full-width 1px `#2E3940` trailing divider between cards,
+                present after every card except the last (`313:8510` has no
+                such child). Combined with the container's own `gap-20`
+                (80px) on both sides, this reproduces the ground truth's
+                161px card-to-card spacing (80 + 1 + 80) without hard-coding
+                a one-off gap value. */}
+            {index < entries.length - 1 && (
+              <div className="h-px w-full shrink-0 bg-[#2E3940]" aria-hidden="true" />
+            )}
+          </Fragment>
         ))}
       </div>
     </div>

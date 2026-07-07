@@ -22,7 +22,7 @@ describe("/app/auth/callback/route.ts", () => {
     const mockExchange = vi.fn().mockResolvedValue({ error: null });
     vi.mocked(createClient).mockResolvedValueOnce({
       auth: { exchangeCodeForSession: mockExchange },
-    } as any);
+    } as unknown as Awaited<ReturnType<typeof createClient>>);
 
     const request = new NextRequest(
       new URL("http://localhost:3000/auth/callback?code=test-code")
@@ -40,7 +40,7 @@ describe("/app/auth/callback/route.ts", () => {
     });
     vi.mocked(createClient).mockResolvedValueOnce({
       auth: { exchangeCodeForSession: mockExchange },
-    } as any);
+    } as unknown as Awaited<ReturnType<typeof createClient>>);
 
     const request = new NextRequest(
       new URL("http://localhost:3000/auth/callback?code=test-code")
@@ -84,7 +84,7 @@ describe("/app/auth/callback/route.ts", () => {
     const mockExchange = vi.fn().mockResolvedValue({ error: null });
     vi.mocked(createClient).mockResolvedValueOnce({
       auth: { exchangeCodeForSession: mockExchange },
-    } as any);
+    } as unknown as Awaited<ReturnType<typeof createClient>>);
 
     const request = new NextRequest(
       new URL(
@@ -138,7 +138,7 @@ describe("/app/auth/callback/route.ts", () => {
     const mockExchange = vi.fn().mockResolvedValue({ error: null });
     vi.mocked(createClient).mockResolvedValueOnce({
       auth: { exchangeCodeForSession: mockExchange },
-    } as any);
+    } as unknown as Awaited<ReturnType<typeof createClient>>);
 
     const request = new NextRequest(
       new URL("http://localhost:3000/auth/callback?code=test-code")
@@ -154,7 +154,7 @@ describe("/app/auth/callback/route.ts", () => {
     const mockExchange = vi.fn().mockResolvedValue({ error: null });
     vi.mocked(createClient).mockResolvedValueOnce({
       auth: { exchangeCodeForSession: mockExchange },
-    } as any);
+    } as unknown as Awaited<ReturnType<typeof createClient>>);
 
     const testCode = "test-code-12345";
     const request = new NextRequest(

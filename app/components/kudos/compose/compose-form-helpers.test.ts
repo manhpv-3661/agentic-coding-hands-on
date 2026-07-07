@@ -72,6 +72,8 @@ describe("buildKudosPost", () => {
     expect(post.hearts).toBe(0);
     expect(post.imageCount).toBe(0);
     expect(post.title).toBe("Danh hiệu");
+    expect(post.sentByCurrentUser).toBe(true);
+    expect(post.anonymous).toBe(false);
   });
 
   it("substitutes the nickname as sender (blank department/stars) when anonymous", () => {
@@ -82,6 +84,24 @@ describe("buildKudosPost", () => {
     );
 
     expect(post.sender).toEqual({ name: "Doraemon", department: "", stars: 0 });
+  });
+
+  it("still marks an anonymous post as sentByCurrentUser (self-like loophole fix)", () => {
+    const post = buildKudosPost(
+      makeValidState({ anonymous: true, nickname: "Doraemon" }),
+      currentUser,
+      now,
+    );
+
+    expect(post.sentByCurrentUser).toBe(true);
+    expect(post.anonymous).toBe(true);
+  });
+
+  it("produces unique ids for two posts built back-to-back with the same timestamp", () => {
+    const first = buildKudosPost(makeValidState(), currentUser, now);
+    const second = buildKudosPost(makeValidState(), currentUser, now);
+
+    expect(first.id).not.toBe(second.id);
   });
 
   it("sets imageCount to the number of selected images", () => {

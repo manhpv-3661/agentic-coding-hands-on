@@ -11,7 +11,8 @@ type AwardDetailEntryKey = keyof AwardDetailDict["entries"];
  * Per-category static metadata that never changes with locale: the
  * hardcoded English title (brand/category name, not translated — locked
  * decision), the title graphic, and which `awards.detail.entries.<key>`
- * slice of the dictionary supplies the quantity/value strings. Ordered to
+ * slice of the dictionary supplies the quantity/value metrics (each a
+ * pre-split `{ number, unit }` pair — see `AwardMetric`). Ordered to
  * match `AWARD_CATEGORIES` 1:1 — index `i` here describes
  * `AWARD_CATEGORIES[i]`. Source: `spec/awards-page/feature.md` §2.5 (FR-12)
  * — note the MVP title includes its long form ("MVP (Most Valuable
@@ -26,32 +27,32 @@ const STATIC_ENTRY_META: ReadonlyArray<{
 }> = [
   {
     title: "Top Talent",
-    titleImageSrc: "/homepage-saa/Award-Name-TopTalent.png",
+    titleImageSrc: "/awards-saa/thumbnails/top-talent.png",
     dictEntryKey: "topTalent",
   },
   {
     title: "Top Project",
-    titleImageSrc: "/homepage-saa/Award-Name-TopProject.png",
+    titleImageSrc: "/awards-saa/thumbnails/top-project.png",
     dictEntryKey: "topProject",
   },
   {
     title: "Top Project Leader",
-    titleImageSrc: "/homepage-saa/Award-Name-TopProjectLeader.png",
+    titleImageSrc: "/awards-saa/thumbnails/top-project-leader.png",
     dictEntryKey: "topProjectLeader",
   },
   {
     title: "Best Manager",
-    titleImageSrc: "/homepage-saa/Award-Name-BestManager.png",
+    titleImageSrc: "/awards-saa/thumbnails/best-manager.png",
     dictEntryKey: "bestManager",
   },
   {
     title: "Signature 2025 - Creator",
-    titleImageSrc: "/homepage-saa/Award-Name-Signature2025Creator.png",
+    titleImageSrc: "/awards-saa/thumbnails/signature-2025-creator.png",
     dictEntryKey: "signatureCreator",
   },
   {
     title: "MVP (Most Valuable Person)",
-    titleImageSrc: "/homepage-saa/Award-Name-MVP.png",
+    titleImageSrc: "/awards-saa/thumbnails/mvp.png",
     dictEntryKey: "mvp",
   },
 ];
@@ -72,16 +73,40 @@ const STATIC_ENTRY_META: ReadonlyArray<{
 export function buildAwardDetailEntries(detail: AwardDetailDict): AwardDetailEntry[] {
   return AWARD_CATEGORIES.map((category, index) => {
     const meta = STATIC_ENTRY_META[index];
-    const description =
-      meta.dictEntryKey === "signatureCreator"
-        ? detail.descriptions.signatureCreator
-        : detail.descriptions.sharedUnfinished;
+
+    // Signature 2025 - Creator is the one category with a dual value
+    // structure (individual vs. collective award, mm:313:8490/8498/8501) —
+    // built from its own dedicated dictionary fields, not the generic
+    // `quantity`/`value` slice the other 5 categories share below.
+    if (meta.dictEntryKey === "signatureCreator") {
+      const dictEntry = detail.entries.signatureCreator;
+
+      return {
+        slug: category.slug,
+        title: meta.title,
+        description: detail.descriptions.signatureCreator,
+        quantity: dictEntry.quantity,
+        valueVariants: {
+          orLabel: detail.orLabel,
+          individual: {
+            value: dictEntry.individualValue,
+            suffix: dictEntry.individualSuffix,
+          },
+          collective: {
+            value: dictEntry.collectiveValue,
+            suffix: dictEntry.collectiveSuffix,
+          },
+        },
+        titleImageSrc: meta.titleImageSrc,
+      };
+    }
+
     const dictEntry = detail.entries[meta.dictEntryKey];
 
     return {
       slug: category.slug,
       title: meta.title,
-      description,
+      description: detail.descriptions.sharedUnfinished,
       quantity: dictEntry.quantity,
       value: dictEntry.value,
       titleImageSrc: meta.titleImageSrc,

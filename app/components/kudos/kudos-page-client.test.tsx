@@ -79,6 +79,7 @@ describe("KudosPageClient", () => {
     const editor = within(dialog).getByRole("textbox", { name: dictionary.kudos.compose.content.placeholder });
     editor.textContent = "Cảm ơn bạn!";
     fireEvent.input(editor);
+    await user.click(within(dialog).getByRole("button", { name: dictionary.kudos.compose.hashtags.add }));
     await user.type(
       within(dialog).getByPlaceholderText(dictionary.kudos.compose.hashtags.placeholder),
       "teamwork{Enter}",
@@ -151,6 +152,7 @@ describe("KudosPageClient", () => {
     const editor = within(dialog).getByRole("textbox", { name: dictionary.kudos.compose.content.placeholder });
     editor.textContent = "Cảm ơn bạn!";
     fireEvent.input(editor);
+    await user.click(within(dialog).getByRole("button", { name: dictionary.kudos.compose.hashtags.add }));
     await user.type(
       within(dialog).getByPlaceholderText(dictionary.kudos.compose.hashtags.placeholder),
       "newtag{Enter}",

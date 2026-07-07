@@ -42,7 +42,19 @@
     "build-prelaunch/types/**/*.ts",
     "build-prelaunch/dev/types/**/*.ts",
     "build-review-check/types/**/*.ts",
-    "build-review-check/dev/types/**/*.ts"
+    "build-review-check/dev/types/**/*.ts",
+    "build-dev-fresh/types/**/*.ts",
+    "build-dev-fresh/dev/types/**/*.ts",
+    "build-debug-key/types/**/*.ts",
+    "build-debug-key/dev/types/**/*.ts",
+    "build-verify/types/**/*.ts",
+    "build-verify/dev/types/**/*.ts",
+    "build-p6-verify/types/**/*.ts",
+    "build-p6-verify/dev/types/**/*.ts",
+    "build-verify-final/types/**/*.ts",
+    "build-verify-final/dev/types/**/*.ts",
+    "build-measure-p3/types/**/*.ts",
+    "build-measure-p3/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

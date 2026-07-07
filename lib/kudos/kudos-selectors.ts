@@ -7,11 +7,26 @@ import type { KudosFilterState, KudosPerson, KudosPost } from "./kudos-types";
  */
 
 /**
- * FR-4: you cannot like a Kudos you authored. Name equality is this mock
- * repo's identity (mirrors `getDistinctRecipients`'s `currentUser.name`
- * comparison — there is no id field on `KudosPerson`). Pure.
+ * FR-4: you cannot like a Kudos you authored.
+ *
+ * Bug fix (self-like loophole): posting anonymously used to bypass this
+ * rule entirely, because the old name-only check compared `post.sender`
+ * (the nickname) against `currentUser.name` — never a match. Every post
+ * built by `buildKudosPost` now carries `sentByCurrentUser: true` (set
+ * regardless of anonymity), so that flag is checked first and wins.
+ *
+ * For posts NOT authored by the viewer, `anonymous` posts skip the name
+ * comparison altogether — otherwise an anonymous nickname that happens to
+ * collide with the viewer's own real name would false-block them from
+ * liking someone else's post (finding M5).
+ *
+ * `sentByCurrentUser`/`anonymous` are both undefined on the F006 seed
+ * dataset (`kudos-data.ts`), so seed posts fall through to the original
+ * name comparison unchanged. Pure.
  */
 export function canLikeKudos(post: KudosPost, currentUser: KudosPerson): boolean {
+  if (post.sentByCurrentUser) return false;
+  if (post.anonymous) return true;
   return post.sender.name !== currentUser.name;
 }
 

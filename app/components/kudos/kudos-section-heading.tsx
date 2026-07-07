@@ -20,11 +20,11 @@ export interface KudosSectionHeadingProps {
 
 export function KudosSectionHeading({ subtitle, title, className }: KudosSectionHeadingProps) {
   return (
-    <div className={`flex w-full flex-col items-start gap-2 ${className ?? ""}`}>
-      <p className="font-montserrat text-sm font-bold tracking-[0.5px] text-white/70">
-        {subtitle}
-      </p>
-      <h2 className="font-montserrat text-[28px] leading-9 font-bold tracking-[-0.25px] text-[#FFEA9E]">
+    <div className={`flex w-full flex-col items-start gap-3 ${className ?? ""}`}>
+      <p className="font-montserrat text-2xl leading-8 font-bold text-white">{subtitle}</p>
+      {/* Divider under subtitle, full content width, per MoMorph ground truth. */}
+      <div className="h-px w-full bg-[#2E3940]" />
+      <h2 className="font-montserrat text-[57px] leading-[64px] font-bold tracking-[-0.25px] text-[#FFEA9E]">
         {title}
       </h2>
     </div>

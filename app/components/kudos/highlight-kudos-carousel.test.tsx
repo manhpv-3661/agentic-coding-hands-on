@@ -8,6 +8,7 @@ const cardLabels = {
   viewDetail: "Xem chi tiết",
   copyLink: "Copy Link",
   copied: "Đã sao chép",
+  copyFailed: "Sao chép thất bại",
   like: "Thả tim",
   unlike: "Bỏ thả tim",
 };

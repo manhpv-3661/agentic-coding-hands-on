@@ -41,8 +41,11 @@ function ChevronIcon({ direction }: { direction: "left" | "right" }) {
 
 /**
  * Client carousel for the "HIGHLIGHT KUDOS" section (FR-5/6/7/8). Custom
- * carousel (no lib, `useCarousel`) — center slide prominent/opaque, both
- * neighbors faded, driven purely by `i - index` (no DOM measurement).
+ * carousel (no lib, `useCarousel`) — shows a 3-card window (index-1, index,
+ * index+1) at full size/opacity, per the MoMorph ground truth
+ * (`2940:13463`): three 528px cards side by side, full-bleed to the
+ * viewport edge, with the outer two masked by a gradient-to-background
+ * overlay rather than per-card scale/opacity dimming.
  */
 export function HighlightKudosCarousel({
   posts,
@@ -55,56 +58,80 @@ export function HighlightKudosCarousel({
 }: HighlightKudosCarouselProps) {
   const { index, next, prev, canPrev, canNext } = useCarousel(posts.length);
 
+  const windowStart = Math.max(0, Math.min(index - 1, posts.length - 3));
+  const visiblePosts = posts.slice(windowStart, windowStart + 3);
+
   return (
-    <section className="flex w-full flex-col gap-6">
-      <div className="flex w-full flex-wrap items-end justify-between gap-4">
+    <section className="flex w-full flex-col gap-10">
+      <div className="mx-auto flex w-full max-w-[1152px] flex-wrap items-end justify-between gap-4 px-6 sm:px-10 lg:px-36">
         <KudosSectionHeading subtitle="Sun* Annual Awards 2025" title="HIGHLIGHT KUDOS" />
         {filtersSlot}
       </div>
 
       {posts.length === 0 ? (
-        <p className="font-montserrat text-sm text-white/60">{emptyLabel}</p>
+        <p className="font-montserrat px-6 text-sm text-white/60 sm:px-10 lg:px-36">{emptyLabel}</p>
       ) : (
         <>
-          <div className="relative flex w-full items-center justify-center gap-4 overflow-hidden">
-            {posts.map((post, i) => {
-              const distance = i - index;
-              const isActive = distance === 0;
-              return (
-                <div
-                  key={post.id}
-                  className="w-full max-w-[420px] shrink-0 transition-all duration-300 ease-out"
-                  style={{
-                    transform: `scale(${isActive ? 1 : 0.9}) translateX(${distance * -8}px)`,
-                    opacity: isActive ? 1 : 0.4,
-                    order: i,
-                  }}
-                  aria-hidden={!isActive}
-                >
-                  <KudosCard
-                    post={post}
-                    variant="highlight"
-                    labels={cardLabels}
-                    liked={likedIds?.has(post.id)}
-                    canLike={currentUser ? canLikeKudos(post, currentUser) : undefined}
-                    onToggleLike={onToggleLike}
-                  />
-                </div>
-              );
-            })}
+          {/* mm:2940:13463 — full-bleed row, breaking out of the page's
+           * padded reading column (see `kudos-board.tsx`) to reach the
+           * true viewport edge, per the 1440-wide "Bìa" ground truth. */}
+          <div className="relative flex w-full items-center justify-center gap-6 overflow-hidden lg:left-1/2 lg:right-1/2 lg:-mx-[50vw] lg:w-screen">
+            {visiblePosts.map((post) => (
+              <div key={post.id} className="w-full max-w-[528px] shrink-0">
+                <KudosCard
+                  post={post}
+                  variant="highlight"
+                  labels={cardLabels}
+                  liked={likedIds?.has(post.id)}
+                  canLike={currentUser ? canLikeKudos(post, currentUser) : undefined}
+                  onToggleLike={onToggleLike}
+                />
+              </div>
+            ))}
+
+            {/* mm:2940:13469 — left gradient-fade zone + large prev button */}
+            <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-[400px] items-center bg-gradient-to-r from-[#00101A] from-50% to-transparent pl-20 lg:flex">
+              <button
+                type="button"
+                onClick={prev}
+                disabled={!canPrev}
+                aria-label="Previous slide"
+                className="pointer-events-auto flex h-20 w-20 shrink-0 items-center justify-center rounded-[4px] text-white disabled:opacity-30"
+              >
+                <ChevronIcon direction="left" />
+              </button>
+            </div>
+            {/* mm:2940:13467 ("Frame 527") — right gradient-fade zone + large
+             * next button. Ground truth padding is "186px 40px 186px 80px"
+             * with justify-content:center (not justify-end + pr-10 alone),
+             * which is what puts the 80x80 button 140px in from the
+             * viewport edge instead of 40px. */}
+            <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[400px] items-center justify-center bg-gradient-to-l from-[#00101A] from-50% to-transparent pr-10 pl-20 lg:flex">
+              <button
+                type="button"
+                onClick={next}
+                disabled={!canNext}
+                aria-label="Next slide"
+                className="pointer-events-auto flex h-20 w-20 shrink-0 items-center justify-center rounded-[4px] text-white disabled:opacity-30"
+              >
+                <ChevronIcon direction="right" />
+              </button>
+            </div>
           </div>
 
-          <div className="flex items-center justify-center gap-6">
+          {/* mm:2940:13472 / mm:2940:13474 — borderless 48x48, 4px-radius
+           * (near-square) buttons, not bordered circles. */}
+          <div className="flex items-center justify-center gap-8">
             <button
               type="button"
               onClick={prev}
               disabled={!canPrev}
               aria-label="Previous"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-white disabled:opacity-30"
+              className="flex h-12 w-12 items-center justify-center rounded-[4px] text-white disabled:opacity-30"
             >
               <ChevronIcon direction="left" />
             </button>
-            <span className="font-montserrat text-sm text-white/80">
+            <span className="font-montserrat text-[28px] leading-9 font-bold text-[#999]">
               {index + 1}/{posts.length}
             </span>
             <button
@@ -112,7 +139,7 @@ export function HighlightKudosCarousel({
               onClick={next}
               disabled={!canNext}
               aria-label="Next"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-white disabled:opacity-30"
+              className="flex h-12 w-12 items-center justify-center rounded-[4px] text-white disabled:opacity-30"
             >
               <ChevronIcon direction="right" />
             </button>

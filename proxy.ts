@@ -23,12 +23,26 @@ import { computeCountdown, parseEventStart } from "@/lib/event-countdown";
  */
 let warnedMissingEnv = false;
 
-/** Routes that require an authenticated session. */
+/** Routes that require an authenticated session.
+ *
+ * `/awards` and `/kudos` are exact-match only: neither has a real sub-route
+ * (no `[slug]`, no nested `page.tsx`), so the previous `startsWith` was not
+ * protecting anything real — it was only ever matching the *static asset*
+ * directories that happen to share the prefix (`public/awards-saa/**`,
+ * `public/kudos/**`). That routed every image request (e.g.
+ * `/kudos/avatars/avatar-1.jpg`, `/awards-saa/thumbnails/top-talent.png`)
+ * through a live Supabase `getUser()` call and occasionally 307-redirected
+ * the image to `/login` instead of serving it — the root cause of
+ * intermittently broken images across the site.
+ *
+ * `/todo` keeps `startsWith` — it has no colliding `public/todo/**` asset
+ * directory today, and (unlike `/awards`/`/kudos`) is expected to grow real
+ * sub-routes later. */
 function isProtectedPath(pathname: string): boolean {
   return (
     pathname === "/" ||
-    pathname.startsWith("/awards") ||
-    pathname.startsWith("/kudos") ||
+    pathname === "/awards" ||
+    pathname === "/kudos" ||
     pathname.startsWith("/todo")
   );
 }

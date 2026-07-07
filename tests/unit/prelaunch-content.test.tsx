@@ -1,12 +1,20 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 
-// `countdown-led-unit.tsx` (rendered by `PrelaunchContent`) loads the
-// `Orbitron` Google Font at module scope, which isn't available under
-// vitest's jsdom environment — stub it the same way `awards-page.test.tsx`
-// stubs `Montserrat`.
+// `countdown-led-unit.tsx` (rendered by `PrelaunchContent`) imports
+// `@/app/fonts`, which loads Google + local fonts at module scope — not
+// available under vitest's jsdom environment, so stub both the same way
+// `awards-page.test.tsx` stubs `Montserrat`.
 vi.mock("next/font/google", () => ({
-  Orbitron: vi.fn(() => ({ className: "font-orbitron" })),
+  Montserrat: vi.fn(() => ({ variable: "--font-montserrat", className: "font-montserrat" })),
+  Montserrat_Alternates: vi.fn(() => ({
+    variable: "--font-montserrat-alternates",
+    className: "font-montserrat-alternates",
+  })),
+}));
+
+vi.mock("next/font/local", () => ({
+  default: vi.fn(() => ({ className: "font-digital-numbers" })),
 }));
 
 import { PrelaunchContent } from "@/app/prelaunch/components/prelaunch-content";

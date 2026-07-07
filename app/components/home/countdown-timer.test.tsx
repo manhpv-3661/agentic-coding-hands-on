@@ -2,7 +2,15 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 
 vi.mock("next/font/google", () => ({
-  Orbitron: vi.fn(() => ({ className: "font-orbitron" })),
+  Montserrat: vi.fn(() => ({ variable: "--font-montserrat", className: "font-montserrat" })),
+  Montserrat_Alternates: vi.fn(() => ({
+    variable: "--font-montserrat-alternates",
+    className: "font-montserrat-alternates",
+  })),
+}));
+
+vi.mock("next/font/local", () => ({
+  default: vi.fn(() => ({ className: "font-digital-numbers" })),
 }));
 
 vi.mock("@/hooks/use-event-countdown", () => ({

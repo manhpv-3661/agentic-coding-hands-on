@@ -3,7 +3,14 @@ import { render, screen } from "@testing-library/react";
 
 vi.mock("next/font/google", () => ({
   Montserrat: vi.fn(() => ({ className: "font-montserrat" })),
-  Orbitron: vi.fn(() => ({ className: "font-orbitron" })),
+  Montserrat_Alternates: vi.fn(() => ({
+    variable: "--font-montserrat-alternates",
+    className: "font-montserrat-alternates",
+  })),
+}));
+
+vi.mock("next/font/local", () => ({
+  default: vi.fn(() => ({ className: "font-digital-numbers" })),
 }));
 
 import { PrelaunchContent } from "./prelaunch-content";

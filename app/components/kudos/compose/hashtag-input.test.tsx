@@ -3,14 +3,29 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { HashtagInput } from "./hashtag-input";
 
-const labels = { placeholder: "Nhập hashtag", add: "+Hashtag", max: "Tối đa 5", error: "Thêm ít nhất 1 hashtag.", remove: "Xóa hashtag" };
+const labels = {
+  label: "Hashtag",
+  placeholder: "Nhập hashtag",
+  add: "+Hashtag",
+  max: "Tối đa 5",
+  error: "Thêm ít nhất 1 hashtag.",
+  remove: "Xóa hashtag",
+};
 
 describe("HashtagInput", () => {
-  it("adds a chip via the add button and auto-prefixes '#'", async () => {
+  it("shows a closed '+Hashtag' trigger at rest, with no text input yet", () => {
+    render(<HashtagInput value={[]} onChange={vi.fn()} labels={labels} />);
+
+    expect(screen.getByRole("button", { name: "+Hashtag" })).toBeInTheDocument();
+    expect(screen.queryByPlaceholderText("Nhập hashtag")).not.toBeInTheDocument();
+  });
+
+  it("reveals the text input after the trigger is clicked, then adds a chip via the add button and auto-prefixes '#'", async () => {
     const onChange = vi.fn();
     const user = userEvent.setup();
     render(<HashtagInput value={[]} onChange={onChange} labels={labels} />);
 
+    await user.click(screen.getByRole("button", { name: "+Hashtag" }));
     await user.type(screen.getByPlaceholderText("Nhập hashtag"), "teamwork");
     await user.click(screen.getByRole("button", { name: "+Hashtag" }));
 
@@ -22,6 +37,7 @@ describe("HashtagInput", () => {
     const user = userEvent.setup();
     render(<HashtagInput value={[]} onChange={onChange} labels={labels} />);
 
+    await user.click(screen.getByRole("button", { name: "+Hashtag" }));
     await user.type(screen.getByPlaceholderText("Nhập hashtag"), "#wasshoi{Enter}");
 
     expect(onChange).toHaveBeenCalledWith(["#wasshoi"]);
@@ -32,6 +48,7 @@ describe("HashtagInput", () => {
     const user = userEvent.setup();
     render(<HashtagInput value={["#Teamwork"]} onChange={onChange} labels={labels} />);
 
+    await user.click(screen.getByRole("button", { name: "+Hashtag" }));
     await user.type(screen.getByPlaceholderText("Nhập hashtag"), "teamwork{Enter}");
 
     expect(onChange).not.toHaveBeenCalled();

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useDismissableMenu } from "@/hooks/use-dismissable-menu";
 
 export interface OpenGiftButtonLabels {
@@ -44,12 +45,12 @@ function GiftIcon() {
   );
 }
 
-/** Top-right X close icon for the dialog (`MM_MEDIA_Close` in the ground truth). */
+/** Top-right X close icon for the dialog (`MM_MEDIA_Close` in the ground truth, 19x19px). */
 function CloseIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <svg width="19" height="19" viewBox="0 0 19 19" fill="none" aria-hidden="true">
       <path
-        d="M1.5 1.5l13 13M14.5 1.5l-13 13"
+        d="M1.5 1.5l16 16M17.5 1.5l-16 16"
         stroke="currentColor"
         strokeWidth="1.5"
         strokeLinecap="round"
@@ -59,32 +60,48 @@ function CloseIcon() {
 }
 
 /**
- * Enlarged gift-box illustration for the dialog body (FR-19-rev). SVG/CSS only — no photo asset,
- * no new dependency (spec Assumptions). Purely decorative: `aria-hidden` so the heading + count
- * remain the sole source of information if this fails to render (edge-case row: SVG unavailable).
- * The blurred glow circle + `drop-shadow` filter + two pulsing sparkle glyphs stand in for the
- * "hiệu ứng box quà" glow/sparkle layer in the ground truth.
+ * Gift-box illustration for the dialog body (FR-19-rev). Real MoMorph media assets — not a
+ * fabricated SVG/CSS mock. Purely decorative: `aria-hidden` so the heading + count remain the
+ * sole source of information if an image fails to load.
+ *
+ * Ground truth `C_Box image` (node 1466:7684) is a 557x557px container spanning nearly the full
+ * 626px content column — sized here to match (`aspect-square w-full max-w-139.25`). It stacks two
+ * real exported assets (confirmed downloadable via `get_media_files`, contrary to an earlier
+ * session's "source raster isn't available" assumption). Figma's `childIds` order is back-to-front
+ * (`[1466:7686, 1466:7687, 1466:7685]`), so paint order here is deliberately:
+ * 1. `MM_MEDIA_box quà chưa mở` (1466:7686, ~558.5x558.5px, filling the container) — painted
+ *    first/back. The photoreal black/gold gift-box render, saved as
+ *    `/public/kudos/gift/box-illustration.jpg`.
+ * 2. `MM_MEDIA_hiệu ứng box quà` (1466:7685, ~546.5x546.5px) — painted second/front, on top. GT
+ *    declares this as a plain `background: url(...) -102.944px -102.487px / 138.527% 138.527%
+ *    no-repeat` on a rect inset ~17.06%/19.39% within the container (98.12% of its size) — a
+ *    zoomed-in crop, not a plain `object-cover` fill. Reproduced with a literal CSS background
+ *    (not `next/image`, which has no percentage `background-size` equivalent) since this
+ *    container renders the design at 1:1 scale (`max-w-139.25` = 557px = the GT frame width), so
+ *    the design's raw px offset/size values apply unscaled. Saved as
+ *    `/public/kudos/gift/box-backdrop.jpg`.
  */
 function SecretBoxIllustration() {
   return (
-    <div aria-hidden="true" className="relative flex items-center justify-center py-2">
-      <div className="absolute h-32 w-32 rounded-full bg-[#FFEA9E]/30 blur-2xl" />
-      <svg
-        width="140"
-        height="140"
-        viewBox="0 0 140 140"
-        fill="none"
-        className="relative drop-shadow-[0_0_24px_rgba(255,234,158,0.55)]"
-      >
-        <rect x="20" y="55" width="100" height="70" rx="6" fill="#FFEA9E" />
-        <rect x="20" y="55" width="100" height="18" fill="#00101A" opacity="0.15" />
-        <rect x="60" y="55" width="20" height="70" fill="#00101A" opacity="0.25" />
-        <path d="M70 55c-14-30-46-16-40 4 4 12 24 8 40-4z" fill="#00101A" opacity="0.3" />
-        <path d="M70 55c14-30 46-16 40 4-4 12-24 8-40-4z" fill="#00101A" opacity="0.3" />
-        <circle cx="70" cy="52" r="9" fill="#FFEA9E" />
-      </svg>
-      <span className="absolute left-6 top-4 animate-pulse text-2xl text-[#FFEA9E]">✦</span>
-      <span className="absolute right-8 bottom-6 animate-pulse text-lg text-[#FFEA9E]">✦</span>
+    <div aria-hidden="true" className="relative flex w-full items-center justify-center">
+      <div className="relative aspect-square w-full max-w-139.25 overflow-hidden">
+        <Image
+          src="/kudos/gift/box-illustration.jpg"
+          alt=""
+          width={558}
+          height={558}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div
+          className="absolute left-[17.06%] top-[19.39%] h-[98.12%] w-[98.12%]"
+          style={{
+            backgroundImage: "url(/kudos/gift/box-backdrop.jpg)",
+            backgroundPosition: "-102.944px -102.487px",
+            backgroundSize: "138.527% 138.527%",
+            backgroundRepeat: "no-repeat",
+          }}
+        />
+      </div>
     </div>
   );
 }
@@ -114,35 +131,52 @@ export function OpenGiftButton({ labels, unopenedCount }: OpenGiftButtonProps) {
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          {/*
+            Ground truth root frame (1466:7676) is `flex-direction:column; gap:22.275px` applied
+            uniformly across its 6 direct children: title, divider, subtitle, illustration,
+            divider, count-row. `gap-5.5` (22px) reproduces that single uniform gap — the two
+            divider hairlines below are their own flex children (not borders welded onto the
+            heading/count-row via padding) so they inherit the same 22px spacing on both sides.
+          */}
           <div
             ref={containerRef}
             role="dialog"
             aria-modal="true"
             aria-label={labels.heading}
-            className="relative flex w-full max-w-sm flex-col gap-4 rounded-2xl bg-[#00101A] p-6 text-white"
+            className="relative flex w-full max-w-163 flex-col gap-5.5 rounded-xl bg-[#00101A] px-3 py-6 text-white"
           >
             <button
               type="button"
               onClick={() => setOpen(false)}
               aria-label={labels.closeAria}
-              className="absolute right-4 top-4 text-white/70 transition-colors hover:text-white"
+              className="absolute right-[26.5px] top-[30px] text-white/70 transition-colors hover:text-white"
             >
               <CloseIcon />
             </button>
 
-            <h3 className="border-b border-[#2E3940] pb-4 text-center font-montserrat text-lg font-bold uppercase text-[#FFEA9E]">
+            <h3 className="text-center font-montserrat text-[25.46px] leading-[31.82px] font-bold uppercase text-[#FFEA9E]">
               {labels.heading}
             </h3>
 
-            <p className="text-center font-montserrat text-sm font-bold text-white">
-              {labels.subtitle}
-            </p>
+            <div aria-hidden="true" className="border-t border-[#2E3940]" />
+
+            {unopenedCount > 0 && (
+              <p className="text-center font-montserrat text-[12.73px] font-bold tracking-[0.4px] text-white">
+                {labels.subtitle}
+              </p>
+            )}
 
             <SecretBoxIllustration />
 
-            <div className="flex items-center justify-center gap-2 border-t border-[#2E3940] pt-4 font-montserrat font-bold">
-              <span className="text-sm text-white">{labels.unopenedCount}</span>
-              <span className="text-[28px] leading-9 text-[#FFEA9E]">{unopenedCount}</span>
+            <div aria-hidden="true" className="border-t border-[#2E3940]" />
+
+            <div className="flex items-center justify-center gap-[6.36px] font-montserrat font-bold">
+              <span className="text-[12.73px] tracking-[0.4px] text-white">
+                {labels.unopenedCount}
+              </span>
+              <span className="text-[28.64px] leading-[35px] text-[#FFEA9E]">
+                {String(unopenedCount).padStart(2, "0")}
+              </span>
             </div>
           </div>
         </div>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useDismissableMenu } from "@/hooks/use-dismissable-menu";
 import type { KudosPerson } from "@/lib/kudos/kudos-types";
+import { ChevronDownIcon } from "./chevron-down-icon";
 
 export interface RecipientSelectLabels {
   placeholder: string;
@@ -55,23 +56,29 @@ export function RecipientSelect({ options, value, onChange, error, labels, id }:
         // the ARIA spec — `aria-describedby` alone still links the error
         // text to this control.
         aria-describedby={error ? errorId : undefined}
-        className="flex w-full items-center justify-between rounded-lg border border-white/20 bg-[#101317] px-4 py-3 text-left text-white"
+        className="flex w-full items-center justify-between rounded-lg border border-[#998C5F] bg-white px-6 py-4 text-left text-[#00101A]"
       >
-        <span className={value ? "text-white" : "text-white/50"}>
+        <span
+          className={`text-base leading-6 font-bold tracking-[0.15px] ${
+            value ? "text-[#00101A]" : "text-[#999]"
+          }`}
+        >
           {value?.name ?? labels.placeholder}
         </span>
-        <span aria-hidden="true">▾</span>
+        <span aria-hidden="true" className="text-[#998C5F]">
+          <ChevronDownIcon />
+        </span>
       </button>
 
       {open && (
-        <div className="absolute top-full z-10 mt-1 w-full rounded-lg border border-white/20 bg-[#101317] p-2 shadow-lg">
+        <div className="absolute top-full z-10 mt-1 w-full rounded-lg border border-[#998C5F] bg-white p-2 shadow-lg">
           <input
             autoFocus
             type="text"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder={labels.search}
-            className="mb-2 w-full rounded-md border border-white/20 bg-[#00101A] px-3 py-2 text-sm text-white outline-none"
+            className="mb-2 w-full rounded-md border border-[#998C5F] bg-white px-3 py-2 text-sm text-[#00101A] outline-none placeholder:text-[#999]"
           />
           <ul role="listbox" className="flex max-h-56 flex-col gap-1 overflow-y-auto">
             {filtered.map((person) => (
@@ -81,10 +88,10 @@ export function RecipientSelect({ options, value, onChange, error, labels, id }:
                   role="option"
                   aria-selected={value?.name === person.name}
                   onClick={() => handleSelect(person)}
-                  className="flex w-full flex-col items-start rounded-md px-3 py-2 text-left text-sm text-white hover:bg-white/10"
+                  className="flex w-full flex-col items-start rounded-md px-3 py-2 text-left text-sm text-[#00101A] hover:bg-[#FFF8E1]"
                 >
                   <span className="font-medium">{person.name}</span>
-                  <span className="text-xs text-white/60">{person.department}</span>
+                  <span className="text-xs text-[#999]">{person.department}</span>
                 </button>
               </li>
             ))}
@@ -93,7 +100,7 @@ export function RecipientSelect({ options, value, onChange, error, labels, id }:
       )}
 
       {error && (
-        <p id={errorId} className="text-xs text-red-400">
+        <p id={errorId} className="text-xs font-semibold text-[#CF1322]">
           {error}
         </p>
       )}

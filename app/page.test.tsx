@@ -12,7 +12,10 @@ vi.mock("next/font/google", () => ({
     variable: "--font-montserrat-alternates",
     className: "font-montserrat-alternates",
   })),
-  Orbitron: vi.fn(() => ({ className: "font-orbitron" })),
+}));
+
+vi.mock("next/font/local", () => ({
+  default: vi.fn(() => ({ className: "font-digital-numbers" })),
 }));
 
 vi.mock("@/lib/auth/require-user", () => ({

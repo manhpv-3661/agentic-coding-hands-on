@@ -61,6 +61,12 @@ export function validateComposeForm(
   return errors;
 }
 
+// Monotonic counter, module-scoped: `Date.now()` alone collides when two
+// posts are built within the same millisecond (e.g. a double-submit race
+// or two rapid composes) — appending an ever-incrementing counter makes
+// every id unique regardless of timing.
+let composeSequence = 0;
+
 /**
  * Builds the `KudosPost` to prepend on a valid submit (F007, FR-18/21).
  * Callers MUST run `validateComposeForm` first — `state.recipient` is
@@ -71,8 +77,10 @@ export function buildKudosPost(
   currentUser: KudosPerson,
   now: Date,
 ): KudosPost {
+  composeSequence += 1;
+
   return {
-    id: `kudos-new-${now.getTime()}`,
+    id: `kudos-new-${now.getTime()}-${composeSequence}`,
     sender: state.anonymous
       ? { name: state.nickname.trim(), department: "", stars: 0 }
       : currentUser,
@@ -83,5 +91,11 @@ export function buildKudosPost(
     hashtags: state.hashtags,
     imageCount: state.images.length,
     hearts: 0,
+    // Bug fix (self-like loophole): every composed post — anonymous or
+    // not — is authored by `currentUser`, so `canLikeKudos` can block the
+    // author from liking their own post even when they posted under a
+    // nickname (see `lib/kudos/kudos-selectors.ts`).
+    sentByCurrentUser: true,
+    anonymous: state.anonymous,
   };
 }

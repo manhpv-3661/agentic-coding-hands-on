@@ -22,7 +22,12 @@ describe("CopyLinkButton", () => {
     stubClipboard({ writeText });
 
     render(
-      <CopyLinkButton link="/kudos#kudos-1" label="Copy Link" copiedLabel="Link copied" />,
+      <CopyLinkButton
+        link="/kudos#kudos-1"
+        label="Copy Link"
+        copiedLabel="Link copied"
+        copyFailedLabel="Copy failed"
+      />,
     );
 
     await user.click(screen.getByRole("button", { name: "Copy Link" }));
@@ -37,7 +42,12 @@ describe("CopyLinkButton", () => {
     stubClipboard({ writeText });
 
     render(
-      <CopyLinkButton link="/kudos#kudos-1" label="Copy Link" copiedLabel="Link copied" />,
+      <CopyLinkButton
+        link="/kudos#kudos-1"
+        label="Copy Link"
+        copiedLabel="Link copied"
+        copyFailedLabel="Copy failed"
+      />,
     );
 
     await user.click(screen.getByRole("button", { name: "Copy Link" }));
@@ -49,17 +59,44 @@ describe("CopyLinkButton", () => {
     );
   });
 
-  it("does not throw when the clipboard API is unavailable", async () => {
+  it("shows copyFailedLabel (not copiedLabel) when the clipboard API is unavailable", async () => {
     const user = userEvent.setup();
     stubClipboard(undefined);
 
     render(
-      <CopyLinkButton link="/kudos#kudos-1" label="Copy Link" copiedLabel="Link copied" />,
+      <CopyLinkButton
+        link="/kudos#kudos-1"
+        label="Copy Link"
+        copiedLabel="Link copied"
+        copyFailedLabel="Copy failed"
+      />,
     );
 
     await expect(
       user.click(screen.getByRole("button", { name: "Copy Link" })),
     ).resolves.not.toThrow();
-    await waitFor(() => expect(screen.getByRole("status")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("Copy failed"));
+    expect(screen.queryByText("Link copied")).not.toBeInTheDocument();
+  });
+
+  it("shows copyFailedLabel, never copiedLabel, when writeText rejects (finding M4)", async () => {
+    const user = userEvent.setup();
+    const writeText = vi.fn().mockRejectedValue(new Error("permission denied"));
+    stubClipboard({ writeText });
+
+    render(
+      <CopyLinkButton
+        link="/kudos#kudos-1"
+        label="Copy Link"
+        copiedLabel="Link copied"
+        copyFailedLabel="Copy failed"
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Copy Link" }));
+
+    await waitFor(() => expect(writeText).toHaveBeenCalledWith("/kudos#kudos-1"));
+    await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("Copy failed"));
+    expect(screen.queryByText("Link copied")).not.toBeInTheDocument();
   });
 });

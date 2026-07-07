@@ -10,6 +10,10 @@ vi.mock("next/font/google", () => ({
   })),
 }));
 
+vi.mock("next/font/local", () => ({
+  default: vi.fn(() => ({ className: "font-digital-numbers" })),
+}));
+
 vi.mock("@/lib/auth/require-user", () => ({ requireUser: vi.fn() }));
 
 vi.mock("next/headers", () => ({
@@ -92,6 +96,9 @@ describe("Kudos compose flow (F007)", () => {
     editor.textContent = "Cảm ơn bạn đã luôn hỗ trợ team hết mình trong dự án này!";
     fireEvent.input(editor);
 
+    await user.click(
+      within(dialog).getByRole("button", { name: dictionary.kudos.compose.hashtags.add }),
+    );
     await user.type(
       within(dialog).getByPlaceholderText(dictionary.kudos.compose.hashtags.placeholder),
       "wasshoi{Enter}",
@@ -126,6 +133,9 @@ describe("Kudos compose flow (F007)", () => {
     const editor = within(dialog).getByRole("textbox", { name: dictionary.kudos.compose.content.placeholder });
     editor.textContent = "Cảm ơn bạn rất nhiều, dù tôi không muốn lộ danh tính.";
     fireEvent.input(editor);
+    await user.click(
+      within(dialog).getByRole("button", { name: dictionary.kudos.compose.hashtags.add }),
+    );
     await user.type(
       within(dialog).getByPlaceholderText(dictionary.kudos.compose.hashtags.placeholder),
       "beteam{Enter}",

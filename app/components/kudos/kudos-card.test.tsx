@@ -2,12 +2,13 @@ import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { KudosCard } from "./kudos-card";
-import type { KudosPost } from "@/lib/kudos/kudos-types";
+import type { KudosPerson, KudosPost } from "@/lib/kudos/kudos-types";
 
 const labels = {
   viewDetail: "Xem chi tiết",
   copyLink: "Copy Link",
   copied: "Đã sao chép",
+  copyFailed: "Sao chép thất bại",
   like: "Thả tim",
   unlike: "Bỏ thả tim",
 };
@@ -142,5 +143,46 @@ describe("KudosCard", () => {
     expect(post.title).toBeUndefined();
     // No additional heading beyond timestamp/content/hashtags exists —
     // sanity-checked by the other assertions above already passing.
+  });
+
+  it("renders the danh hiệu badge chip when the sender carries one (kudos-data.ts personBadge)", () => {
+    // `KudosPerson` has no `badge` field — the card reads it defensively
+    // via `personBadge` (`kudos-data.ts`), so this cast mirrors how mock
+    // data actually attaches one (`personWithBadge`).
+    const postWithBadge: KudosPost = {
+      ...post,
+      sender: { ...post.sender, badge: "Rising Hero" } as KudosPerson,
+    };
+
+    render(<KudosCard post={postWithBadge} variant="highlight" labels={labels} />);
+
+    expect(screen.getByText("Rising Hero")).toBeInTheDocument();
+  });
+
+  it("renders no badge chip when the person carries none (default mock shape)", () => {
+    render(<KudosCard post={post} variant="highlight" labels={labels} />);
+    expect(screen.queryByText(/Hero/)).not.toBeInTheDocument();
+  });
+
+  it("colors the heart icon gray when inactive and red when liked (design ground truth)", () => {
+    const { container, rerender } = render(
+      <KudosCard post={post} variant="highlight" labels={labels} onToggleLike={vi.fn()} />,
+    );
+    const inactiveWrapper = container.querySelector('button[aria-pressed="false"] > span');
+    expect(inactiveWrapper).toHaveClass("text-[#999999]");
+
+    rerender(
+      <KudosCard post={post} variant="highlight" labels={labels} liked onToggleLike={vi.fn()} />,
+    );
+    const activeWrapper = container.querySelector('button[aria-pressed="true"] > span');
+    expect(activeWrapper).toHaveClass("text-[#D4271D]");
+  });
+
+  it("wraps the message content in the yellow inner content box (design node content box)", () => {
+    render(<KudosCard post={post} variant="highlight" labels={labels} />);
+
+    const contentBox = screen.getByText(post.content).closest("div");
+    expect(contentBox).toHaveClass("border-[#FFEA9E]");
+    expect(contentBox).toHaveClass("bg-[rgba(255,234,158,0.40)]");
   });
 });

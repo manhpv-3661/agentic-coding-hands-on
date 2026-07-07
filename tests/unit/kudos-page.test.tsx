@@ -12,6 +12,10 @@ vi.mock("next/font/google", () => ({
   })),
 }));
 
+vi.mock("next/font/local", () => ({
+  default: vi.fn(() => ({ className: "font-digital-numbers" })),
+}));
+
 vi.mock("@/lib/auth/require-user", () => ({
   requireUser: vi.fn(),
 }));

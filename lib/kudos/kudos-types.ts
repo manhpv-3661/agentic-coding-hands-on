@@ -39,6 +39,22 @@ export interface KudosPost {
    * present.
    */
   title?: string;
+  /**
+   * True for every post composed by the current viewer in this session
+   * (F007's `buildKudosPost` sets it, even for anonymous posts) — lets
+   * `canLikeKudos` block self-likes without relying on name comparison,
+   * which an anonymous nickname could otherwise defeat. Undefined for the
+   * F006 seed dataset (`kudos-data.ts`), which has no notion of "current
+   * viewer authored this".
+   */
+  sentByCurrentUser?: boolean;
+  /**
+   * True when this post was submitted via the anonymous toggle — tells
+   * `canLikeKudos` to skip the sender-name comparison for this post (an
+   * anonymous nickname that happens to match another viewer's real name
+   * must not false-block that viewer from liking it).
+   */
+  anonymous?: boolean;
 }
 
 /**

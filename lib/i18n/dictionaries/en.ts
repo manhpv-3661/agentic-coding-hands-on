@@ -129,36 +129,45 @@ export const en = {
     detail: {
       quantityLabel: "Number of awards: ",
       valueLabel: "Award value: ",
+      orLabel: "Or",
       descriptions: {
         sharedUnfinished:
           "The Top Talent award honors comprehensively outstanding individuals — those who consistently demonstrate strong professional competence and outstanding performance, consistently deliver value beyond expectations, and are highly regarded by clients and teammates alike. With a readiness to take on any task the organization assigns, they are a constant source of inspiration, driving motivation and making a positive impact on the whole team.",
         signatureCreator:
           "The Signature award honors individuals or teams who embody the distinctive spirit Sun* champions in each era. In 2025, the Signature award celebrates the Creator — individuals/teams with a proactive, sharp mindset who consistently spot opportunity within challenge and take the lead in action. They are quick to sense problems, swiftly identify them, and deliver practical solutions that create clear value for projects, clients, or the organization. With a builder's mindset and the distinctive \"Creator\" spirit of Sun*, they don't just respond positively to change — they proactively drive improvements, helping shape new standards for how Sun* people create value.",
       },
+      // See `vi.ts`'s matching comment: `quantity`/`value` split into
+      // `{ number, unit }` to mirror MoMorph's two separate text nodes.
       entries: {
         topTalent: {
-          quantity: "10 Units",
-          value: "7,000,000 VND per award",
+          quantity: { number: "10", unit: "Units" },
+          value: { number: "7,000,000 VND", unit: "per award" },
         },
         topProject: {
-          quantity: "02 Teams",
-          value: "15,000,000 VND per award",
+          quantity: { number: "02", unit: "Teams" },
+          value: { number: "15,000,000 VND", unit: "per award" },
         },
         topProjectLeader: {
-          quantity: "03 Individuals",
-          value: "7,000,000 VND",
+          quantity: { number: "03", unit: "Individuals" },
+          value: { number: "7,000,000 VND", unit: "" },
         },
         bestManager: {
-          quantity: "01 Individual",
-          value: "10,000,000 VND",
+          quantity: { number: "01", unit: "Individual" },
+          value: { number: "10,000,000 VND", unit: "" },
         },
         signatureCreator: {
-          quantity: "01 (individual or team)",
-          value: "5,000,000 VND (individual) OR 8,000,000 VND (team)",
+          // See vi.ts's matching comment: mm:313:8488 ground truth caption
+          // style is unparenthesized, sentence-cased — mirrored here for
+          // parity with the sibling categories' unit captions.
+          quantity: { number: "01", unit: "Individual or team" },
+          individualValue: "5,000,000 VND",
+          individualSuffix: "for the individual award",
+          collectiveValue: "8,000,000 VND",
+          collectiveSuffix: "for the team award",
         },
         mvp: {
-          quantity: "01",
-          value: "15,000,000 VND",
+          quantity: { number: "01", unit: "" },
+          value: { number: "15,000,000 VND", unit: "" },
         },
       },
     },
@@ -169,6 +178,7 @@ export const en = {
     },
     banner: {
       title: "Recognition & appreciation system",
+      searchPlaceholder: "Search Sunner profile",
     },
     composer: {
       placeholder: "Who would you like to thank and recognize today?",
@@ -182,6 +192,7 @@ export const en = {
       viewDetail: "View details",
       copyLink: "Copy Link",
       copied: "Link copied",
+      copyFailed: "Copy failed",
       like: "Like",
       unlike: "Unlike",
     },
@@ -192,6 +203,7 @@ export const en = {
     spotlight: {
       searchPlaceholder: "Search",
       panZoom: "Pan/Zoom",
+      tickerSuffix: "just received a new Kudos",
     },
     stats: {
       received: "Kudos received",
@@ -205,6 +217,10 @@ export const en = {
       dialogTitle: "Your Secret Box",
       dialogBody: "The real reward is coming soon. This is a preview screen for the mock build.",
       close: "Close",
+      heading: "DISCOVER YOUR SECRET BOX",
+      subtitle: "Click the box to open",
+      unopenedCount: "Secret Boxes unopened",
+      closeAria: "Close secret box",
     },
     recent: {
       heading: "10 LATEST SUNNER GIFT RECIPIENTS",
@@ -217,7 +233,8 @@ export const en = {
       successToast: "Kudos sent!",
       recipient: {
         label: "Recipient",
-        placeholder: "Choose a recipient",
+        // Mirrors vi.ts's ground-truth-literal fix ("Tìm kiếm").
+        placeholder: "Search",
         search: "Search colleagues",
         error: "Please choose a recipient.",
       },
@@ -241,9 +258,66 @@ export const en = {
           strikethrough: "Strikethrough",
           list: "List",
           link: "Insert link",
+          linkPrompt: "Link URL",
           quote: "Quote",
+          addLink: {
+            title: "Add link",
+            contentLabel: "Text",
+            urlLabel: "URL",
+            save: "Save",
+            cancel: "Cancel",
+            urlError: "Please enter a URL.",
+          },
         },
-        communityStandards: "Community Standards",
+      },
+      communityStandards: {
+        trigger: "Community Standards",
+        panelTitle: "Rules",
+        recipientHeading:
+          "KUDOS RECIPIENTS: HERO BADGES FOR POSITIVE IMPACT\nBased on how many teammates send you Kudos, you'll earn the matching Hero badge, shown right next to your profile name.",
+        senderHeading:
+          "KUDOS SENDERS: COLLECT ALL 6 ICONS, GET A MYSTERY GIFT\nEvery Kudos message you send gets posted on the platform and can receive ❤️ from the Sunner community. Every 5 ❤️ unlocks 1 Secret Box, with a chance to win one of SAA's 6 exclusive icons.",
+        nationalHeading: "NATIONAL KUDOS",
+        heroTiers: [
+          {
+            name: "New Hero",
+            condition: "1-4 people have sent you Kudos",
+            description:
+              "Your journey of spreading kindness begins — the first notes of thanks and recognition have found you.",
+          },
+          {
+            name: "Rising Hero",
+            condition: "5-9 people have sent you Kudos",
+            description:
+              "You're growing steadily in your teammates' hearts through your kindness and dedication.",
+          },
+          {
+            name: "Super Hero",
+            condition: "10-20 people have sent you Kudos",
+            description:
+              "You've become a trusted, beloved icon — always ready to help, remembered fondly by many teammates.",
+          },
+          {
+            name: "Legend Hero",
+            condition: "More than 20 people have sent you Kudos",
+            description:
+              "You've become a legend — leaving an unforgettable mark on the team through your heart and actions.",
+          },
+        ],
+        collectionIcons: [
+          "Revival",
+          "Touch of Light",
+          "Stay Gold",
+          "Flow to Horizon",
+          "Beyond the Boundary",
+          "Root Further",
+        ],
+        collectFullSetText:
+          "Sunners who collect the full set of 6 icons will receive a mystery gift from SAA 2025.",
+        nationalText:
+          "The 5 Kudos with the most ❤️ across all of Sun* will officially become National Kudos and receive a special SAA 2025 gift: Root Further.",
+        footerClose: "Close",
+        footerCompose: "Write KUDOS",
       },
       hashtags: {
         label: "Hashtag",

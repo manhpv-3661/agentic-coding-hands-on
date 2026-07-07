@@ -8,6 +8,7 @@ const cardLabels = {
   viewDetail: "Xem chi tiết",
   copyLink: "Copy Link",
   copied: "Đã sao chép",
+  copyFailed: "Sao chép thất bại",
   like: "Thả tim",
   unlike: "Bỏ thả tim",
 };
@@ -29,13 +30,15 @@ function makePost(overrides: Partial<KudosPost>): KudosPost {
 }
 
 describe("AllKudosFeed", () => {
-  it("renders the heading and one feed card per post", () => {
+  it("renders one feed card per post", () => {
+    // The "ALL KUDOS" heading is owned by kudos-board.tsx (rendered
+    // full-width above the feed/sidebar row), not by AllKudosFeed itself —
+    // see kudos-board.test.tsx for the composed assertion.
     const posts = [makePost({ id: "a" }), makePost({ id: "b" })];
     render(
       <AllKudosFeed posts={posts} cardLabels={cardLabels} emptyLabel="empty" onHashtagClick={vi.fn()} />,
     );
 
-    expect(screen.getByRole("heading", { name: "ALL KUDOS" })).toBeInTheDocument();
     expect(screen.getAllByText("Sender")).toHaveLength(2);
   });
 

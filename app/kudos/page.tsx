@@ -83,6 +83,7 @@ export default async function KudosPage() {
           labels={dictionary.kudos}
           spotlight={
             <SpotlightBoard
+              key="spotlight-board"
               names={SPOTLIGHT_NAMES}
               total={SPOTLIGHT_TOTAL}
               labels={dictionary.kudos.spotlight}

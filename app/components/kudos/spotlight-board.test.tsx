@@ -3,7 +3,11 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { SpotlightBoard } from "./spotlight-board";
 
-const labels = { searchPlaceholder: "Tìm kiếm", panZoom: "Pan/Zoom" };
+const labels = {
+  searchPlaceholder: "Tìm kiếm",
+  panZoom: "Pan/Zoom",
+  tickerSuffix: "đã nhận được một Kudos mới",
+};
 const names = ["Nguyễn Văn An", "Trần Thị Bình", "Lê Hoàng Nam"];
 
 describe("SpotlightBoard", () => {
@@ -42,5 +46,10 @@ describe("SpotlightBoard", () => {
 
     await user.click(toggle);
     expect(toggle).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("renders the bottom ticker with 6 fading lines", () => {
+    const { container } = render(<SpotlightBoard names={names} total={388} labels={labels} />);
+    expect(container.querySelectorAll("li")).toHaveLength(6);
   });
 });

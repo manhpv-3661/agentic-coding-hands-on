@@ -20,14 +20,17 @@
 /.next/
 /out/
 
-# production
+# production / Next.js dist dirs (mọi biến thể NEXT_DIST_DIR: build, build-authless,
+# build-prelaunch, build-dev-fresh, build-debug-key, ...)
 /build
-/build-authless
-/build-prelaunch
+/build-*/
 
 # misc
 .DS_Store
 *.pem
+
+# debug screenshots (ảnh chụp màn hình khi test UI, nằm ở root repo)
+/*.png
 
 # debug
 npm-debug.log*

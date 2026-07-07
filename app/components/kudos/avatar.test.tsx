@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { Avatar, colorFor, initials } from "./avatar";
+import { Avatar, colorFor, initials, photoFor } from "./avatar";
 
 describe("initials", () => {
   it("takes the first letter of up to 2 words, uppercased", () => {
@@ -24,15 +24,31 @@ describe("colorFor", () => {
   });
 });
 
-describe("Avatar", () => {
-  it("renders initials and an accessible label for the name", () => {
-    render(<Avatar name="Nguyễn Văn An" />);
-
-    expect(screen.getByText("NV")).toBeInTheDocument();
-    expect(screen.getByRole("img", { name: "Nguyễn Văn An" })).toBeInTheDocument();
+describe("photoFor", () => {
+  it("is deterministic — same name always maps to the same photo", () => {
+    expect(photoFor("Trần Thị Bình")).toBe(photoFor("Trần Thị Bình"));
   });
 
-  it("renders the same color across two instances for the same name (stable, no hydration mismatch)", () => {
+  it("returns one of the 3-photo mock pool for a real name", () => {
+    expect(photoFor("Trần Thị Bình")).toMatch(/^\/kudos\/avatars\/avatar-[123]\.jpg$/);
+  });
+
+  it("returns null for a blank name (initials fallback instead)", () => {
+    expect(photoFor("")).toBeNull();
+    expect(photoFor("   ")).toBeNull();
+  });
+});
+
+describe("Avatar", () => {
+  it("renders a real photo (not initials) for a normal name", () => {
+    render(<Avatar name="Nguyễn Văn An" />);
+
+    const img = screen.getByRole("img", { name: "Nguyễn Văn An" });
+    expect(img).toHaveAttribute("src", expect.stringContaining("avatar"));
+    expect(screen.queryByText("NV")).not.toBeInTheDocument();
+  });
+
+  it("renders the same photo across two instances for the same name (stable, no hydration mismatch)", () => {
     render(
       <>
         <Avatar name="Lê Hoàng Nam" />
@@ -41,7 +57,16 @@ describe("Avatar", () => {
     );
 
     const [first, second] = screen.getAllByRole("img", { name: "Lê Hoàng Nam" });
-    expect(first).toHaveStyle({ backgroundColor: second.style.backgroundColor });
+    expect(first.getAttribute("src")).toBe(second.getAttribute("src"));
+  });
+
+  it("falls back to initials-in-a-colored-circle for a blank name", () => {
+    render(<Avatar name="" />);
+
+    expect(screen.getByText("?")).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "" })).toHaveStyle({
+      backgroundColor: colorFor(""),
+    });
   });
 
   it("does not render a link or button (no profile navigation)", () => {

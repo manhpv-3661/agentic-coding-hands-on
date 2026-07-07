@@ -60,6 +60,10 @@ describe("KudosStatsBox", () => {
 
     await user.click(screen.getByRole("button", { name: viDictionary.kudos.gift.openButton }));
     const dialog = screen.getByRole("dialog");
-    expect(within(dialog).getByText(String(stats.secretBoxUnopened))).toBeInTheDocument();
+    // Dialog renders the count zero-padded to 2 digits (ground truth node 1466:7693 = "05"),
+    // unlike the stats-box row above which shows the raw unpadded number.
+    expect(
+      within(dialog).getByText(String(stats.secretBoxUnopened).padStart(2, "0")),
+    ).toBeInTheDocument();
   });
 });

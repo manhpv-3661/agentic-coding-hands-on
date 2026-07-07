@@ -26,7 +26,7 @@ describe("OpenGiftButton", () => {
     expect(dialog).toBeInTheDocument();
     expect(screen.getByText(labels.heading)).toBeInTheDocument();
     expect(screen.getByText(labels.subtitle)).toBeInTheDocument();
-    expect(screen.getByText("5")).toBeInTheDocument();
+    expect(screen.getByText("05")).toBeInTheDocument();
   });
 
   it("closes the dialog via the top-right X close button", async () => {
@@ -51,7 +51,7 @@ describe("OpenGiftButton", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
-  it("renders '0' and still opens when unopenedCount is 0 (no hidden button, no error)", async () => {
+  it("renders '00' (zero-padded, per ground truth node 1466:7693) and still opens when unopenedCount is 0 (no hidden button, no error)", async () => {
     const user = userEvent.setup();
     render(<OpenGiftButton labels={labels} unopenedCount={0} />);
 
@@ -60,7 +60,16 @@ describe("OpenGiftButton", () => {
 
     await user.click(openButton);
     expect(screen.getByRole("dialog")).toBeInTheDocument();
-    expect(screen.getByText("0")).toBeInTheDocument();
+    expect(screen.getByText("00")).toBeInTheDocument();
+  });
+
+  it("hides the subtitle when unopenedCount is 0, per ground-truth spec node 1466:7681", async () => {
+    const user = userEvent.setup();
+    render(<OpenGiftButton labels={labels} unopenedCount={0} />);
+
+    await user.click(screen.getByRole("button", { name: "Mở Secret Box" }));
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(screen.queryByText(labels.subtitle)).not.toBeInTheDocument();
   });
 
   it("does not mutate the count or add any reward/persistence side effect on open (BR-1)", async () => {
@@ -68,11 +77,11 @@ describe("OpenGiftButton", () => {
     const { rerender } = render(<OpenGiftButton labels={labels} unopenedCount={5} />);
 
     await user.click(screen.getByRole("button", { name: "Mở Secret Box" }));
-    expect(screen.getByText("5")).toBeInTheDocument();
+    expect(screen.getByText("05")).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: labels.closeAria }));
     rerender(<OpenGiftButton labels={labels} unopenedCount={5} />);
     await user.click(screen.getByRole("button", { name: "Mở Secret Box" }));
-    expect(screen.getByText("5")).toBeInTheDocument();
+    expect(screen.getByText("05")).toBeInTheDocument();
   });
 });

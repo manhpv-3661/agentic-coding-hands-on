@@ -1,5 +1,6 @@
 import type { KudosStats } from "@/lib/kudos/kudos-types";
 import type { Dictionary } from "@/lib/i18n/dictionary";
+import { HeartIcon } from "./kudos-card-icons";
 import { OpenGiftButton } from "./open-gift-button";
 
 export interface KudosStatsBoxProps {
@@ -37,28 +38,36 @@ export function KudosStatsBox({ stats, statsLabels, giftLabels }: KudosStatsBoxP
 
   return (
     <div className="flex w-full flex-col gap-4 rounded-[17px] border border-[#998C5F] bg-[#00070C] p-6">
-      <dl className="flex flex-col gap-3">
+      {/* Row/divider/button spacing: MoMorph `Nội dung` (2940:13490) is a
+       * flex column with a uniform 16px gap across ALL its children
+       * (rows + divider), not the 12px `gap-3` this used to carry. */}
+      <dl className="flex flex-col gap-4">
         {rows.map((row) => (
           <div key={row.key}>
             {/* Divider between the "tim" row and the secret-box rows. */}
-            {row.key === "secretBoxOpened" && <div className="mb-3 h-px w-full bg-[#2E3940]" />}
+            {row.key === "secretBoxOpened" && <div className="mb-4 h-px w-full bg-[#2E3940]" />}
             <div className="flex items-center justify-between gap-3">
-              <dt className="font-montserrat text-lg leading-7 font-bold text-white">
+              <dt className="font-montserrat text-[22px] leading-7 font-bold text-white">
                 {row.label}
               </dt>
               <div className="flex items-center gap-2">
-                <dd className="font-montserrat text-[32px] leading-10 font-bold text-[#FFEA9E]">
-                  {row.value}
-                </dd>
                 {row.key === HEARTS_ROW_KEY && (
                   <span
                     aria-hidden="true"
-                    className="font-montserrat text-sm font-bold text-white"
-                    style={{ WebkitTextStroke: "1px #000" }}
+                    className="relative flex h-10 w-[34px] shrink-0 items-center justify-center text-[#D4271D]"
                   >
-                    x2
+                    <HeartIcon filled className="h-full w-full" />
+                    <span
+                      className="font-montserrat absolute inset-0 flex items-center justify-center text-[17.5px] font-bold text-white"
+                      style={{ WebkitTextStroke: "1.04px #000" }}
+                    >
+                      x2
+                    </span>
                   </span>
                 )}
+                <dd className="font-montserrat text-[32px] leading-10 font-bold text-[#FFEA9E]">
+                  {row.value}
+                </dd>
               </div>
             </div>
           </div>

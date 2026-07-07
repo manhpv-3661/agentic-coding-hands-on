@@ -8,6 +8,7 @@ import type { Dictionary } from "@/lib/i18n/dictionary";
 import { AllKudosFeed } from "./all-kudos-feed";
 import { HighlightKudosCarousel } from "./highlight-kudos-carousel";
 import { KudosFilters } from "./kudos-filters";
+import { KudosSectionHeading } from "./kudos-section-heading";
 
 export interface KudosBoardProps {
   posts: KudosPost[];
@@ -64,7 +65,7 @@ export function KudosBoard({
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-[1224px] flex-col gap-16 px-6 sm:px-10 lg:px-36">
+    <div className="mx-auto flex w-full max-w-[1152px] flex-col gap-16 px-6 sm:px-10 lg:gap-[120px] lg:px-36">
       <HighlightKudosCarousel
         posts={top5}
         cardLabels={labels.card}
@@ -85,18 +86,26 @@ export function KudosBoard({
 
       {spotlight}
 
-      <section className="flex w-full flex-col gap-8 lg:flex-row lg:items-start">
-        <AllKudosFeed
-          posts={filtered}
-          cardLabels={labels.card}
-          emptyLabel={labels.empty.kudos}
-          onHashtagClick={setHashtag}
-          likedIds={likedIds}
-          currentUser={currentUser}
-          onToggleLike={onToggleLike}
-        />
-        {sidebar}
-      </section>
+      {/* mm: `C_All kudos` (2940:13475) — full-width header sits alone
+       * above the feed/sidebar row (`Frame 502`, 2940:13481), so the
+       * sidebar's top edge lines up with the first feed card, not the
+       * heading. */}
+      <div className="flex w-full flex-col gap-10">
+        <KudosSectionHeading subtitle="Sun* Annual Awards 2025" title="ALL KUDOS" />
+
+        <section className="flex w-full flex-col gap-8 lg:flex-row lg:items-start lg:gap-20">
+          <AllKudosFeed
+            posts={filtered}
+            cardLabels={labels.card}
+            emptyLabel={labels.empty.kudos}
+            onHashtagClick={setHashtag}
+            likedIds={likedIds}
+            currentUser={currentUser}
+            onToggleLike={onToggleLike}
+          />
+          {sidebar}
+        </section>
+      </div>
     </div>
   );
 }

@@ -18,7 +18,8 @@ export interface KudosSidebarProps {
  */
 export function KudosSidebar({ stats, recipients, labels }: KudosSidebarProps) {
   return (
-    <div className="flex w-full max-w-sm flex-col gap-6 lg:w-[360px] lg:shrink-0">
+    // mm:2940:13488 ("D_Thống menu phải") — 422px sidebar column, not 360px.
+    <div className="flex w-full max-w-sm flex-col gap-6 lg:w-[422px] lg:shrink-0">
       <KudosStatsBox stats={stats} statsLabels={labels.stats} giftLabels={labels.gift} />
       <RecentGiftRecipients
         heading={labels.recent.heading}

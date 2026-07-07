@@ -46,12 +46,17 @@ function IconTarget({ className }: { className?: string }) {
  * item is a native anchor jump (`href="#<slug>"`); the observer settles the
  * active item afterwards. This also makes `/awards#<slug>` hash-deep-links
  * from the homepage work for free (FR-7, clarification 2026-07-06).
+ *
+ * Active state (gold `#FFEA9E` text + bottom border + glow) mirrors the
+ * site header's active-link treatment (`app/components/home/nav-link.tsx`)
+ * exactly — same border-bottom + `textShadow` values — per the MoMorph
+ * ground truth for this screen (`313:8459`, item C.1 "Top Talent").
  */
 export function AwardsNavMenu({ items, activeSlug }: AwardsNavMenuProps) {
   return (
     // mm:awards-nav-menu
     <nav aria-label="Award categories" className="lg:sticky lg:top-24">
-      <ul className="flex flex-col gap-2">
+      <ul className="flex flex-col gap-4">
         {items.map(({ slug, title }) => {
           const isActive = slug === activeSlug;
           return (
@@ -59,13 +64,18 @@ export function AwardsNavMenu({ items, activeSlug }: AwardsNavMenuProps) {
               <a
                 href={`#${slug}`}
                 aria-current={isActive || undefined}
-                className={`font-montserrat flex items-center gap-2 rounded-[4px] px-3 py-2 text-sm leading-5 font-medium tracking-[0.1px] transition-colors duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFEA9E] ${
+                className={`font-montserrat flex items-center gap-1 rounded-[4px] p-4 text-sm leading-5 font-bold tracking-[0.25px] transition-colors duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFEA9E] ${
                   isActive
-                    ? "text-[#FFEA9E] underline"
+                    ? "border-b border-[#FFEA9E] text-[#FFEA9E]"
                     : "text-white hover:bg-white/10"
                 }`}
+                style={
+                  isActive
+                    ? { textShadow: "0 4px 4px rgba(0, 0, 0, 0.25), 0 0 6px #FAE287" }
+                    : undefined
+                }
               >
-                <IconTarget className="h-5 w-5 shrink-0" />
+                <IconTarget className="h-6 w-6 shrink-0" />
                 <span>{title}</span>
               </a>
             </li>

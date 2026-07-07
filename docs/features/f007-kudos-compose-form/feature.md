@@ -74,8 +74,24 @@ trang "Tiêu chuẩn cộng đồng" thật, backend/API lưu trữ thật.
 - **FR-8**: Bộ đếm ký tự `{n}/1.000` cập nhật realtime; chặn nhập thêm khi đã đạt 1000
   ký tự (không chỉ chặn lúc submit).
 - **FR-9**: Nội dung rỗng mà bấm Gửi → lỗi inline, không submit.
-- **FR-10**: Link tĩnh "Tiêu chuẩn cộng đồng" cạnh toolbar — không điều hướng (stub,
-  không có trang đích, xem `clarifications.md`).
+- **FR-10**: "Tiêu chuẩn cộng đồng" cạnh toolbar, mở panel "Thể lệ" (2nd-layer dialog, đóng
+  bằng Escape/nút Đóng/"Viết KUDOS" — Escape chỉ đóng panel, dialog Viết Kudos ở dưới vẫn mở).
+  **Revised 2026-07-07 (pixel-conformance):** quyết định cũ ("stub, không có trang đích") sai
+  căn cứ — frame MoMorph `b1Filzi9i6` ("Thể lệ UPDATE") tồn tại và đã `design_status: done`.
+  Panel hiển thị nội dung tĩnh (không tính badge thật): 4 bậc huy hiệu Hero (New/Rising/Super/
+  Legend, mỗi bậc kèm điều kiện + mô tả), 6 icon sưu tập (Revival/Touch of Light/Stay Gold/Flow
+  to Horizon/Beyond the Boundary/Root Further), mục "Kudos Quốc Dân". Theme đo trực tiếp qua
+  MoMorph `get_node` là **tối `#00070C`** (không phải kem như phần còn lại của dialog compose —
+  khác biệt xác nhận qua đo thật, không phải lỗi).
+
+### 2.4.1 Chèn liên kết (mms — Addlink Box)
+
+- **FR-10b** (mới, 2026-07-07): Nút "Chèn liên kết" trong toolbar mở dialog kem 2 field ("Nội
+  dung" + "URL") + Hủy/Lưu, thay cho `window.prompt()` cũ (MoMorph `OyDLDuSGEa`, done). URL bắt
+  buộc — rỗng thì lỗi inline, không gọi `exec("createLink")`. "Nội dung" là optional/decorative
+  (editor hiện tại chỉ hỗ trợ rẻ việc bọc link quanh selection có sẵn qua
+  `document.execCommand("createLink")`, không hỗ trợ set text hiển thị tùy biến — không
+  over-engineer editor cho field này).
 
 ### 2.5 Hashtag
 - **FR-11**: Chip input, tối đa 5 (bắt buộc ít nhất 1, `*`). Nhập text + Enter (hoặc nút

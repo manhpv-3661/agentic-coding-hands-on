@@ -51,7 +51,7 @@ describe("LoginButtonContainer", () => {
     const mockSignIn = vi.fn();
     vi.mocked(createClient).mockReturnValue({
       auth: { signInWithOAuth: mockSignIn },
-    } as any);
+    } as unknown as ReturnType<typeof createClient>);
 
     render(<LoginButtonContainer {...dictProps} />);
     await user.click(screen.getByRole("button", { name: new RegExp(GOOGLE_LABEL, "i") }));
@@ -65,7 +65,7 @@ describe("LoginButtonContainer", () => {
     const mockSignIn = vi.fn().mockResolvedValue({ error: null });
     vi.mocked(createClient).mockReturnValue({
       auth: { signInWithOAuth: mockSignIn },
-    } as any);
+    } as unknown as ReturnType<typeof createClient>);
 
     render(<LoginButtonContainer {...dictProps} />);
     const button = screen.getByRole("button", { name: new RegExp(GOOGLE_LABEL, "i") });
@@ -88,7 +88,7 @@ describe("LoginButtonContainer", () => {
     const mockSignIn = vi.fn().mockResolvedValue({ error: null });
     vi.mocked(createClient).mockReturnValue({
       auth: { signInWithOAuth: mockSignIn },
-    } as any);
+    } as unknown as ReturnType<typeof createClient>);
 
     render(<LoginButtonContainer {...dictProps} />);
     await user.click(screen.getByRole("button", { name: new RegExp(GOOGLE_LABEL, "i") }));
@@ -108,7 +108,7 @@ describe("LoginButtonContainer", () => {
     });
     vi.mocked(createClient).mockReturnValue({
       auth: { signInWithOAuth: mockSignIn },
-    } as any);
+    } as unknown as ReturnType<typeof createClient>);
 
     render(<LoginButtonContainer {...dictProps} />);
     await user.click(screen.getByRole("button", { name: new RegExp(GOOGLE_LABEL, "i") }));
@@ -123,7 +123,7 @@ describe("LoginButtonContainer", () => {
     const mockSignIn = vi.fn().mockRejectedValue(new Error("Network error"));
     vi.mocked(createClient).mockReturnValue({
       auth: { signInWithOAuth: mockSignIn },
-    } as any);
+    } as unknown as ReturnType<typeof createClient>);
 
     render(<LoginButtonContainer {...dictProps} />);
     await user.click(screen.getByRole("button", { name: new RegExp(GOOGLE_LABEL, "i") }));
@@ -140,7 +140,7 @@ describe("LoginButtonContainer", () => {
     });
     vi.mocked(createClient).mockReturnValue({
       auth: { signInWithOAuth: mockSignIn },
-    } as any);
+    } as unknown as ReturnType<typeof createClient>);
 
     render(<LoginButtonContainer {...dictProps} initialError="Initial error" />);
     expect(screen.getByRole("alert")).toHaveTextContent("Initial error");
@@ -163,7 +163,7 @@ describe("LoginButtonContainer", () => {
     });
     vi.mocked(createClient).mockReturnValue({
       auth: { signInWithOAuth: mockSignIn },
-    } as any);
+    } as unknown as ReturnType<typeof createClient>);
 
     render(<LoginButtonContainer {...dictProps} />);
     const button = screen.getByRole("button", { name: new RegExp(GOOGLE_LABEL, "i") });
@@ -181,7 +181,7 @@ describe("LoginButtonContainer", () => {
     const mockSignIn = vi.fn(() => new Promise(() => {})); // never resolves
     vi.mocked(createClient).mockReturnValue({
       auth: { signInWithOAuth: mockSignIn },
-    } as any);
+    } as unknown as ReturnType<typeof createClient>);
 
     render(<LoginButtonContainer {...dictProps} />);
     await user.click(screen.getByRole("button", { name: new RegExp(GOOGLE_LABEL, "i") }));

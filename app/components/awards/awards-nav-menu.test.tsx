@@ -24,13 +24,18 @@ describe("AwardsNavMenu", () => {
 
     const activeLink = screen.getByRole("link", { name: activeCategory.title });
     expect(activeLink).toHaveAttribute("aria-current", "true");
-    expect(activeLink.className).toContain("underline");
+    expect(activeLink.className).toContain("border-b");
+    expect(activeLink.className).toContain("border-[#FFEA9E]");
     expect(activeLink.className).toContain("text-[#FFEA9E]");
+    expect(activeLink).toHaveStyle({
+      textShadow: "0 4px 4px rgba(0, 0, 0, 0.25), 0 0 6px #FAE287",
+    });
 
     AWARD_CATEGORIES.filter((c) => c.slug !== activeCategory.slug).forEach((category) => {
       const link = screen.getByRole("link", { name: category.title });
       expect(link).not.toHaveAttribute("aria-current");
-      expect(link.className).not.toContain("underline");
+      expect(link.className).not.toContain("border-b");
+      expect(link.style.textShadow).toBe("");
     });
   });
 

@@ -1,0 +1,25 @@
+{
+  "commands": [
+    {
+      "command": "npx tsc --noEmit",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "Whole-repo type check clean, 0 errors",
+      "ts": "2026-07-07T06:09:00.000Z"
+    },
+    {
+      "command": "npx eslint app/components/kudos lib/kudos lib/i18n",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "0 lint errors, 0 warnings",
+      "ts": "2026-07-07T06:09:00.000Z"
+    },
+    {
+      "command": "npx vitest run",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "483/483 tests passed across 78 files (whole repo)",
+      "ts": "2026-07-07T06:09:00.000Z"
+    }
+  ]
+}

@@ -92,9 +92,16 @@ này — một task riêng trong tương lai sẽ nối logic (đặc biệt là
 - **FR-18**: Sidebar hiển thị số liệu tĩnh: số Kudos nhận được, số Kudos đã gửi, số Secret Box
   đã mở, số Secret Box chưa mở (mock data). **Đã build 5 dòng thay vì 4** — bản thiết kế
   (screenshot) có thêm dòng "số tim", giữ đúng thiết kế thay vì bản tóm tắt spec.
-- **FR-19**: Nút mở dialog tĩnh tối giản (không có logic thưởng). **Label dùng đúng chữ trên
-  thiết kế "Mở Secret Box"** thay vì "Mở quà" (bản tóm tắt spec) — cùng một hành động, chỉ khác
-  chữ hiển thị; xem `dictionary.kudos.gift.openButton`.
+- **FR-19**: Nút mở dialog tĩnh (không có logic thưởng/persistence — không đổi). **Label dùng
+  đúng chữ trên thiết kế "Mở Secret Box"** thay vì "Mở quà" (bản tóm tắt spec) — cùng một hành
+  động, chỉ khác chữ hiển thị; xem `dictionary.kudos.gift.openButton`. **Revised 2026-07-07
+  (pixel-conformance):** dialog trước đây chỉ có heading nhỏ + 1 câu text + nút Đóng — thiếu
+  toàn bộ phần visual của thiết kế chốt (MoMorph `J3-4YFIpMM`, done). Đã dựng lại: heading vàng
+  "KHÁM PHÁ SECRET BOX CỦA BẠN", subtitle "Click vào box để mở", minh họa hộp quà (SVG/CSS,
+  glow+sparkle, không cần photo asset), dòng đếm lớn lấy từ `KudosStats.secretBoxUnopened`
+  (threaded qua `KudosStatsBox` → `OpenGiftButton`), đóng bằng nút X top-right qua
+  `useDismissableMenu` (Escape parity) — nút text "Đóng" cũ bị bỏ vì thiết kế không có (đã xác
+  nhận qua MoMorph `get_node`, không đoán). Logic "không có reward thật" giữ nguyên.
 
 ### 2.8 Top 10 Sunner nhận quà mới nhất (mms_D.3)
 - **FR-20**: Danh sách 10 dòng: avatar + tên + mô tả quà ngắn. Sidebar cuộn độc lập khi vượt

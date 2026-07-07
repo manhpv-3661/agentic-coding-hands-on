@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { LanguageSelector } from "@/app/login/components/language-selector";
 import { useScrollToTopOnHomeClick } from "@/hooks/use-scroll-to-top-on-home-click";
 import type { Dictionary } from "@/lib/i18n/dictionary";
@@ -33,12 +34,18 @@ interface SiteHeaderProps {
  * scale as `login-header.tsx` (`lg:px-36` = 144px matches the design at
  * desktop width).
  *
- * Nav hrefs: "About SAA 2025" is this page (`/`, selected/active). "Award
- * Information" routes to `/awards`, "Sun* Kudos" routes to `/kudos`
- * (FR-7) — both are real, protected placeholder pages.
+ * Nav hrefs: "About SAA 2025" is `/`, "Award Information" routes to
+ * `/awards`, "Sun* Kudos" routes to `/kudos` (FR-7) — both are real,
+ * protected placeholder pages. Which link is `selected` is derived from
+ * the current pathname (bug fix: previously hardcoded to `/`, so every
+ * route highlighted "About SAA 2025") — `/` matches exactly, `/awards`
+ * and `/kudos` match by prefix so nested routes under them stay active.
  */
 export function SiteHeader({ locale, nav, account, notifications }: SiteHeaderProps) {
   const handleLogoClick = useScrollToTopOnHomeClick("/");
+  const pathname = usePathname();
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname?.startsWith(href) ?? false;
 
   return (
     // mm:2167:9091
@@ -50,6 +57,7 @@ export function SiteHeader({ locale, nav, account, notifications }: SiteHeaderPr
           href="/"
           aria-label="Sun* Annual Awards 2025 — home"
           onClick={handleLogoClick}
+          className="flex items-center gap-2"
         >
           {/* mm:I2167:9091;178:1033;178:1030 */}
           <Image
@@ -59,18 +67,45 @@ export function SiteHeader({ locale, nav, account, notifications }: SiteHeaderPr
             height={48}
             priority
           />
+          {/*
+           * Ground truth (I2167:9091;178:1033;178:1030) is a single
+           * flattened 52x48 raster that bakes a 4-line "Sun* / Annual /
+           * Awards / 2025" wordmark into the icon pixels — confirmed by
+           * sampling the exported PNG directly (white, anti-aliased text
+           * spans roughly x:26-52,y:16-48). There's no separate TEXT child
+           * node in the Figma tree to read an exact font from
+           * (get_node_context on the instance returns one RECTANGLE child
+           * only), so a pixel-identical recreation isn't recoverable from
+           * MCP data. `public/homepage-saa/Logo.png` ships icon-only.
+           * Rather than guess a font match or drop the wordmark, render
+           * the same words as real text next to the icon using this
+           * header's existing brand typeface (`font-montserrat`, the same
+           * token `NavLink` uses) so the brand name stays legible.
+           */}
+          <span
+            aria-hidden="true"
+            className="font-montserrat flex flex-col justify-center text-[10px] leading-2.75 font-bold tracking-[0.2px] text-white uppercase"
+          >
+            <span>Sun*</span>
+            <span>Annual</span>
+            <span>Awards</span>
+            <span>2025</span>
+          </span>
         </Link>
         {/* mm:I2167:9091;178:653 */}
         <nav className="flex flex-wrap items-center gap-1 sm:gap-3 lg:gap-6">
-          <NavLink href="/" label={nav.aboutSaa} selected />
-          <NavLink href="/awards" label={nav.awardInfo} />
-          <NavLink href="/kudos" label={nav.kudos} />
+          <NavLink href="/" label={nav.aboutSaa} selected={isActive("/")} />
+          <NavLink href="/awards" label={nav.awardInfo} selected={isActive("/awards")} />
+          <NavLink href="/kudos" label={nav.kudos} selected={isActive("/kudos")} />
         </nav>
       </div>
-      {/* mm:I2167:9091;186:1601 */}
+      {/* mm:I2167:9091;186:1601 — order matches ground truth left-to-right:
+          Notification (I2167:9091;186:2101) -> Language (I2167:9091;186:1696)
+          -> Account (I2167:9091;186:1597), per re-fetched node x-offsets
+          0-40 / 56-164 / 180-220 within the 220px cluster. */}
       <div className="flex items-center gap-4">
-        <LanguageSelector initialLocale={locale} />
         <NotificationBell empty={notifications.empty} />
+        <LanguageSelector initialLocale={locale} />
         <AccountMenuButton profile={account.profile} signOut={account.signOut} />
       </div>
     </header>

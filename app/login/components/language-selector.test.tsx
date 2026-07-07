@@ -98,7 +98,7 @@ describe("LanguageSelector", () => {
     // First select EN
     const trigger = screen.getByRole("button");
     await user.click(trigger);
-    let enOption = screen.getByText(/English/);
+    const enOption = screen.getByText(/English/);
     await user.click(enOption);
 
     // Then select VN

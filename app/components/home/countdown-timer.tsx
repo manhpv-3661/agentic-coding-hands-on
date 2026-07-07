@@ -1,6 +1,6 @@
 "use client";
 
-import { Orbitron } from "next/font/google";
+import { digitalNumbers } from "@/app/fonts";
 import { useEventCountdown } from "@/hooks/use-event-countdown";
 import type { Dictionary } from "@/lib/i18n/dictionary";
 
@@ -16,15 +16,9 @@ import type { Dictionary } from "@/lib/i18n/dictionary";
  * renders while `showComingSoon` is true — hidden once the countdown hits
  * zero/past or the env var is missing/invalid (FR-14/FR-15).
  *
- * Font note: the Figma digit text nodes use `fontFamily: "Digital Numbers"`,
- * which is NOT a real Google Fonts family (checked against the Google Fonts
- * catalog — no match, and `fonts.googleapis.com` 400s on it). Substituting
- * `Orbitron` (also via `next/font/google`), the closest available family
- * with the same geometric, LCD/digital-display numeral look commonly used
- * for countdown UIs.
+ * Font note: the Figma digit text nodes declare `fontFamily: "Digital
+ * Numbers"`, self-hosted via `next/font/local` in `app/fonts.ts` (FR-F5).
  */
-
-const orbitron = Orbitron({ subsets: ["latin"], weight: "400", display: "swap" });
 
 export interface CountdownTimerProps {
   /**
@@ -59,7 +53,7 @@ function DigitBoxes({ value }: { value: string }) {
         >
           <div className="absolute inset-0 rounded-lg border-[0.5px] border-[#FFEA9E] bg-linear-to-b from-white to-white/10 opacity-50 backdrop-blur-[16.64px]" />
           <span
-            className={`${orbitron.className} relative text-[49.152px] text-white`}
+            className={`${digitalNumbers.className} relative text-[49.152px] text-white`}
           >
             {digit}
           </span>
@@ -69,9 +63,21 @@ function DigitBoxes({ value }: { value: string }) {
   );
 }
 
+/**
+ * `w-fit` (not a fixed `w-29`/116px) so the unit hugs `DigitBoxes`' actual
+ * rendered width instead of clipping it. Figma's own Frame 485 (2167:9039)
+ * is 116px wide, but that's only because it depicts exactly 2 digit boxes
+ * (51.2px each + 14px gap = 116.4px) — the design has no 3-digit case to
+ * measure. `computeCountdown` (lib/event-countdown.ts) has no upper bound
+ * on days, so a countdown started 100+ days out renders 3 digits; a fixed
+ * 116px box would then overflow into the neighboring unit. Sizing to
+ * content keeps the 2-digit case pixel-identical to Figma while letting
+ * the parent row's `flex-wrap` (see `CountdownTimer` below) absorb any
+ * extra width instead of colliding with the next unit.
+ */
 function CountdownUnit({ value, label }: { value: string; label: string }) {
   return (
-    <div className="flex w-29 flex-col items-start justify-center gap-3.5">
+    <div className="flex w-fit flex-col items-start justify-center gap-3.5">
       <DigitBoxes value={value} />
       <span className="font-montserrat text-2xl leading-8 font-bold text-white">
         {label}

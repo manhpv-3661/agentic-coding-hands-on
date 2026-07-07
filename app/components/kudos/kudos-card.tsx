@@ -1,12 +1,16 @@
 import type { KudosPost } from "@/lib/kudos/kudos-types";
-import { Avatar } from "./avatar";
 import { CopyLinkButton } from "./copy-link-button";
+import { ArrowRightIcon, HeartIcon, PencilIcon, SentArrowIcon } from "./kudos-card-icons";
 import { KudosImageGallery } from "./kudos-image-gallery";
+import { KudosPersonBlock } from "./kudos-person-block";
 
 export interface KudosCardLabels {
   viewDetail: string;
   copyLink: string;
   copied: string;
+  /** Toast text on a failed clipboard write (`kudos.card.copyFailed`,
+   * finding M4 — never claim "copied" on failure). */
+  copyFailed: string;
   /** F008 heart aria-labels: not-yet-liked / already-liked. */
   like: string;
   unlike: string;
@@ -15,7 +19,8 @@ export interface KudosCardLabels {
 export interface KudosCardProps {
   post: KudosPost;
   /** `"highlight"` = carousel slide (clamp-3, CTA, static hashtags, no
-   * gallery). `"feed"` = feed item (clamp-5, gallery, clickable hashtags). */
+   * gallery). `"feed"` = feed item (clamp-5, gallery, clickable hashtags,
+   * decorative pencil beside the title). */
   variant: "highlight" | "feed";
   labels: KudosCardLabels;
   /** Feed-only hashtag click → board filter (FR-17). Static when omitted. */
@@ -32,69 +37,16 @@ export interface KudosCardProps {
   onToggleLike?: (postId: string) => void;
 }
 
-/** Inline "sent" arrow, `currentColor`-driven (matches `award-card.tsx`). */
-function SentArrowIcon() {
-  return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-      className="shrink-0"
-    >
-      <path
-        d="M4 12H20M20 12L14 6M20 12L14 18"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-/** Heart icon — `filled` toggles solid (liked) vs. outline (F008); the
- * legacy fallback always renders filled. `currentColor`-driven. */
-function HeartIcon({ filled }: { filled: boolean }) {
-  return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill={filled ? "currentColor" : "none"}
-      stroke={filled ? "none" : "currentColor"}
-      strokeWidth={filled ? undefined : "2"}
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
-      <path d="M12 21C12 21 4 15.5 4 9.5C4 6.5 6.5 4.5 9 4.5C10.5 4.5 11.5 5.2 12 6C12.5 5.2 13.5 4.5 15 4.5C17.5 4.5 20 6.5 20 9.5C20 15.5 12 21 12 21Z" />
-    </svg>
-  );
-}
-
-function PersonBlock({ name, department, stars }: { name: string; department: string; stars: number }) {
-  return (
-    <div className="flex items-center gap-2">
-      <Avatar name={name} size={36} />
-      <div className="flex flex-col items-start">
-        <span className="text-sm font-semibold text-white">{name}</span>
-        {/* Anonymous senders (F007, FR-18) have no department/stars. */}
-        {department && (
-          <span className="text-xs text-white/60">
-            {department} · ⭐ {stars}
-          </span>
-        )}
-      </div>
-    </div>
-  );
-}
-
 /**
  * Shared Kudos card, parameterized by `variant` rather than forked (DRY).
  * Pure presentational — no hooks, no `"use client"`; the like toggle's
  * state lives with the caller (F008, `KudosPageClient`), not here.
+ *
+ * Cream `#FFF8E1` card with dark `#00101A` text throughout (MoMorph design
+ * ground truth, researcher-260707-0110) — the highlight variant additionally
+ * gets a 4px `#FFEA9E` border, the feed variant a larger 24px radius and no
+ * border. `#FFEA9E` dividers separate the header/content/action zones; the
+ * message itself sits in a translucent yellow inner box.
  */
 export function KudosCard({
   post,
@@ -116,47 +68,67 @@ export function KudosCard({
 
   return (
     // mm:kudos-card (shared Highlight/All-Kudos card)
-    <article className="flex w-full flex-col gap-4 rounded-2xl border border-[#2E3940] bg-[#101317] p-6">
-      <div className="flex flex-wrap items-center gap-3">
-        <PersonBlock
-          name={post.sender.name}
-          department={post.sender.department}
-          stars={post.sender.stars}
-        />
+    <article
+      className={
+        isFeed
+          ? "flex w-full flex-col gap-4 rounded-3xl bg-[#FFF8E1] px-10 pt-10 pb-4"
+          : "flex w-full flex-col gap-4 rounded-2xl border-4 border-[#FFEA9E] bg-[#FFF8E1] px-6 pt-6 pb-4"
+      }
+    >
+      {/* mm:I2940:13464;335:9442 / mm:I3127:21871;256:4857 — 24px gap,
+       * space-between, in both variants (not gap-3/packed). */}
+      <div className="flex flex-wrap items-center justify-between gap-6">
+        <KudosPersonBlock person={post.sender} />
         <SentArrowIcon />
-        <PersonBlock
-          name={post.recipient.name}
-          department={post.recipient.department}
-          stars={post.recipient.stars}
-        />
+        <KudosPersonBlock person={post.recipient} />
       </div>
 
-      <p className="text-xs text-white/50">{post.timestamp}</p>
+      {/* mm:3127:21871 / mm:2940:13464 — the rule sits immediately after the
+       * sender/recipient row, welding timestamp+title to the message/gallery/
+       * hashtags group below it, not to the avatar row above it. */}
+      <div className="h-px w-full bg-[#FFEA9E]" />
 
-      {/* "Danh hiệu" (F007, FR-5) — optional, compose-form-only. */}
+      <p className="font-montserrat text-base leading-6 font-bold tracking-[0.5px] text-[#999999]">
+        {post.timestamp}
+      </p>
+
+      {/* "Danh hiệu" (F007, FR-5) — optional, compose-form-only. Feed cards
+       * add a decorative, non-interactive pencil (design: 32px, no edit
+       * affordance — mirrors the composer pill's pencil precedent). */}
       {post.title && (
-        <p className="font-montserrat text-sm font-semibold text-[#FFEA9E]">{post.title}</p>
+        <div className="relative flex w-full items-center justify-center">
+          <p className="font-montserrat text-base leading-6 font-bold tracking-[0.5px] text-[#00101A]">
+            {post.title}
+          </p>
+          {isFeed && <PencilIcon className="absolute right-0 text-[#00101A]" />}
+        </div>
       )}
 
-      <p className={`font-montserrat text-sm text-white/90 ${contentClamp}`}>{post.content}</p>
+      <div className="rounded-xl border border-[#FFEA9E] bg-[rgba(255,234,158,0.40)] px-6 py-4">
+        <p
+          className={`font-montserrat text-xl leading-8 font-bold text-justify text-[#00101A] ${contentClamp}`}
+        >
+          {post.content}
+        </p>
+      </div>
 
       {isFeed && <KudosImageGallery count={post.imageCount} />}
 
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-x-3 gap-y-1">
         {post.hashtags.slice(0, 5).map((tag) =>
           isFeed ? (
             <button
               key={tag}
               type="button"
               onClick={() => onHashtagClick?.(tag)}
-              className="rounded-full bg-white/10 px-3 py-1 text-xs text-[#FFEA9E] transition-colors duration-150 hover:bg-white/20"
+              className="font-montserrat text-base leading-6 font-bold tracking-[0.5px] text-[#D4271D] transition-opacity duration-150 hover:opacity-70"
             >
               {tag}
             </button>
           ) : (
             <span
               key={tag}
-              className="rounded-full bg-white/10 px-3 py-1 text-xs text-[#FFEA9E]"
+              className="font-montserrat text-base leading-6 font-bold tracking-[0.5px] text-[#D4271D]"
             >
               {tag}
             </span>
@@ -164,7 +136,7 @@ export function KudosCard({
         )}
       </div>
 
-      <div className="flex items-center justify-between border-t border-[#2E3940] pt-4">
+      <div className="flex items-center justify-between border-t border-[#FFEA9E] pt-4">
         {likeInteractive ? (
           // F008: own-post → disabled + dimmed, count still visible.
           <button
@@ -173,24 +145,36 @@ export function KudosCard({
             aria-label={liked ? labels.unlike : labels.like}
             disabled={isOwnPost}
             onClick={() => onToggleLike?.(post.id)}
-            className={`flex items-center gap-1 text-sm transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-50 ${
-              liked ? "text-[#FFEA9E]" : "text-white/70 hover:text-white"
-            }`}
+            className="flex items-center gap-2 font-montserrat text-2xl leading-8 font-bold text-[#00101A] transition-opacity duration-150 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            <HeartIcon filled={Boolean(liked)} />
+            <span className={liked ? "text-[#D4271D]" : "text-[#999999]"}>
+              <HeartIcon filled={Boolean(liked)} />
+            </span>
             {displayHearts}
           </button>
         ) : (
           // Legacy F006 fallback — never a button, no click handler.
-          <span className="flex items-center gap-1 text-sm text-white/70">
-            <HeartIcon filled />
+          <span className="flex items-center gap-2 font-montserrat text-2xl leading-8 font-bold text-[#00101A]">
+            <span className="text-[#999999]">
+              <HeartIcon filled />
+            </span>
             {post.hearts}
           </span>
         )}
-        <div className="flex items-center gap-4">
-          <CopyLinkButton link={`/kudos#${post.id}`} label={labels.copyLink} copiedLabel={labels.copied} />
+        <div className="flex items-center gap-6">
+          <CopyLinkButton
+            link={`/kudos#${post.id}`}
+            label={labels.copyLink}
+            copiedLabel={labels.copied}
+            copyFailedLabel={labels.copyFailed}
+          />
           {/* Static, non-navigating — no `/kudos/[id]` detail route exists. */}
-          {!isFeed && <span className="text-sm font-medium text-white/70">{labels.viewDetail}</span>}
+          {!isFeed && (
+            <span className="flex items-center gap-1 font-montserrat text-base leading-6 font-bold tracking-[0.15px] text-[#00101A]">
+              {labels.viewDetail}
+              <ArrowRightIcon />
+            </span>
+          )}
         </div>
       </div>
     </article>

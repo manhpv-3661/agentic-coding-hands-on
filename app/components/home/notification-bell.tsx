@@ -42,6 +42,15 @@ function BellIcon() {
  * rendered — there is no data source to drive it, so a hardcoded dot would
  * be a fake "has notifications" signal.
  *
+ * Re-confirmed on a later site-chrome audit: the ground-truth frame does
+ * render a static red dot on this bell (visible:true at all times in the
+ * frozen design). That's acknowledged and intentionally not reproduced —
+ * rendering it unconditionally would misrepresent real unread state to
+ * users, which is a worse outcome than a harmless static-design deviation.
+ * This stays icon-only until a real notification feed exists to drive the
+ * badge; `notification-bell.test.tsx` pins this as an explicit assertion,
+ * not just an absence of coverage.
+ *
  * The panel is plain informational text (no actionable items), so it uses
  * `role="status"` rather than `role="menu"` — `menu` implies `menuitem`
  * children for assistive tech to navigate, which this empty state has none of.

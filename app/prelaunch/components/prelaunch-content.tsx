@@ -58,11 +58,11 @@ export function PrelaunchContent({ days, hours, minutes, content }: PrelaunchCon
           pattern as the homepage countdown row, `countdown-timer.tsx`) */}
       <div className="flex flex-row flex-wrap items-start justify-center gap-6 sm:gap-10 lg:gap-[60px]">
         {/* mm:2268:35139 */}
-        <CountdownLedUnit value={days} label={content.labels.days} />
+        <CountdownLedUnit value={days} label={content.labels.days} unit="days" />
         {/* mm:2268:35144 */}
-        <CountdownLedUnit value={hours} label={content.labels.hours} />
+        <CountdownLedUnit value={hours} label={content.labels.hours} unit="hours" />
         {/* mm:2268:35149 */}
-        <CountdownLedUnit value={minutes} label={content.labels.minutes} />
+        <CountdownLedUnit value={minutes} label={content.labels.minutes} unit="minutes" />
       </div>
     </div>
   );

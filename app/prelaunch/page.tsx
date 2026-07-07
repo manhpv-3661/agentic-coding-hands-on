@@ -49,9 +49,18 @@ export default async function PrelaunchPage() {
     labels: dictionary.shared.countdown,
   };
 
+  // mm:2268:35131 ("Bìa") is an invisible (no-fill) layout wrapper with
+  // absolute box startY:218/endY:673 and its own `padding: 96px 144px`
+  // inside the 1512x1077 reference frame. The actual heading+countdown
+  // content — mm:2268:35136 ("Countdown time") — sits at absolute
+  // startY:314 (= Bìa's startY:218 + Bìa's own padding-top:96), so the true
+  // top gap is 314px (~29.2% of frame height), not just Bìa's own 218px
+  // offset. `lg:justify-start` + `lg:pt-[29.2vh]` reproduce that ratio
+  // responsively (the remaining space naturally falls below via flex-start),
+  // matching the `lg:` sizing this frame was designed at.
   return (
     <div
-      className={`${montserrat.variable} relative isolate flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-[#00101A] px-6 py-12 lg:px-36 lg:py-24`}
+      className={`${montserrat.variable} relative isolate flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-[#00101A] px-6 py-12 lg:justify-start lg:px-36 lg:pt-[29.2vh] lg:pb-24`}
     >
       <PrelaunchBackground />
       <Suspense
