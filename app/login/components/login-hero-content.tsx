@@ -19,14 +19,14 @@ export function LoginHeroContent({
   children: ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-start gap-10 sm:gap-16 lg:gap-20">
+    <div className="flex flex-col items-start gap-20">
       <Image
         src="/login/Root_Further_Logo.png"
         alt="Root Further"
         width={451}
         height={200}
         priority
-        className="h-auto w-[240px] sm:w-[340px] lg:w-[451px]"
+        className="h-auto w-[451px]"
       />
       <div className="flex flex-col items-start gap-6 pl-4">
         <p className="font-montserrat max-w-[480px] text-[20px] leading-[40px] font-bold tracking-[0.5px] whitespace-pre-line text-white">

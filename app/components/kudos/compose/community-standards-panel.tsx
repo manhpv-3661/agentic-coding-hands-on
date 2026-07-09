@@ -22,8 +22,8 @@ function HeroTierRow({ tier }: { tier: CommunityStandardsLabels["heroTiers"][num
       <span className="rounded-full border-[0.5px] border-[#FFEA9E] bg-[rgba(9,36,50,0.5)] px-2 py-0.5 text-[11.4px] font-bold text-white">
         {tier.name}
       </span>
-      <span className="text-base leading-6 font-bold tracking-[0.5px] text-white">{tier.condition}</span>
-      <p className="w-full text-sm leading-5 font-bold tracking-[0.1px] text-white">{tier.description}</p>
+      <span className="text-base leading-6 font-bold tracking-[0.5px] text-[#00101A]">{tier.condition}</span>
+      <p className="w-full text-sm leading-5 font-bold tracking-[0.1px] text-[#00101A]">{tier.description}</p>
     </div>
   );
 }
@@ -41,7 +41,7 @@ function CollectionIconTile({ icon, name }: { icon: (typeof COLLECTION_ICONS)[nu
       >
         {icon.initials}
       </span>
-      <span className="text-xs font-bold uppercase text-white">{name}</span>
+      <span className="text-xs font-bold uppercase text-[#00101A]">{name}</span>
     </div>
   );
 }
@@ -77,16 +77,16 @@ export function CommunityStandardsPanel({ labels, containerRef, onClose, onCompo
         aria-modal="true"
         aria-label={labels.panelTitle}
         tabIndex={-1}
-        className="flex max-h-[90vh] w-full max-w-2xl flex-col gap-6 overflow-y-auto rounded-2xl bg-[#00070C] p-6 text-white outline-none"
+        className="flex max-h-[90vh] w-full max-w-2xl flex-col gap-6 overflow-y-auto rounded-2xl bg-[#FFF8E1] p-6 text-[#00101A] outline-none"
       >
-        <h2 className="font-montserrat text-[45px] leading-[52px] font-bold text-[#FFEA9E]">{labels.panelTitle}</h2>
+        <h2 className="font-montserrat text-[45px] leading-[52px] font-bold text-[#00101A]">{labels.panelTitle}</h2>
 
         <section className="flex flex-col gap-4">
-          <h3 className="font-montserrat text-[22px] leading-7 font-bold uppercase text-[#FFEA9E]">
+          <h3 className="font-montserrat text-[22px] leading-7 font-bold uppercase text-[#00101A]">
             {recipient.heading}
           </h3>
           {recipient.body && (
-            <p className="text-base leading-6 font-bold tracking-[0.5px] text-white">{recipient.body}</p>
+            <p className="text-base leading-6 font-bold tracking-[0.5px] text-[#00101A]">{recipient.body}</p>
           )}
           <div className="flex flex-col gap-4">
             {labels.heroTiers.map((tier, index) => (
@@ -96,32 +96,32 @@ export function CommunityStandardsPanel({ labels, containerRef, onClose, onCompo
         </section>
 
         <section className="flex flex-col gap-4">
-          <h3 className="font-montserrat text-[22px] leading-7 font-bold uppercase text-[#FFEA9E]">
+          <h3 className="font-montserrat text-[22px] leading-7 font-bold uppercase text-[#00101A]">
             {sender.heading}
           </h3>
           {sender.body && (
-            <p className="text-base leading-6 font-bold tracking-[0.5px] text-white">{sender.body}</p>
+            <p className="text-base leading-6 font-bold tracking-[0.5px] text-[#00101A]">{sender.body}</p>
           )}
           <div className="flex flex-wrap gap-4">
             {COLLECTION_ICONS.map((icon, index) => (
               <CollectionIconTile key={icon.id} icon={icon} name={labels.collectionIcons[index] ?? icon.id} />
             ))}
           </div>
-          <p className="text-base leading-6 font-bold tracking-[0.5px] text-white">{labels.collectFullSetText}</p>
+          <p className="text-base leading-6 font-bold tracking-[0.5px] text-[#00101A]">{labels.collectFullSetText}</p>
         </section>
 
         <section className="flex flex-col gap-4">
-          <h3 className="font-montserrat text-[22px] leading-7 font-bold uppercase text-[#FFEA9E]">
+          <h3 className="font-montserrat text-[22px] leading-7 font-bold uppercase text-[#00101A]">
             {labels.nationalHeading}
           </h3>
-          <p className="text-base leading-6 font-bold tracking-[0.5px] text-white">{labels.nationalText}</p>
+          <p className="text-base leading-6 font-bold tracking-[0.5px] text-[#00101A]">{labels.nationalText}</p>
         </section>
 
         <div className="flex items-center gap-4 border-t border-[#2E3940] pt-4">
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg border border-[#998C5F] bg-[#FFEA9E]/10 px-4 py-4 text-sm font-bold text-white hover:bg-[#FFEA9E]/20"
+            className="rounded-lg border border-[#998C5F] bg-[#FFEA9E]/10 px-4 py-4 text-sm font-bold text-[#00101A] hover:bg-[#FFEA9E]/20"
           >
             {labels.footerClose}
           </button>

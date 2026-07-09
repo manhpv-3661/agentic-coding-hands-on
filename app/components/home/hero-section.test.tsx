@@ -42,7 +42,7 @@ const COUNTDOWN = { days: "DAYS", hours: "HOURS", minutes: "MINUTES" };
 
 describe("HeroSection", () => {
   it("forwards hero + countdown props down to CountdownTimer, EventInfo, and HeroCtaButtons (F005)", () => {
-    render(<HeroSection hero={HERO} countdown={COUNTDOWN} />);
+    render(<HeroSection hero={HERO} countdown={COUNTDOWN} venueName="Âu Cơ Art Center" />);
 
     // CountdownTimer
     expect(screen.getByText("DAYS")).toBeInTheDocument();

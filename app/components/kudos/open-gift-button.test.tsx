@@ -9,6 +9,10 @@ const labels = {
   subtitle: "Click vào box để mở",
   unopenedCount: "Secretbox chưa mở",
   closeAria: "Đóng hộp quà bí ẩn",
+  emptyState: "Bạn chưa có Secret Box nào để mở.",
+  opening: "Đang mở Secret Box...",
+  openedRewardPrefix: "Bạn vừa",
+  openFailed: "Mở Secret Box thất bại. Vui lòng thử lại.",
 };
 
 describe("OpenGiftButton", () => {
@@ -63,13 +67,13 @@ describe("OpenGiftButton", () => {
     expect(screen.getByText("00")).toBeInTheDocument();
   });
 
-  it("hides the subtitle when unopenedCount is 0, per ground-truth spec node 1466:7681", async () => {
+  it("shows the empty-state message when unopenedCount is 0", async () => {
     const user = userEvent.setup();
     render(<OpenGiftButton labels={labels} unopenedCount={0} />);
 
     await user.click(screen.getByRole("button", { name: "Mở Secret Box" }));
     expect(screen.getByRole("dialog")).toBeInTheDocument();
-    expect(screen.queryByText(labels.subtitle)).not.toBeInTheDocument();
+    expect(screen.getByText(labels.emptyState)).toBeInTheDocument();
   });
 
   it("does not mutate the count or add any reward/persistence side effect on open (BR-1)", async () => {

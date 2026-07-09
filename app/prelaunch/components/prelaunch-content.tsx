@@ -50,13 +50,14 @@ export function PrelaunchContent({ days, hours, minutes, content }: PrelaunchCon
     // mm:2268:35136
     <div className="flex flex-col items-center gap-6 px-6 text-center">
       {/* mm:2268:35137 */}
-      <p className="font-montserrat text-2xl leading-8 font-bold text-white lg:text-4xl lg:leading-[48px]">
+      <p className="font-montserrat text-4xl leading-[48px] font-bold text-white">
         {content.heading}
       </p>
-      {/* mm:2268:35138 — flex-wrap so DAYS/HOURS/MINUTES reflow onto a
-          second line on narrow viewports instead of overflowing (same
-          pattern as the homepage countdown row, `countdown-timer.tsx`) */}
-      <div className="flex flex-row flex-wrap items-start justify-center gap-6 sm:gap-10 lg:gap-[60px]">
+      {/* mm:2268:35138 — flex-wrap keeps DAYS/HOURS/MINUTES from overflowing
+          if a label ever runs long (desktop-only sizing, no breakpoint
+          scaling — same pattern as the homepage countdown row,
+          `countdown-timer.tsx`) */}
+      <div className="flex flex-row flex-wrap items-start justify-center gap-[60px]">
         {/* mm:2268:35139 */}
         <CountdownLedUnit value={days} label={content.labels.days} unit="days" />
         {/* mm:2268:35144 */}

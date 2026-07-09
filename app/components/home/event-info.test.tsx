@@ -7,6 +7,7 @@ const EN_PROPS = {
   venueLabel: "Venue:",
   livestreamNote: "Broadcast live via livestream",
   eventDate: "December 26, 2025",
+  venueName: "Âu Cơ Art Center",
 };
 
 describe("EventInfo (FR-16)", () => {
@@ -38,6 +39,7 @@ describe("EventInfo (FR-16)", () => {
         venueLabel="Địa điểm:"
         livestreamNote="Tường thuật trực tiếp qua sóng Livestream"
         eventDate="26/12/2025"
+        venueName="Âu Cơ Art Center"
       />,
     );
 

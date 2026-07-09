@@ -12,6 +12,13 @@ export interface HeroSectionProps {
   /** Days/Hours/Minutes unit labels, shared with the Prelaunch countdown
    * (`shared.countdown`). */
   countdown: Dictionary["shared"]["countdown"];
+  /** Venue name (`getEventSettings()`, phase-04) — a plain data value, not
+   * hero copy, passed straight through to `EventInfo`. Threading it here
+   * (rather than having `EventInfo` fetch it itself) keeps `EventInfo`
+   * synchronous so its existing unit tests keep rendering it with plain
+   * `@testing-library/react` `render()`, which cannot execute an async
+   * Server Component. */
+  venueName: string;
 }
 
 /**
@@ -31,17 +38,17 @@ export interface HeroSectionProps {
  *
  * Containered layout (code-rules.md rule 3): the Figma artboard is 1512px
  * wide with a 1224px content frame centered via 144px side padding
- * (1512 - 2*144 = 1224) — reproduced as `max-w-[1224px]` inside responsive
- * horizontal padding, not a hardcoded 1512px-wide wrapper, so the section
- * fills the real viewport at any width. Only horizontal padding is
- * reproduced here (mirrors `awards-section.tsx`'s established pattern,
- * since `<main>` has no horizontal padding of its own) — vertical spacing
- * is intentionally NOT duplicated here because `app/page.tsx`'s `<main>`
- * already supplies the Bìa's 96/120px vertical rhythm for all of its
- * children (see that file's note 1); re-adding it here would double the
- * whitespace above/below the hero card.
+ * (1512 - 2*144 = 1224) — reproduced via the shared `PageGutter`
+ * (144px, desktop-only) wrapping `ContentFrame(1224)`, not a hardcoded
+ * 1512px-wide wrapper. Only horizontal padding is reproduced here (mirrors
+ * `awards-section.tsx`'s established pattern, since `<main>` has no
+ * horizontal padding of its own) — vertical spacing is intentionally NOT
+ * duplicated here because `app/page.tsx`'s `<main>` already supplies the
+ * Bìa's 120px vertical rhythm for all of its children (see that file's
+ * note 1); re-adding it here would double the whitespace above/below the
+ * hero card.
  */
-export function HeroSection({ hero, countdown }: HeroSectionProps) {
+export function HeroSection({ hero, countdown, venueName }: HeroSectionProps) {
   return (
     // mm:2167:9030
     <PageGutter as="section" className="relative flex items-center justify-center">
@@ -56,7 +63,7 @@ export function HeroSection({ hero, countdown }: HeroSectionProps) {
             width={451}
             height={200}
             priority
-            className="h-auto w-[240px] sm:w-[340px] lg:w-[451px]"
+            className="h-auto w-112.75"
           />
         </div>
         {/* mm:2167:9034 */}
@@ -67,6 +74,7 @@ export function HeroSection({ hero, countdown }: HeroSectionProps) {
             venueLabel={hero.eventInfo.venueLabel}
             livestreamNote={hero.eventInfo.livestreamNote}
             eventDate={hero.eventDate}
+            venueName={venueName}
           />
         </div>
         <HeroCtaButtons aboutAwards={hero.cta.aboutAwards} aboutKudos={hero.cta.aboutKudos} />

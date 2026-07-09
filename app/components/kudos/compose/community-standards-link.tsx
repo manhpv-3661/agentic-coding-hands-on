@@ -38,7 +38,7 @@ export function CommunityStandardsLink({ labels }: CommunityStandardsLinkProps) 
       <button
         type="button"
         {...triggerProps}
-        className="flex h-10 w-84 shrink-0 items-center justify-center border-l border-[#998C5F] text-base font-bold text-[#E46060] underline underline-offset-2 hover:bg-[#FFF8E1] focus-visible:bg-[#FFF8E1]"
+        className="flex h-10 w-84 shrink-0 items-center justify-center border-l border-[#998C5F] text-base font-bold text-[#00101A] hover:bg-[#FFF8E1] focus-visible:bg-[#FFF8E1]"
       >
         {labels.trigger}
       </button>

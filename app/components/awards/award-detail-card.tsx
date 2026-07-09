@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Montserrat } from "next/font/google";
+import { montserrat } from "@/app/fonts";
 import { AwardValueSection } from "./award-value-section";
 import type { AwardDetailEntry } from "./award-detail-types";
 
@@ -8,18 +8,6 @@ import type { AwardDetailEntry } from "./award-detail-types";
 // `awards-catalog.tsx`/`award-detail-data.ts`/`award-value-section.tsx`
 // already import them from this module.
 export type { AwardValueVariant, AwardMetric, AwardDetailEntry } from "./award-detail-types";
-
-/**
- * Font scoped to this file (mirrors `awards-section.tsx` / `site-footer.tsx`)
- * so the component renders correctly even when composed outside a parent
- * that already provides the `--font-montserrat` CSS variable.
- */
-const montserrat = Montserrat({
-  subsets: ["latin", "vietnamese"],
-  weight: ["400", "500", "700"],
-  variable: "--font-montserrat",
-  display: "swap",
-});
 
 export interface AwardDetailCardProps extends AwardDetailEntry {
   /** "Số lượng giải thưởng: " / English equivalent label prefix, already
@@ -80,15 +68,15 @@ export function AwardDetailCard({
   return (
     <div
       data-award-slug={slug}
-      className={`${montserrat.variable} flex w-full flex-col items-start gap-8 lg:flex-row lg:gap-10 ${
-        imageSide === "right" ? "lg:flex-row-reverse" : ""
+      className={`${montserrat.variable} flex w-full flex-row items-start gap-10 ${
+        imageSide === "right" ? "flex-row-reverse" : ""
       }`}
     >
       {/* mm:214:1032 — Picture-Award: one pre-composited thumbnail per award
           (background + gold-ring + name baked in at design time), not a
           shared background with a runtime text overlay. */}
       <div
-        className="relative aspect-square w-full max-w-[336px] shrink-0 overflow-hidden rounded-3xl border-[0.955px] border-[#FFEA9E] lg:w-[336px]"
+        className="relative aspect-square w-[336px] shrink-0 overflow-hidden rounded-3xl border-[0.955px] border-[#FFEA9E]"
         style={{ boxShadow: "0 4px 4px 0 rgba(0, 0, 0, 0.25), 0 0 6px 0 #FAE287" }}
       >
         <Image

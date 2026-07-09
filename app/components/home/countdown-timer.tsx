@@ -99,7 +99,7 @@ export function CountdownTimer({ eventStartAt, labels, comingSoon }: CountdownTi
         </p>
       )}
       {/* mm:2167:9037 */}
-      <div className="flex flex-row flex-wrap items-center gap-4 sm:gap-6 lg:gap-10">
+      <div className="flex flex-row flex-wrap items-center gap-10">
         {/* mm:2167:9038 */}
         <CountdownUnit value={days} label={labels.days} />
         {/* mm:2167:9043 */}

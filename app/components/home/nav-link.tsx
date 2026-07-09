@@ -32,7 +32,7 @@ export function NavLink({ href, label, selected = false }: NavLinkProps) {
       href={href}
       onClick={handleClick}
       aria-current={selected ? "page" : undefined}
-      className={`font-montserrat inline-flex items-center justify-center rounded-[4px] px-2 py-4 text-center text-sm leading-5 font-bold tracking-[0.1px] whitespace-nowrap transition-colors duration-200 ease-out sm:px-3 lg:px-4 ${
+      className={`font-montserrat inline-flex items-center justify-center rounded-[4px] px-4 py-4 text-center text-sm leading-5 font-bold tracking-[0.1px] whitespace-nowrap transition-colors duration-200 ease-out ${
         selected
           ? "border-b border-[#FFEA9E] text-[#FFEA9E]"
           : "text-white hover:bg-white/10"

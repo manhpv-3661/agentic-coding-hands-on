@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { KUDOS_CONTENT_MAX_LENGTH } from "@/lib/kudos/kudos-compose-limits";
 import { CommunityStandardsLink } from "./community-standards-link";
 import { filterMentionNames, MentionSuggestions } from "./mention-suggestions";
 import {
@@ -19,6 +20,10 @@ export interface RichTextEditorLabels {
   error: string;
   toolbar: RichTextToolbarLabels;
   communityStandards: Parameters<typeof CommunityStandardsLink>[0]["labels"];
+  /** `MentionSuggestions`'s listbox aria-label
+   * (`kudos.compose.content.mentionSuggestionsAria`) — optional so existing
+   * callers/tests that predate this field keep compiling unchanged. */
+  mentionSuggestionsAria?: string;
 }
 
 export interface RichTextEditorProps {
@@ -26,8 +31,9 @@ export interface RichTextEditorProps {
   onChange: (text: string) => void;
   /** Distinct people names offered by "@" suggestions (F007, FR-7). */
   mentionNames: string[];
-  /** Hard character cap, enforced live (default 1000, matches the Figma
-   * "0/1.000" counter). */
+  /** Hard character cap, enforced live (default `KUDOS_CONTENT_MAX_LENGTH`,
+   * matches the Figma "0/1.000" counter — same constant the server re-checks
+   * in `createKudosAction`, review finding H1). */
   maxLength?: number;
   error?: string;
   labels: RichTextEditorLabels;
@@ -47,7 +53,7 @@ export function RichTextEditor({
   value,
   onChange,
   mentionNames,
-  maxLength = 1000,
+  maxLength = KUDOS_CONTENT_MAX_LENGTH,
   error,
   labels,
 }: RichTextEditorProps) {
@@ -189,6 +195,7 @@ export function RichTextEditor({
             onSelect={handleMentionSelect}
             open={mentionQuery !== null}
             highlightedIndex={highlightedMentionIndex}
+            ariaLabel={labels.mentionSuggestionsAria}
           />
         </div>
       </div>

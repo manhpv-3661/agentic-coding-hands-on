@@ -7,10 +7,12 @@
 
 /** One side (sender or recipient) of a Kudos post. */
 export interface KudosPerson {
+  id?: string;
   name: string;
   department: string;
   /** Star/recognition count shown next to the person in the card header. */
   stars: number;
+  avatarUrl?: string;
 }
 
 /**
@@ -27,6 +29,8 @@ export interface KudosPost {
   hashtags: string[];
   /** Number of placeholder gallery tiles to render (0–5). */
   imageCount: number;
+  /** Uploaded image URLs from Supabase Storage. */
+  imageUrls?: string[];
   /** Static "everyone else's" like count — the current viewer's own like
    * (F008) is tracked separately (session-only `likedIds` state owned by
    * `KudosPageClient`) and added on top when displayed; this field itself

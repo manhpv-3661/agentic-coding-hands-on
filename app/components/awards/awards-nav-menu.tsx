@@ -10,6 +10,10 @@ export interface AwardsNavMenuProps {
    * the catalog (Phase 01). `null`/unknown slug → nothing highlighted, no
    * throw (FR-10). */
   activeSlug: string | null;
+  /** Nav landmark aria-label (`shared.a11y.awardCategories`) —
+   * optional/defaulted to the English design label so existing
+   * callers/tests that predate this prop keep compiling unchanged. */
+  ariaLabel?: string;
 }
 
 /**
@@ -52,10 +56,10 @@ function IconTarget({ className }: { className?: string }) {
  * exactly — same border-bottom + `textShadow` values — per the MoMorph
  * ground truth for this screen (`313:8459`, item C.1 "Top Talent").
  */
-export function AwardsNavMenu({ items, activeSlug }: AwardsNavMenuProps) {
+export function AwardsNavMenu({ items, activeSlug, ariaLabel = "Award categories" }: AwardsNavMenuProps) {
   return (
     // mm:awards-nav-menu
-    <nav aria-label="Award categories" className="lg:sticky lg:top-24">
+    <nav aria-label={ariaLabel} className="sticky top-24">
       <ul className="flex flex-col gap-4">
         {items.map(({ slug, title }) => {
           const isActive = slug === activeSlug;

@@ -17,6 +17,10 @@ export interface SpotlightBoardProps {
   names: string[];
   total: number;
   labels: SpotlightBoardLabels;
+  /** Section title (`kudos.sections.spotlightBoard`) — optional/defaulted
+   * to the English design label so existing callers/tests that predate this
+   * prop keep compiling unchanged (F006 backward-compat pattern). */
+  title?: string;
 }
 
 const SEARCH_MAX_LENGTH = 100;
@@ -44,13 +48,13 @@ function SearchIcon() {
  * "{total} KUDOS" is the static `SPOTLIGHT_TOTAL` counter, NOT a count of
  * rendered names (clarifications.md).
  */
-export function SpotlightBoard({ names, total, labels }: SpotlightBoardProps) {
+export function SpotlightBoard({ names, total, labels, title = "SPOTLIGHT BOARD" }: SpotlightBoardProps) {
   const [query, setQuery] = useState("");
   const [panZoom, setPanZoom] = useState(false);
 
   return (
     <section className="flex w-full flex-col gap-6">
-      <KudosSectionHeading subtitle="Sun* Annual Awards 2025" title="SPOTLIGHT BOARD" />
+      <KudosSectionHeading subtitle="Sun* Annual Awards 2025" title={title} />
 
       {/* Board frame (`B.7_Spotlight`, node 2940:14174): radius 47.14px,
        * border 1px #998C5F, and a hard `height: 548px` in the design (not

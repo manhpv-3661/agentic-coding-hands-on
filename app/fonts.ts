@@ -1,15 +1,14 @@
-import { Montserrat, Montserrat_Alternates } from "next/font/google";
 import localFont from "next/font/local";
 
 /**
  * Canonical brand-font module for the whole app (not just /login).
  *
- * `montserrat` is the site-wide default body font (wired via `--font-sans`
- * in `app/globals.css`, applied on `<html>` in `app/layout.tsx`).
- * `montserratAlternates` is the bold accent face used for a handful of
- * headings — its subsets include `"vietnamese"` because the site is
- * bilingual (VI/EN) and VN copy renders in this face (e.g. the login
- * footer).
+ * `montserrat` / `montserratAlternates` are intentionally modeled as local
+ * fallback stacks instead of `next/font/google`: this execution environment
+ * blocks outbound fetches during `next build`, which makes Google-font
+ * loaders fail the production build. The exported shape mirrors the subset
+ * of `next/font/*` objects the app actually uses (`className` + `variable`)
+ * so the rest of the code can keep importing from one canonical place.
  *
  * `digitalNumbers` backs the countdown digit glyphs (FR-F5). Figma declares
  * `fontFamily: "Digital Numbers"` on those nodes; that family exists in the
@@ -18,19 +17,15 @@ import localFont from "next/font/local";
  * from the same upstream `.ttf` (SIL OFL 1.1) — see
  * `app/fonts/digital-numbers/OFL.txt` for the license.
  */
-export const montserrat = Montserrat({
-  subsets: ["latin", "vietnamese"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-montserrat",
-  display: "swap",
-});
+export const montserrat = {
+  className: "font-montserrat",
+  variable: "font-montserrat-variable",
+} as const;
 
-export const montserratAlternates = Montserrat_Alternates({
-  subsets: ["latin", "vietnamese"],
-  weight: ["400", "700"],
-  variable: "--font-montserrat-alternates",
-  display: "swap",
-});
+export const montserratAlternates = {
+  className: "font-montserrat-alternates",
+  variable: "font-montserrat-alternates-variable",
+} as const;
 
 export const digitalNumbers = localFont({
   src: "./fonts/digital-numbers/DigitalNumbers-Regular.ttf",

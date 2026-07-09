@@ -131,3 +131,15 @@ Bố cục: header/footer (tái dùng nguyên từ F002) → hero keyvisual mini
 ## 5. Unresolved Questions
 (none — 3 điểm mơ hồ đã được làm rõ, xem `../../../plans/260706-1746-awards-saa-page/clarifications.md`;
 mô tả dài D.1–D.6 đã bổ sung verbatim ở mục 2.5 sau khi planner phát hiện thiếu ở lần soạn spec đầu)
+
+- **[Superseded 2026-07-09] Supabase dynamic data**: FR-12 (bảng số lượng/giá trị giải thưởng)
+  nay đọc từ bảng `award_categories` (Postgres) qua `getAwardCategories()`
+  (`lib/awards/award-categories-repository.ts`) — cùng repo với lưới giải thưởng Homepage (F002),
+  không còn 3 nguồn trùng lặp (`award-categories.ts`, `award-detail-data.ts`,
+  `awards-section.tsx`, từng lệch tên hạng mục MVP ngắn/dài). Số VNĐ nay là `integer` trong DB,
+  format qua `Intl.NumberFormat` (`formatVnd`, `lib/awards/format-prize-amount.ts`) tại thời điểm
+  render — không còn chuỗi tiền tệ viết tay. Title/description/unit-caption ở §2.5 vẫn nguồn từ
+  dict, join bằng `slug` (`app/components/awards/award-detail-data.ts`) — không đổi. Full plan:
+  `plans/260709-0822-supabase-dynamic-data-all-screens/phase-02-awards-data-layer.md`. Chi tiết:
+  `docs/system/architecture.md` § "Content tables (awards / event / kudos gifts)",
+  `docs/project-changelog.md` 2026-07-09.

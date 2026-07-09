@@ -1,0 +1,40 @@
+{
+  "home": {
+    "url": "http://127.0.0.1:3400/",
+    "title": "Sun* Annual Awards 2025",
+    "footer": {
+      "x": 0,
+      "y": 4704.90625,
+      "width": 1440,
+      "height": 145
+    },
+    "rootFurther": {
+      "x": 299,
+      "y": 965.90625,
+      "width": 189,
+      "height": 67
+    }
+  },
+  "awards": {
+    "url": "http://127.0.0.1:3400/awards",
+    "title": "Awards Information | Sun* Annual Awards 2025",
+    "footer": {
+      "x": 0,
+      "y": 6177,
+      "width": 1440,
+      "height": 145
+    },
+    "rootFurther": null
+  },
+  "kudos": {
+    "url": "http://127.0.0.1:3400/kudos",
+    "title": "Sun* Kudos | Sun* Annual Awards 2025",
+    "footer": {
+      "x": 0,
+      "y": 8715.421875,
+      "width": 1440,
+      "height": 145
+    },
+    "rootFurther": null
+  }
+}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export interface UseCarouselResult {
   /** Current active slide index, clamped to `[0, count - 1]`. */
@@ -27,21 +27,24 @@ function clamp(value: number, count: number): number {
  * carousel/word-cloud lib in `package.json`, YAGNI for 5 static slides).
  * Mirrors `hooks/use-scroll-spy.ts`'s plain state + content-key reset
  * idiom: the moment `count` changes (e.g. a filter narrows the Highlight
- * Kudos dataset, FR-16), the index resets to slide 0 synchronously during
- * render rather than lingering on a stale, possibly out-of-range index.
+ * Kudos dataset, FR-16), the exposed index snaps back to slide 0
+ * immediately rather than lingering on a stale, possibly out-of-range
+ * index.
  */
 export function useCarousel(count: number): UseCarouselResult {
   const [index, setIndex] = useState(0);
+  const resolvedCountRef = useRef(count);
+  const countChanged = count !== resolvedCountRef.current;
 
-  // Resync the moment `count` changes — same pattern as `useScrollSpy`'s
-  // `idsKey`/`resolvedKey` pair, adapted to a numeric key.
-  const [resolvedCount, setResolvedCount] = useState(count);
-  if (count !== resolvedCount) {
-    setResolvedCount(count);
+  // Avoid render-phase `setState` while still exposing the reset index
+  // immediately on the render where `count` changes.
+  const clampedIndex = countChanged ? 0 : clamp(index, count);
+
+  useEffect(() => {
+    if (!countChanged) return;
+    resolvedCountRef.current = count;
     setIndex(0);
-  }
-
-  const clampedIndex = clamp(index, count);
+  }, [count, countChanged]);
 
   return {
     index: clampedIndex,

@@ -16,12 +16,6 @@ export interface AnonymousToggleProps {
   labels: AnonymousToggleLabels;
 }
 
-/**
- * "Gửi lời cám ơn và ghi nhận ẩn danh" checkbox + conditional nickname
- * field (F007, FR-17..19). This component only collects `checked` +
- * `nickname` — the dialog shell decides the final `sender` substitution
- * (FR-18), keeping this leaf presentational/controlled.
- */
 export function AnonymousToggle({
   checked,
   onCheckedChange,
@@ -41,19 +35,10 @@ export function AnonymousToggle({
         />
         {labels.checkbox}
       </label>
-
       {checked && (
-        <div className="flex flex-col gap-1">
-          <label htmlFor="compose-anonymous-nickname" className="text-sm font-semibold text-[#00101A]">
+        <div className="ml-10 flex max-w-[480px] flex-col gap-2">
+          <label htmlFor="compose-anonymous-nickname" className="text-base font-bold text-[#00101A]">
             {labels.nicknameLabel}
-            {/* Required only while `checked` — this branch only renders
-             * then, so no extra prop is needed to gate it (F007
-             * clarifications.md: Nickname shows `*` only when the
-             * anonymous checkbox is on). */}
-            <span className="text-[#CF1322]" aria-hidden="true">
-              {" "}
-              *
-            </span>
           </label>
           <input
             id="compose-anonymous-nickname"
@@ -61,14 +46,10 @@ export function AnonymousToggle({
             value={nickname}
             onChange={(event) => onNicknameChange(event.target.value)}
             placeholder={labels.nicknamePlaceholder}
-            aria-invalid={Boolean(nicknameError)}
-            aria-describedby={nicknameError ? "compose-anonymous-nickname-error" : undefined}
-            className="rounded-lg border border-[#998C5F] bg-white px-3 py-2 text-sm text-[#00101A] outline-none placeholder:text-[#999]"
+            className="h-14 w-full rounded-lg border border-[#998C5F] bg-white px-4 text-base font-bold text-[#00101A] placeholder:text-[#999] focus:outline-none"
           />
           {nicknameError && (
-            <p id="compose-anonymous-nickname-error" className="text-xs font-semibold text-[#CF1322]">
-              {nicknameError}
-            </p>
+            <p className="text-sm font-bold text-[#D4271D]">{nicknameError}</p>
           )}
         </div>
       )}

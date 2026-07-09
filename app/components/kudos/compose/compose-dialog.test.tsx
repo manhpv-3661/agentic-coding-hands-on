@@ -9,6 +9,7 @@ const labels = {
   cancel: "Hủy",
   submit: "Gửi",
   successToast: "Đã gửi Kudos!",
+  failureToast: "Gửi Kudos thất bại. Vui lòng thử lại.",
   recipient: { label: "Người nhận", placeholder: "Tìm kiếm", search: "Tìm đồng nghiệp", error: "Vui lòng chọn người nhận." },
   title: { label: "Danh hiệu", placeholder: "Dành tặng một danh hiệu cho đồng đội", helper: "Ví dụ...", error: "Vui lòng nhập danh hiệu." },
   content: {
@@ -43,7 +44,6 @@ const labels = {
 };
 
 const recipientOptions: KudosPerson[] = [{ name: "Nguyễn Văn An", department: "Phòng Kỹ thuật", stars: 12 }];
-const currentUser: KudosPerson = { name: "Current User", department: "Dept X", stars: 8 };
 
 beforeEach(() => {
   URL.createObjectURL = vi.fn(() => "blob:mock");
@@ -60,7 +60,6 @@ function renderDialog(onSubmit = vi.fn(), onClose = vi.fn()) {
       onSubmit={onSubmit}
       recipientOptions={recipientOptions}
       mentionNames={recipientOptions.map((p) => p.name)}
-      currentUser={currentUser}
       labels={labels}
     />,
   );
@@ -92,7 +91,6 @@ describe("ComposeDialog", () => {
         onSubmit={vi.fn()}
         recipientOptions={recipientOptions}
         mentionNames={[]}
-        currentUser={currentUser}
         labels={labels}
       />,
     );
@@ -130,7 +128,7 @@ describe("ComposeDialog", () => {
     expect(screen.getByText("Vui lòng nhập nội dung.")).toBeInTheDocument();
   });
 
-  it("a valid submit calls onSubmit with the built post, closes, and shows a toast", async () => {
+  it("a valid submit calls onSubmit with the raw form state and closes (no toast — ownership moved to KudosPageClient, review finding H2)", async () => {
     const user = userEvent.setup();
     const { onSubmit, onClose } = renderDialog();
 
@@ -138,19 +136,23 @@ describe("ComposeDialog", () => {
     await user.click(screen.getByRole("button", { name: "Gửi" }));
 
     expect(onSubmit).toHaveBeenCalledTimes(1);
-    const post = onSubmit.mock.calls[0][0];
-    expect(post.recipient).toEqual(recipientOptions[0]);
-    expect(post.sender).toEqual(currentUser);
-    expect(post.title).toBe("Người truyền động lực");
-    expect(post.content).toBe("Cảm ơn bạn rất nhiều!");
-    expect(post.hashtags).toEqual(["#teamwork"]);
-    expect(post.hearts).toBe(0);
+    // onSubmit now receives the raw, validated `ComposeFormState` (not a
+    // built `KudosPost`) — the wrapper builds both the optimistic post AND
+    // the action input from this same state (backend pivot, Phase 04).
+    const state = onSubmit.mock.calls[0][0];
+    expect(state.recipient).toEqual(recipientOptions[0]);
+    expect(state.title).toBe("Người truyền động lực");
+    expect(state.content).toBe("Cảm ơn bạn rất nhiều!");
+    expect(state.hashtags).toEqual(["#teamwork"]);
 
     expect(onClose).toHaveBeenCalledTimes(1);
-    expect(await screen.findByRole("status")).toHaveTextContent("Đã gửi Kudos!");
+    // This dialog no longer shows a success toast itself — it doesn't know
+    // whether `createKudosAction` actually succeeded yet. `KudosPageClient`
+    // is the sole toast owner now (see `kudos-page-client.test.tsx`).
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
   });
 
-  it("anonymous submit uses the nickname as sender", async () => {
+  it("anonymous submit passes anonymous:true and the nickname in the form state", async () => {
     const user = userEvent.setup();
     const { onSubmit } = renderDialog();
 
@@ -159,8 +161,9 @@ describe("ComposeDialog", () => {
     await user.type(screen.getByPlaceholderText("Doraemon"), "Doraemon");
     await user.click(screen.getByRole("button", { name: "Gửi" }));
 
-    const post = onSubmit.mock.calls[0][0];
-    expect(post.sender).toEqual({ name: "Doraemon", department: "", stars: 0 });
+    const state = onSubmit.mock.calls[0][0];
+    expect(state.anonymous).toBe(true);
+    expect(state.nickname).toBe("Doraemon");
   });
 
   it("two rapid submit clicks on a valid form produce exactly one onSubmit call (double-submit guard)", async () => {

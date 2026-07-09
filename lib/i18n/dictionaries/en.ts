@@ -36,6 +36,15 @@ export const en = {
       minutes: "MINUTES",
     },
     detailsCta: "Details",
+    a11y: {
+      awardCategories: "Award categories",
+      notifications: "Notifications",
+      accountMenu: "Account menu",
+      account: "Account",
+      quickActions: "Quick actions",
+      mentionSuggestions: "Mention suggestions",
+      logoHomeSuffix: "home",
+    },
   },
   login: {
     meta: {
@@ -180,6 +189,11 @@ export const en = {
     meta: {
       description: "Live Sun* Kudos recognition board — Sun* Annual Awards 2025.",
     },
+    sections: {
+      allKudos: "ALL KUDOS",
+      highlightKudos: "HIGHLIGHT KUDOS",
+      spotlightBoard: "SPOTLIGHT BOARD",
+    },
     banner: {
       title: "Recognition & appreciation system",
       searchPlaceholder: "Search Sunner profile",
@@ -209,10 +223,18 @@ export const en = {
       panZoom: "Pan/Zoom",
       tickerSuffix: "just received a new Kudos",
     },
+    highlight: {
+      a11y: {
+        prevSlide: "Previous slide",
+        nextSlide: "Next slide",
+        prev: "Previous",
+        next: "Next",
+      },
+    },
     stats: {
-      received: "Kudos received",
-      sent: "Kudos sent",
-      hearts: "Hearts received",
+      received: "Kudos you received",
+      sent: "Kudos you sent",
+      hearts: "Hearts",
       secretBoxOpened: "Secret Boxes opened",
       secretBoxUnopened: "Secret Boxes unopened",
     },
@@ -225,6 +247,10 @@ export const en = {
       subtitle: "Click the box to open",
       unopenedCount: "Secret Boxes unopened",
       closeAria: "Close secret box",
+      emptyState: "You do not have any Secret Box available to open yet.",
+      opening: "Opening Secret Box...",
+      openedRewardPrefix: "You just",
+      openFailed: "Failed to open Secret Box. Please try again.",
     },
     recent: {
       heading: "10 LATEST SUNNER GIFT RECIPIENTS",
@@ -235,6 +261,9 @@ export const en = {
       cancel: "Cancel",
       submit: "Send",
       successToast: "Kudos sent!",
+      // Backend pivot (Phase 04): shown when `createKudosAction` returns
+      // `{ok:false}` after the optimistic prepend is rolled back.
+      failureToast: "Failed to send Kudos. Please try again.",
       recipient: {
         label: "Recipient",
         // Mirrors vi.ts's ground-truth-literal fix ("Tìm kiếm").
@@ -330,6 +359,15 @@ export const en = {
         max: "Max 5",
         error: "Add at least 1 hashtag.",
         remove: "Remove hashtag",
+        // Catalog dropdown + group preset captions (Phase 04, additive —
+        // INVENTED content, see `lib/kudos/kudos-hashtag-catalog.ts`).
+        browse: "Add from list",
+        group: "Choose a group",
+        groups: {
+          cultureValues: "Culture & values",
+          performance: "Performance",
+          teamwork: "Teamwork",
+        },
       },
       images: {
         label: "Image",

@@ -30,7 +30,7 @@ function ChevronDownIcon() {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
-      className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-white"
+      className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-[#00101A]"
     >
       <path
         d="M6 9L12 15L18 9"
@@ -52,7 +52,7 @@ function ChevronDownIcon() {
  * from the open dropdown is how the filter resets to "no filter" (same
  * `ALL_VALUE` semantics, just correct display text). */
 const PILL_SELECT_CLASSNAME =
-  "font-montserrat w-full appearance-none rounded-[4px] border border-[#998C5F] bg-[rgba(255,234,158,0.10)] py-4 pl-4 pr-12 text-base font-bold tracking-[0.15px] text-white";
+  "font-montserrat w-full appearance-none rounded-[4px] border border-[#998C5F] bg-[rgba(255,234,158,0.10)] py-4 pl-4 pr-12 text-base font-bold tracking-[0.15px] text-[#00101A] hover:bg-[rgba(255,234,158,0.20)]";
 
 /**
  * Two independent dropdowns (Hashtag, Phòng ban — FR-5/15). Purely

@@ -83,7 +83,7 @@ export function KudosCard({
        * single-column card (confirmed via live-browser screenshot), so this
        * stays a single non-wrapping row; `min-w-0` on each person block lets
        * its name/department text truncate instead of forcing a wrap. */}
-      <div className="flex items-center justify-between gap-6">
+      <div className="flex items-center justify-between gap-[0_20px]">
         <KudosPersonBlock person={post.sender} />
         <SentArrowIcon />
         <KudosPersonBlock person={post.recipient} />
@@ -118,7 +118,7 @@ export function KudosCard({
         </p>
       </div>
 
-      {isFeed && <KudosImageGallery count={post.imageCount} />}
+      {isFeed && <KudosImageGallery count={post.imageCount} imageUrls={post.imageUrls} />}
 
       <div className="flex flex-wrap gap-x-3 gap-y-1">
         {post.hashtags.slice(0, 5).map((tag) =>

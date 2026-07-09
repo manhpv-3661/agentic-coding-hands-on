@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { KUDOS_IMAGES_MAX_COUNT } from "@/lib/kudos/kudos-compose-limits";
 
 /** Ground-truth `MM_MEDIA_Plus` icon (24x24, screen ihQ26W78P2 node
  * I520:11647;662:9133;186:2760) — inlined since no icon set exists in this
@@ -29,7 +30,9 @@ export interface ImageUploadLabels {
 export interface ImageUploadProps {
   value: File[];
   onChange: (files: File[]) => void;
-  /** Cap on the number of images (default 5, F007 FR-14/15). */
+  /** Cap on the number of images (default `KUDOS_IMAGES_MAX_COUNT`, F007
+   * FR-14/15 — same constant the server re-checks in `createKudosAction`,
+   * review finding H1). */
   max?: number;
   labels: ImageUploadLabels;
   /** Id applied to the hidden file input, so a wrapping `FieldGroup` label
@@ -37,14 +40,14 @@ export interface ImageUploadProps {
   id?: string;
 }
 
-/**
- * Real client-side file selection + preview (F007, FR-14..16). No
- * storage/upload backend exists in this repo (clarifications.md) — only
- * the resulting file COUNT is ever persisted by the caller onto a
- * `KudosPost` (`imageCount`); previews are ephemeral `URL.createObjectURL`
- * blobs revoked on remove/unmount so they never leak.
- */
-export function ImageUpload({ value, onChange, max = 5, labels, id }: ImageUploadProps) {
+/** Real client-side file selection + preview for up to 5 images. */
+export function ImageUpload({
+  value,
+  onChange,
+  max = KUDOS_IMAGES_MAX_COUNT,
+  labels,
+  id,
+}: ImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const atMax = value.length >= max;
   const [truncated, setTruncated] = useState(false);
@@ -67,10 +70,11 @@ export function ImageUpload({ value, onChange, max = 5, labels, id }: ImageUploa
 
   function handleFilesSelected(event: React.ChangeEvent<HTMLInputElement>) {
     const selected = Array.from(event.target.files ?? []);
-    const remainingCapacity = max - value.length;
+    const current = value.slice(0, max);
+    const remainingCapacity = max - current.length;
     setTruncated(selected.length > remainingCapacity);
     if (remainingCapacity > 0 && selected.length > 0) {
-      onChange([...value, ...selected.slice(0, remainingCapacity)]);
+      onChange([...current, ...selected.slice(0, remainingCapacity)].slice(0, max));
     }
     event.target.value = "";
   }
@@ -132,7 +136,7 @@ export function ImageUpload({ value, onChange, max = 5, labels, id }: ImageUploa
         ref={inputRef}
         type="file"
         accept="image/*"
-        multiple
+        multiple={max > 1}
         onChange={handleFilesSelected}
         className="hidden"
       />

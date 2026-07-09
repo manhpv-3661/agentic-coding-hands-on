@@ -125,6 +125,11 @@ function KudosLogoSmallIcon() {
 export interface WidgetButtonProps {
   /** "Coming soon" stub-panel copy (`shared.widget.comingSoon`, F005). */
   comingSoon: string;
+  /** Trigger + panel aria-label (`shared.a11y.quickActions`) — the same
+   * text labels both (identical ground-truth string), so one prop covers
+   * both spots. Optional/defaulted to the English design label so existing
+   * callers/tests that predate this prop keep compiling unchanged. */
+  ariaLabel?: string;
 }
 
 /**
@@ -141,7 +146,7 @@ export interface WidgetButtonProps {
  * notifications" panel — rather than inventing menu items (clarifications.md,
  * F002 session 2026-07-06: "widget mở menu stub").
  */
-export function WidgetButton({ comingSoon }: WidgetButtonProps) {
+export function WidgetButton({ comingSoon, ariaLabel = "Quick actions" }: WidgetButtonProps) {
   const { open, containerRef, triggerProps } = useDismissableMenu();
 
   return (
@@ -150,7 +155,7 @@ export function WidgetButton({ comingSoon }: WidgetButtonProps) {
       {/* mm:I5022:15169;214:3839 */}
       <button
         type="button"
-        aria-label="Quick actions"
+        aria-label={ariaLabel}
         {...triggerProps}
         style={{
           boxShadow: "0 4px 4px 0 rgba(0, 0, 0, 0.25), 0 0 6px 0 #FAE287",
@@ -175,7 +180,7 @@ export function WidgetButton({ comingSoon }: WidgetButtonProps) {
         // `menuitem` children (same rationale as `notification-bell.tsx`).
         <div
           role="status"
-          aria-label="Quick actions"
+          aria-label={ariaLabel}
           className="absolute right-0 bottom-20 z-40 w-64 rounded-lg border border-[#2E3940] bg-[#101317] p-4 text-sm text-white shadow-lg"
         >
           {comingSoon}

@@ -1,7 +1,6 @@
 import type { Dictionary } from "@/lib/i18n/dictionary";
 import type { KudosPerson } from "@/lib/kudos/kudos-types";
 import { AnonymousToggle } from "./anonymous-toggle";
-import { ChevronDownIcon } from "./chevron-down-icon";
 import type { ComposeFormErrors, ComposeFormState } from "./compose-form-helpers";
 import { FieldGroup } from "./field-group";
 import { HashtagInput } from "./hashtag-input";
@@ -16,6 +15,12 @@ export interface ComposeDialogFieldsProps {
   labels: Dictionary["kudos"]["compose"];
   recipientOptions: KudosPerson[];
   mentionNames: string[];
+  /** `MentionSuggestions`'s listbox aria-label (`shared.a11y.mentionSuggestions`)
+   * — optional/defaulted so existing callers/tests that predate this prop
+   * keep compiling unchanged. Kept as its own prop rather than a `labels`
+   * field since `labels` is the REQUIRED `Dictionary["kudos"]["compose"]`
+   * shape (see `vi.ts`'s matching comment for why). */
+  mentionSuggestionsAria?: string;
 }
 
 /**
@@ -33,6 +38,7 @@ export function ComposeDialogFields({
   labels,
   recipientOptions,
   mentionNames,
+  mentionSuggestionsAria,
 }: ComposeDialogFieldsProps) {
   return (
     <>
@@ -54,36 +60,23 @@ export function ComposeDialogFields({
 
       <FieldGroup
         label={labels.title.label}
-        helper={labels.title.helper}
         htmlFor="compose-title"
+        helper={labels.title.helper}
         required
       >
-        {/* Restyled to match the ground-truth dropdown-trigger `Button`
-         * component (same visual family as `RecipientSelect`'s trigger:
-         * space-between layout, 24px/16px padding, chevron affordance) —
-         * the chevron is decorative only for now (`pointer-events-none`);
-         * whether this becomes a real select-from-list is an open product
-         * question tracked separately from this visual fix. */}
-        <div className="relative flex items-center">
+        <div className="flex flex-col gap-2">
           <input
             id="compose-title"
             type="text"
             value={state.title}
             onChange={(event) => updateState({ title: event.target.value }, ["title"])}
             placeholder={labels.title.placeholder}
-            aria-invalid={Boolean(errors.title)}
-            aria-describedby={errors.title ? "compose-title-error" : undefined}
-            className="w-full rounded-lg border border-[#998C5F] bg-white py-4 pr-10 pl-6 text-base text-[#00101A] outline-none placeholder:text-[#999]"
+            className="h-14 w-full rounded-lg border border-[#998C5F] bg-white px-4 text-base font-bold text-[#00101A] placeholder:text-[#999] focus:outline-none"
           />
-          <span className="pointer-events-none absolute right-6 text-[#998C5F]">
-            <ChevronDownIcon />
-          </span>
+          {errors.title && (
+            <p className="text-sm font-bold text-[#D4271D]">{errors.title}</p>
+          )}
         </div>
-        {errors.title && (
-          <p id="compose-title-error" className="text-xs font-semibold text-[#CF1322]">
-            {errors.title}
-          </p>
-        )}
       </FieldGroup>
 
       {/* MoMorph's "Content" group (I520:11647;520:9874) wraps content/
@@ -100,7 +93,11 @@ export function ComposeDialogFields({
           // (string) to its own `compose.communityStandards` object (Phase 1,
           // FR-23) — forward the whole object so `CommunityStandardsLink` can
           // render the real "Thể lệ" panel (Phase 3), not just the trigger label.
-          labels={{ ...labels.content, communityStandards: labels.communityStandards }}
+          labels={{
+            ...labels.content,
+            communityStandards: labels.communityStandards,
+            mentionSuggestionsAria,
+          }}
         />
 
         <FieldGroup label={labels.hashtags.label} htmlFor="compose-hashtags" required>

@@ -78,15 +78,15 @@ function DigitBoxes({ value, unit }: { value: string; unit: CountdownUnitKind })
   const digits = String(display).padStart(2, "0").split("");
 
   return (
-    <div className="flex items-center gap-3 lg:gap-[21px]">
+    <div className="flex items-center gap-[21px]">
       {digits.map((digit, index) => (
         <div
           key={index}
-          className="relative flex h-[81.92px] w-[51.2px] items-center justify-center lg:h-[122.88px] lg:w-[76.8px]"
+          className="relative flex h-[122.88px] w-[76.8px] items-center justify-center"
         >
           <div className="absolute inset-0 rounded-xl border-[0.75px] border-[#FFEA9E] bg-linear-to-b from-white to-white/10 opacity-50 backdrop-blur-[24.96px]" />
           <span
-            className={`${digitalNumbers.className} relative text-[49.152px] text-white lg:text-[73.728px]`}
+            className={`${digitalNumbers.className} relative text-[73.728px] text-white`}
           >
             {digit}
           </span>
@@ -99,9 +99,9 @@ function DigitBoxes({ value, unit }: { value: string; unit: CountdownUnitKind })
 export function CountdownLedUnit({ value, label, unit }: CountdownLedUnitProps) {
   return (
     // mm:2268:35139 ("1_Days" / "2_Hours" / "3_Minutes")
-    <div className="flex flex-col items-center gap-3 lg:items-start lg:gap-[21px]">
+    <div className="flex flex-col items-start gap-[21px]">
       <DigitBoxes value={value} unit={unit} />
-      <span className="font-montserrat text-2xl leading-8 font-bold text-white lg:text-4xl lg:leading-[48px]">
+      <span className="font-montserrat text-4xl leading-[48px] font-bold text-white">
         {label}
       </span>
     </div>

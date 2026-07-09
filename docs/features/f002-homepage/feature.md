@@ -97,3 +97,15 @@ Sun* Kudos → footer. Widget button nổi cố định góc phải dưới.
 - Notification backend + role system (Admin Dashboard) — hoãn, chưa có hạng mục.
 - **Đã shipped**: FR-9 "không dịch nội dung" nay đã superseded bởi F005 (dịch nội dung thật) —
   xem `docs/features/f005-i18n-translation/feature.md`.
+- **[Superseded 2026-07-09] Supabase dynamic data**: FR-16 (thông tin sự kiện, trước đây tĩnh
+  "Thời gian: 26/12/2025", "Địa điểm: Âu Cơ Art Center") và FR-20 (lưới 6 hạng mục giải thưởng,
+  trước đây danh sách tĩnh) nay đọc dữ liệu thật từ Supabase — full plan:
+  `plans/260709-0822-supabase-dynamic-data-all-screens/`. Ngày sự kiện hiển thị nay derive qua
+  `Intl.DateTimeFormat` từ CÙNG env var `NEXT_PUBLIC_EVENT_START_AT` gate `proxy.ts`/đếm ngược
+  (`lib/event/format-event-date.ts`), không còn là chuỗi tĩnh trong dict (sửa luôn bug lệch ngày
+  giữa env var và 2 dict vi/en); tên sự kiện + địa điểm (`event-info.tsx`) đọc bảng
+  `event_settings` qua `getEventSettings()` (`lib/event/event-settings-repository.ts`); lưới giải
+  thưởng đọc CÙNG `getAwardCategories()` (`lib/awards/award-categories-repository.ts`) với F004 —
+  không còn danh sách award trùng lặp ở 3 nơi. Title/description/label vẫn ở dict, chỉ dữ liệu
+  cấu trúc/số chuyển sang Postgres. Chi tiết: `docs/system/architecture.md` § "Content tables
+  (awards / event / kudos gifts)", `docs/project-changelog.md` 2026-07-09.

@@ -67,11 +67,13 @@ export function KudosBoard({
 
   return (
     <PageGutter>
-      <ContentFrame width={1152} className="flex flex-col gap-16 lg:gap-[120px]">
+      <ContentFrame width={1152} className="flex flex-col gap-[120px]">
         <HighlightKudosCarousel
           posts={top5}
           cardLabels={labels.card}
           emptyLabel={labels.empty.kudos}
+          title={labels.sections.highlightKudos}
+          ariaLabels={labels.highlight.a11y}
           filtersSlot={
             <KudosFilters
               value={filter}
@@ -93,9 +95,9 @@ export function KudosBoard({
          * sidebar's top edge lines up with the first feed card, not the
          * heading. */}
         <div className="flex w-full flex-col gap-10">
-          <KudosSectionHeading subtitle="Sun* Annual Awards 2025" title="ALL KUDOS" />
+          <KudosSectionHeading subtitle="Sun* Annual Awards 2025" title={labels.sections.allKudos} />
 
-          <section className="flex w-full flex-col gap-8 lg:flex-row lg:items-start lg:gap-20">
+          <section className="flex w-full flex-row items-start gap-20">
             <AllKudosFeed
               posts={filtered}
               cardLabels={labels.card}

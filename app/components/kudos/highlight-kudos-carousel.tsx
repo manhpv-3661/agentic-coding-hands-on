@@ -14,6 +14,19 @@ export interface HighlightKudosCarouselProps {
   posts: KudosPost[];
   cardLabels: KudosCardLabels;
   emptyLabel: string;
+  /** Section title (`kudos.sections.highlightKudos`) — optional/defaulted
+   * to the English design label so existing callers/tests that predate this
+   * prop keep compiling unchanged (F006 backward-compat pattern, mirrors
+   * `KudosPageClient`'s `initialLikedIds`). */
+  title?: string;
+  /** Previous/Next control aria-labels (`kudos.highlight.a11y`) —
+   * optional/defaulted for the same backward-compat reason as `title`. */
+  ariaLabels?: {
+    prevSlide: string;
+    nextSlide: string;
+    prev: string;
+    next: string;
+  };
   /** The hashtag/department filter dropdowns, owned and rendered by the
    * board (Phase 08) via `<KudosFilters/>`. Rendered here in the header
    * row so the section owns layout while the board owns state (plan.md
@@ -33,11 +46,19 @@ function ChevronIcon({ direction }: { direction: "left" | "right" }) {
   const path =
     direction === "left" ? "M15 18L9 12L15 6" : "M9 18L15 12L9 6";
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <svg width="54" height="54" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d={path} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
+
+/** Fallback for `ariaLabels` — see that prop's doc comment above. */
+const DEFAULT_ARIA_LABELS = {
+  prevSlide: "Previous slide",
+  nextSlide: "Next slide",
+  prev: "Previous",
+  next: "Next",
+};
 
 /**
  * Client carousel for the "HIGHLIGHT KUDOS" section (FR-5/6/7/8). Custom
@@ -51,6 +72,8 @@ export function HighlightKudosCarousel({
   posts,
   cardLabels,
   emptyLabel,
+  title = "HIGHLIGHT KUDOS",
+  ariaLabels = DEFAULT_ARIA_LABELS,
   filtersSlot,
   likedIds,
   currentUser,
@@ -64,7 +87,7 @@ export function HighlightKudosCarousel({
   return (
     <section className="flex w-full flex-col gap-10">
       <div className="flex w-full flex-wrap items-end justify-between gap-4">
-        <KudosSectionHeading subtitle="Sun* Annual Awards 2025" title="HIGHLIGHT KUDOS" />
+        <KudosSectionHeading subtitle="Sun* Annual Awards 2025" title={title} />
         {filtersSlot}
       </div>
 
@@ -75,7 +98,7 @@ export function HighlightKudosCarousel({
           {/* mm:2940:13463 — full-bleed row, breaking out of the page's
            * padded reading column (see `kudos-board.tsx`) to reach the
            * true viewport edge, per the 1440-wide "Bìa" ground truth. */}
-          <div className="relative flex w-full items-center justify-center gap-6 overflow-hidden lg:left-1/2 lg:right-1/2 lg:-mx-[50vw] lg:w-screen">
+          <div className="relative left-1/2 right-1/2 -mx-[50vw] flex w-screen items-center justify-center gap-6 overflow-hidden">
             {visiblePosts.map((post) => (
               <div key={post.id} className="w-full max-w-[528px] shrink-0">
                 <KudosCard
@@ -90,12 +113,12 @@ export function HighlightKudosCarousel({
             ))}
 
             {/* mm:2940:13469 — left gradient-fade zone + large prev button */}
-            <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-[400px] items-center bg-gradient-to-r from-[#00101A] from-50% to-transparent pl-20 lg:flex">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex w-[400px] items-center bg-gradient-to-r from-[#00101A] from-50% to-transparent pl-20">
               <button
                 type="button"
                 onClick={prev}
                 disabled={!canPrev}
-                aria-label="Previous slide"
+                aria-label={ariaLabels.prevSlide}
                 className="pointer-events-auto flex h-20 w-20 shrink-0 items-center justify-center rounded-[4px] text-white disabled:opacity-30"
               >
                 <ChevronIcon direction="left" />
@@ -106,12 +129,12 @@ export function HighlightKudosCarousel({
              * with justify-content:center (not justify-end + pr-10 alone),
              * which is what puts the 80x80 button 140px in from the
              * viewport edge instead of 40px. */}
-            <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[400px] items-center justify-center bg-gradient-to-l from-[#00101A] from-50% to-transparent pr-10 pl-20 lg:flex">
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex w-[400px] items-center justify-center bg-gradient-to-l from-[#00101A] from-50% to-transparent pr-10 pl-45">
               <button
                 type="button"
                 onClick={next}
                 disabled={!canNext}
-                aria-label="Next slide"
+                aria-label={ariaLabels.nextSlide}
                 className="pointer-events-auto flex h-20 w-20 shrink-0 items-center justify-center rounded-[4px] text-white disabled:opacity-30"
               >
                 <ChevronIcon direction="right" />
@@ -126,19 +149,19 @@ export function HighlightKudosCarousel({
               type="button"
               onClick={prev}
               disabled={!canPrev}
-              aria-label="Previous"
+              aria-label={ariaLabels.prev}
               className="flex h-12 w-12 items-center justify-center rounded-[4px] text-white disabled:opacity-30"
             >
               <ChevronIcon direction="left" />
             </button>
             <span className="font-montserrat text-[28px] leading-9 font-bold text-[#999]">
-              {index + 1}/{posts.length}
+             <span className="text-[48px] text-[#FFEA9E]">{index + 1}</span> / {posts.length}
             </span>
             <button
               type="button"
               onClick={next}
               disabled={!canNext}
-              aria-label="Next"
+              aria-label={ariaLabels.next}
               className="flex h-12 w-12 items-center justify-center rounded-[4px] text-white disabled:opacity-30"
             >
               <ChevronIcon direction="right" />

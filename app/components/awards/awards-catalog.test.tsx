@@ -13,9 +13,14 @@ import { AwardsCatalog } from "./awards-catalog";
 import { buildAwardDetailEntries } from "./award-detail-data";
 import { useScrollSpy } from "@/hooks/use-scroll-spy";
 import { AWARD_CATEGORIES } from "@/lib/awards/award-categories";
+import { AWARD_CATEGORY_FALLBACK_ROWS } from "@/lib/awards/award-categories-fallback";
 import { vi as viDictionary } from "@/lib/i18n/dictionaries/vi";
 
-const entries = buildAwardDetailEntries(viDictionary.awards.detail);
+const entries = buildAwardDetailEntries(
+  AWARD_CATEGORY_FALLBACK_ROWS,
+  viDictionary.awards.detail,
+  "vi",
+);
 const quantityLabel = viDictionary.awards.detail.quantityLabel;
 const valueLabel = viDictionary.awards.detail.valueLabel;
 

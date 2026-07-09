@@ -1,5 +1,19 @@
 import type { NextConfig } from "next";
 
+function buildSupabaseImageRemotePattern() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (!supabaseUrl) return null;
+
+  try {
+    const url = new URL(supabaseUrl);
+    return new URL("/storage/v1/object/public/**", url);
+  } catch {
+    return null;
+  }
+}
+
+const supabaseImageRemotePattern = buildSupabaseImageRemotePattern();
+
 const nextConfig: NextConfig = {
   // Pin the workspace root to this project. A stray parent-directory lockfile
   // (~/package-lock.json) otherwise makes Turbopack infer the wrong root, which
@@ -14,6 +28,11 @@ const nextConfig: NextConfig = {
   // those vars are inlined at build time, so two servers sharing one build
   // cannot actually differ on them at runtime).
   distDir: process.env.NEXT_DIST_DIR || "build",
+  images: supabaseImageRemotePattern
+    ? {
+        remotePatterns: [supabaseImageRemotePattern],
+      }
+    : undefined,
 };
 
 export default nextConfig;

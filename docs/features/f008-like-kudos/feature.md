@@ -87,3 +87,22 @@ Live board layout, không có backend/API thật lưu lượt tim.
 - Rule "không cho tự thích Kudos của chính mình" là một giả định được thêm vào ngoài
   4 câu hỏi clarification ban đầu (persist/toggle-direction/tracking/scope) — hợp lý về
   UX nhưng chưa được user xác nhận trực tiếp. Dễ revert (chỉ cần bỏ nhánh `canLike`).
+- **[Superseded 2026-07-08] Backend pivot**: `plans/260708-1407-kudos-supabase-backend/` nối
+  `toggleLikeAction` (`app/kudos/actions.ts`) ghi lượt thích thật vào bảng `kudos_likes`
+  (Supabase Postgres, `UNIQUE(user_id, post_id)`, RLS insert/delete-own) khi đã cấu hình —
+  supersede claim "session-only ... không có `localStorage`/backend" ở §1 và FR-3 (§2), và mục
+  "Backend/API lưu lượt tim thật, đồng bộ nhiều thiết bị/nhiều người dùng" liệt kê ở §3 "Ngoài
+  phạm vi", nay ĐÃ có (không còn ngoài phạm vi). Rule tự-thích (FR-4, câu hỏi mở phía trên) không
+  đổi — nay re-check lại ở server (`self_like_forbidden`) làm defense-in-depth, ngoài
+  `canLikeKudos` client-side. Chi tiết: `docs/system/architecture.md` § "Kudos — Lớp dữ liệu
+  (Supabase Postgres)", `supabase/README.md`.
+- **[Đảo ngược 2026-07-09] Dữ liệu trang trí Kudos → thật**: không đổi gì riêng cho toggle
+  like/unlike (F008) — ghi chú chung cho cụm Kudos, xem đầy đủ ở
+  `docs/features/f006-sun-kudos-live-board/feature.md` § Unresolved Questions (bullet
+  "[Đảo ngược 2026-07-09]"). Liên quan gần nhất tới F008: sidebar "số tim" (FR-18, F006) nay tính
+  bằng `COUNT` thật trên `kudos_likes` join `kudos_posts` scoped `auth.uid()`
+  (`lib/kudos/kudos-aggregates-repository.ts`, `getKudosSidebarStats()`) — số `post.hearts`/like
+  toggle mà FR-1..FR-7 (§2 trên) mô tả KHÔNG đổi, vẫn đúng nguyên bản (đây chỉ là số liệu
+  aggregate ở sidebar, không phải cơ chế toggle per-post). Full plan:
+  `plans/260709-0822-supabase-dynamic-data-all-screens/`. Chi tiết:
+  `docs/system/architecture.md` § "Content tables (awards / event / kudos gifts)".

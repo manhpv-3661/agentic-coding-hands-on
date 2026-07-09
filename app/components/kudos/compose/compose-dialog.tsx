@@ -3,10 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import type { RefObject } from "react";
 import type { Dictionary } from "@/lib/i18n/dictionary";
-import type { KudosPerson, KudosPost } from "@/lib/kudos/kudos-types";
+import type { KudosPerson } from "@/lib/kudos/kudos-types";
 import { ComposeDialogFields } from "./compose-dialog-fields";
 import {
-  buildKudosPost,
   EMPTY_COMPOSE_FORM_STATE,
   validateComposeForm,
   type ComposeFormErrors,
@@ -17,15 +16,24 @@ export interface ComposeDialogProps {
   open: boolean;
   containerRef: RefObject<HTMLDivElement | null>;
   onClose: () => void;
-  /** Wrapper's `addPost` (Phase 10) — prepends to the session-scoped feed. */
-  onSubmit: (post: KudosPost) => void;
+  /** Wrapper's `addPost` (backend pivot, Phase 04) — receives the raw,
+   * validated form `state` (not a built `KudosPost`) so the wrapper builds
+   * BOTH the optimistic view-model (`buildKudosPost`) AND the serializable
+   * action input (`toCreateKudosInput`) from the same source, instead of
+   * this dialog duplicating field-mapping logic. Fire-and-forget from this
+   * dialog's perspective — it closes immediately on a valid submit.
+   * Neither the success NOR the failure toast lives here (review finding
+   * H2): the wrapper owns BOTH, since it's the only place that knows
+   * `createKudosAction`'s real result — showing a toast from here would
+   * risk announcing success before (or in contradiction to) that result. */
+  onSubmit: (state: ComposeFormState) => void;
   recipientOptions: KudosPerson[];
   mentionNames: string[];
-  currentUser: KudosPerson;
   labels: Dictionary["kudos"]["compose"];
+  /** Forwarded to `ComposeDialogFields` — see its own doc comment for why
+   * this is a sibling prop rather than a `labels` field. */
+  mentionSuggestionsAria?: string;
 }
-
-const TOAST_DURATION_MS = 2000;
 
 /** Ground-truth `MM_MEDIA_Close` icon (24x24, screen ihQ26W78P2 node
  * I520:11647;520:9906) — decorative only, the Cancel button's own text
@@ -63,9 +71,8 @@ function SendIcon() {
  * "Viết Kudos" dialog shell (F007, FR-1..21; cream restyle FR-22) — owns
  * field state/validation/submit; `ComposeDialogFields` renders the field
  * stack (split out for the 200-line cap). Escape/outside-click close come
- * from the Phase 10 wrapper's `useDismissableMenu`. The success toast
- * mirrors `copy-link-button.tsx`'s local timeout pattern and renders
- * independent of `open` so it survives the dialog closing.
+ * from the Phase 10 wrapper's `useDismissableMenu`. Neither toast lives
+ * here (review finding H2) — see the `onSubmit` doc comment above.
  */
 export function ComposeDialog({
   open,
@@ -74,23 +81,15 @@ export function ComposeDialog({
   onSubmit,
   recipientOptions,
   mentionNames,
-  currentUser,
   labels,
+  mentionSuggestionsAria,
 }: ComposeDialogProps) {
   const [state, setState] = useState<ComposeFormState>(EMPTY_COMPOSE_FORM_STATE);
   const [errors, setErrors] = useState<ComposeFormErrors>({});
-  const [toast, setToast] = useState(false);
-  const toastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const previouslyFocusedRef = useRef<HTMLElement | null>(null);
   // Double-submit guard: a ref flips synchronously so a second submit in
   // the same tick (before a disabled-button re-render) bails out early.
   const isSubmittingRef = useRef(false);
-
-  useEffect(() => {
-    return () => {
-      if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
-    };
-  }, []);
 
   // Discards the draft on every close path (never unmounts) — render-phase
   // reset, React's pattern for "reset state when a value changes".
@@ -165,12 +164,8 @@ export function ComposeDialog({
       return;
     }
 
-    onSubmit(buildKudosPost(state, currentUser, new Date()));
+    onSubmit(state);
     onClose();
-
-    setToast(true);
-    if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
-    toastTimeoutRef.current = setTimeout(() => setToast(false), TOAST_DURATION_MS);
   }
 
   return (
@@ -197,6 +192,7 @@ export function ComposeDialog({
               labels={labels}
               recipientOptions={recipientOptions}
               mentionNames={mentionNames}
+              mentionSuggestionsAria={mentionSuggestionsAria}
             />
 
             <div className="flex items-center gap-6">
@@ -219,15 +215,6 @@ export function ComposeDialog({
             </div>
           </div>
         </div>
-      )}
-
-      {toast && (
-        <span
-          role="status"
-          className="fixed bottom-6 left-1/2 z-60 -translate-x-1/2 rounded bg-[#00101A] px-3 py-2 text-xs text-white shadow"
-        >
-          {labels.successToast}
-        </span>
       )}
     </>
   );

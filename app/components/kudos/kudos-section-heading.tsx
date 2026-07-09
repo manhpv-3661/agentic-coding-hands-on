@@ -3,11 +3,14 @@
  * Kudos board (Highlight, Spotlight, All Kudos) so it is extracted here
  * once (DRY) instead of duplicated per section.
  *
- * `subtitle` ("Sun* Annual Awards 2025") and `title` (the English design
- * label, e.g. "HIGHLIGHT KUDOS") are both hardcoded literals passed in by
- * each caller — brand/English design labels stay out of the i18n
- * dictionary per clarifications.md. `page.tsx` supplies the `h1` via the
- * banner, so section titles use `h2`.
+ * `subtitle` ("Sun* Annual Awards 2025") is the one hardcoded literal here —
+ * the brand+year caption stays out of the i18n dictionary per
+ * clarifications.md. `title` (e.g. "HIGHLIGHT KUDOS" / "ALL KUDOS" /
+ * "SPOTLIGHT BOARD") is NOT an exception: it is dictionary-driven
+ * (`kudos.sections.*`) — each caller resolves the locale's translated label
+ * and passes it in as a plain prop; English section headings are not an
+ * exempt category. `page.tsx` supplies the `h1` via the banner, so section
+ * titles use `h2`.
  *
  * Pure presentational — no directive, safe on the server tree.
  */

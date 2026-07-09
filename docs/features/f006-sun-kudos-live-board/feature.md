@@ -146,3 +146,27 @@ này — một task riêng trong tương lai sẽ nối logic (đặc biệt là
   F007 (dialog "Viết Kudos" thật, submit prepend vào "All Kudos") — xem
   `docs/features/f007-kudos-compose-form/feature.md`. Toggle thả tim / dialog Mở Secret Box /
   trang chi tiết Kudos / trang profile Sunner vẫn ngoài phạm vi, chưa có task nối logic.
+- **[Superseded 2026-07-08] Backend pivot**: `plans/260708-1407-kudos-supabase-backend/` đưa
+  posts/likes/compose từ mock sang **Supabase Postgres thật** (3 bảng, RLS, nhánh
+  `isSupabaseConfigured()` giữ mock fallback) — supersede claim ở FR-15 (§2.6) trên: "mock
+  'database' — mock project không có backend/DB thật" không còn đúng cho persistence của bài
+  Kudos/like nói chung (option list filter hashtag/phòng ban tự nó chưa được audit lại ở phiên
+  này). 12 bài mock gốc của F006 vẫn ở lại `kudos-data.ts` làm fallback, không migrate. Chi tiết
+  đầy đủ: `docs/system/architecture.md` § "Kudos — Lớp dữ liệu (Supabase Postgres)",
+  `supabase/README.md`.
+- **[Đảo ngược 2026-07-09] Dữ liệu trang trí Kudos → thật**: bullet ngay trên ("Backend pivot")
+  chỉ nói tới posts/likes/compose — phần dữ liệu TRANG TRÍ (sidebar/spotlight/top-10-quà) được
+  đặc tả riêng là "vẫn mock" trong changelog 2026-07-08 (`docs/project-changelog.md`). Quyết định
+  đó nay bị ĐẢO NGƯỢC bởi `plans/260709-0822-supabase-dynamic-data-all-screens/
+  phase-03-kudos-aggregates-real.md`: sidebar thống kê nhận/gửi/tim (FR-18) nay là `COUNT` query
+  thật scoped theo `auth.uid()`; tổng "{n} KUDOS" của Spotlight Board (FR-10, §2.4) nay là COUNT
+  thật của `kudos`; tên trong word-cloud Spotlight nay là receiver thật của post (bù thêm từ mock
+  nếu ít hơn số slot cố định, không vỡ layout); top-10 Sunner nhận quà (FR-20, §2.8) nay đọc
+  bảng `gift_logs` (seed từ `supabase/seed.sql`). **Secret Box đã mở/chưa mở (FR-18, §2.7) nay
+  cũng có rule thật**: cứ mỗi 5 tim nhận được trên các Kudos bạn gửi sẽ mở khóa 1 box; số box đã
+  mở lấy từ `gift_logs`; từ đó suy ra `opened`/`unopened` ở sidebar và action mở box. Data layer:
+  `lib/kudos/kudos-aggregates-repository.ts` (module riêng, tách khỏi
+  `kudos-repository.ts`). Ghi chú này dùng chung cho F006/F007/F008 — xem cùng nội dung ngắn hơn
+  ở `docs/features/f007-kudos-compose-form/feature.md` và `f008-like-kudos/feature.md`. Chi tiết
+  đầy đủ: `docs/system/architecture.md` § "Content tables (awards / event / kudos gifts)",
+  `docs/project-changelog.md` 2026-07-09.

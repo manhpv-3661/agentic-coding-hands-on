@@ -3,13 +3,17 @@ import { requireUser } from "@/lib/auth/require-user";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { getLocale } from "@/lib/i18n/get-locale";
 import {
-  CURRENT_USER,
-  KUDOS_POSTS,
-  KUDOS_STATS,
-  RECENT_GIFT_RECIPIENTS,
-  SPOTLIGHT_NAMES,
-  SPOTLIGHT_TOTAL,
-} from "@/lib/kudos/kudos-data";
+  getGiftRecipients,
+  getKudosSidebarStats,
+  getSpotlightNames,
+  getSpotlightTotal,
+} from "@/lib/kudos/kudos-aggregates-repository";
+import {
+  getCurrentKudosPerson,
+  getKudosPosts,
+  getLikedPostIds,
+  getRecipientOptions,
+} from "@/lib/kudos/kudos-repository";
 import { getDistinctRecipients } from "@/lib/kudos/kudos-selectors";
 import { KudosPageClient } from "../components/kudos/kudos-page-client";
 import { KudosSidebar } from "../components/kudos/kudos-sidebar";
@@ -56,13 +60,44 @@ export async function generateMetadata(): Promise<Metadata> {
  * sidebar's presentational tree never enters the client bundle — only
  * `SpotlightBoard` itself is a client component (owns its own search/
  * pan-zoom state, independent of the shared filter).
+ *
+ * Backend pivot (Phase 04): posts/current-user/liked-ids now come from
+ * `lib/kudos/kudos-repository.ts`, which itself falls back to the F006
+ * mock dataset (`KUDOS_POSTS`/`CURRENT_USER`) when Supabase isn't
+ * configured — this page no longer imports those mock consts directly.
+ * Sidebar stats/spotlight total+names/gift-list (phase-03 of
+ * plans/260709-0822-supabase-dynamic-data-all-screens, reversing the
+ * clarifications.md Q5 "stays mock" decision) now come from
+ * `lib/kudos/kudos-aggregates-repository.ts`, same fallback contract.
  */
 export default async function KudosPage() {
-  await requireUser();
+  const user = await requireUser();
 
   const locale = await getLocale();
   const dictionary = getDictionary(locale);
-  const recipientOptions = getDistinctRecipients(KUDOS_POSTS, CURRENT_USER);
+
+  const [
+    posts,
+    currentUser,
+    likedPostIds,
+    sidebarStats,
+    giftRecipients,
+    spotlightTotal,
+    spotlightNames,
+  ] = await Promise.all([
+    getKudosPosts(),
+    getCurrentKudosPerson(user),
+    getLikedPostIds(user?.id ?? null),
+    getKudosSidebarStats(user),
+    getGiftRecipients(),
+    getSpotlightTotal(),
+    getSpotlightNames(),
+  ]);
+
+  const recipientOptions = await getRecipientOptions(
+    user?.id ?? null,
+    getDistinctRecipients(posts, currentUser),
+  );
 
   return (
     <div
@@ -73,33 +108,41 @@ export default async function KudosPage() {
         nav={dictionary.shared.nav}
         account={dictionary.shared.account}
         notifications={dictionary.shared.notifications}
+        a11y={dictionary.shared.a11y}
       />
 
-      <main className="flex flex-1 flex-col gap-16 pb-16">
+      <main className="flex flex-1 flex-col gap-10 pb-16">
         <KudosPageClient
-          initialPosts={KUDOS_POSTS}
-          currentUser={CURRENT_USER}
+          initialPosts={posts}
+          currentUser={currentUser}
+          initialLikedIds={likedPostIds}
           recipientOptions={recipientOptions}
           labels={dictionary.kudos}
+          mentionSuggestionsAria={dictionary.shared.a11y.mentionSuggestions}
           spotlight={
             <SpotlightBoard
               key="spotlight-board"
-              names={SPOTLIGHT_NAMES}
-              total={SPOTLIGHT_TOTAL}
+              names={spotlightNames}
+              total={spotlightTotal}
               labels={dictionary.kudos.spotlight}
+              title={dictionary.kudos.sections.spotlightBoard}
             />
           }
           sidebar={
             <KudosSidebar
-              stats={KUDOS_STATS}
-              recipients={RECENT_GIFT_RECIPIENTS}
+              stats={sidebarStats}
+              recipients={giftRecipients}
               labels={dictionary.kudos}
             />
           }
         />
       </main>
 
-      <SiteFooter nav={dictionary.shared.nav} footer={dictionary.shared.footer} />
+      <SiteFooter
+        nav={dictionary.shared.nav}
+        footer={dictionary.shared.footer}
+        a11y={dictionary.shared.a11y}
+      />
     </div>
   );
 }

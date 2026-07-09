@@ -1,6 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { openSecretBoxAction } from "@/app/kudos/actions";
 import { useDismissableMenu } from "@/hooks/use-dismissable-menu";
 
 export interface OpenGiftButtonLabels {
@@ -14,6 +17,14 @@ export interface OpenGiftButtonLabels {
   unopenedCount: string;
   /** aria-label for the top-right X close button. */
   closeAria: string;
+  /** Shown when the viewer has no unlocked box to open yet. */
+  emptyState: string;
+  /** Shown while the Server Action is inserting the new opening row. */
+  opening: string;
+  /** Prefix for the concrete reward persisted by the action. */
+  openedRewardPrefix: string;
+  /** Stable failure message for any action error. */
+  openFailed: string;
 }
 
 export interface OpenGiftButtonProps {
@@ -91,16 +102,39 @@ function SecretBoxIllustration() {
 }
 
 /**
- * "Mở Secret Box" button + dialog (FR-19-rev, F006). Visual-only upgrade over the prior
- * placeholder — still no reward mechanic, no persistence (BR-1): opening never mutates
- * `unopenedCount` or any other state, it only flips local dialog visibility.
+ * "Mở Secret Box" button + dialog (FR-19-rev, F006).
  *
- * Open/close now goes through `useDismissableMenu` so Escape (and outside-click) parity matches
- * every other dismissable surface in the header (`haspopup: "dialog"`). Ground truth `J3-4YFIpMM`
- * has no text "Đóng" button — only the top-right X — so the old text close button is retired.
+ * The dialog is no longer visual-only in configured mode:
+ * - button opens the dialog
+ * - clicking the box spends exactly one unlocked Secret Box
+ * - the reward is persisted server-side and the page is refreshed so the
+ *   sidebar stats + "10 Sunner nhận quà mới nhất" list reconcile to the DB.
  */
 export function OpenGiftButton({ labels, unopenedCount }: OpenGiftButtonProps) {
+  const router = useRouter();
   const { open, setOpen, containerRef, triggerProps } = useDismissableMenu({ haspopup: "dialog" });
+  const [isPending, startTransition] = useTransition();
+  const [localUnopenedCount, setLocalUnopenedCount] = useState(unopenedCount);
+  const [rewardMessage, setRewardMessage] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setLocalUnopenedCount(unopenedCount);
+  }, [unopenedCount]);
+
+  useEffect(() => {
+    if (open) return;
+    setRewardMessage(null);
+    setActionError(null);
+  }, [open]);
+
+  const subtitleText = rewardMessage
+    ? `${labels.openedRewardPrefix} ${rewardMessage}`
+    : actionError
+      ? actionError
+      : localUnopenedCount > 0
+        ? labels.subtitle
+        : labels.emptyState;
 
   return (
     <>
@@ -144,13 +178,45 @@ export function OpenGiftButton({ labels, unopenedCount }: OpenGiftButtonProps) {
 
             <div aria-hidden="true" className="border-t border-[#2E3940]" />
 
-            {unopenedCount > 0 && (
-              <p className="text-center font-montserrat text-[12.73px] font-bold tracking-[0.4px] text-white">
-                {labels.subtitle}
-              </p>
-            )}
+            <p className="text-center font-montserrat text-[12.73px] font-bold tracking-[0.4px] text-white">
+              {isPending ? labels.opening : subtitleText}
+            </p>
 
-            <SecretBoxIllustration />
+            {localUnopenedCount > 0 ? (
+              <button
+                type="button"
+                disabled={isPending}
+                onClick={() =>
+                  startTransition(async () => {
+                    setActionError(null);
+                    setRewardMessage(null);
+
+                    const result = await openSecretBoxAction();
+                    if (!result.ok) {
+                      setActionError(
+                        result.error === "no_secret_box_available"
+                          ? labels.emptyState
+                          : labels.openFailed,
+                      );
+                      return;
+                    }
+
+                    if (result.skipped) {
+                      return;
+                    }
+
+                    setLocalUnopenedCount((current) => Math.max(0, current - 1));
+                    setRewardMessage(result.giftText);
+                    router.refresh();
+                  })
+                }
+                className="transition-opacity duration-150 hover:opacity-90 disabled:cursor-wait disabled:opacity-70"
+              >
+                <SecretBoxIllustration />
+              </button>
+            ) : (
+              <SecretBoxIllustration />
+            )}
 
             <div aria-hidden="true" className="border-t border-[#2E3940]" />
 
@@ -159,7 +225,7 @@ export function OpenGiftButton({ labels, unopenedCount }: OpenGiftButtonProps) {
                 {labels.unopenedCount}
               </span>
               <span className="text-[28.64px] leading-[35px] text-[#FFEA9E]">
-                {String(unopenedCount).padStart(2, "0")}
+                {String(localUnopenedCount).padStart(2, "0")}
               </span>
             </div>
           </div>

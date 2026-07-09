@@ -48,6 +48,35 @@ export const vi = {
     },
     // Reused by award-card.tsx and sun-kudos-section.tsx.
     detailsCta: "Chi tiết",
+    // Icon-only trigger/panel aria-labels reused across site chrome
+    // (header/footer logo suffix, awards nav, notification/account/widget
+    // buttons) — audit gap fix (plan phase-01): these were hardcoded English
+    // literals with no dictionary key, so VI never got a translation. Where
+    // a button and its opened panel share identical text (notifications,
+    // widget "Quick actions"), one key is reused for both per the plan's
+    // Key Insights (avoids a pointless duplicate key for the same string).
+    a11y: {
+      awardCategories: "Danh mục giải thưởng",
+      notifications: "Thông báo",
+      accountMenu: "Menu tài khoản",
+      account: "Tài khoản",
+      quickActions: "Thao tác nhanh",
+      // `mention-suggestions.tsx`'s listbox aria-label — kept here (not
+      // colocated with `kudos.compose.content`) because that slice is
+      // consumed verbatim as a REQUIRED `Dictionary["kudos"]["compose"]`
+      // prop by `compose-dialog.tsx`/`compose-dialog-fields.tsx`, whose
+      // existing hand-written test fixtures would need updating to add a
+      // new required field there. Threading this one string as its own
+      // optional prop (`compose-dialog.tsx` → `compose-dialog-fields.tsx` →
+      // `RichTextEditor` → `MentionSuggestions`) avoids that, at the cost of
+      // one extra hop — a deliberate placement trade-off, not the plan's
+      // originally suggested spot.
+      mentionSuggestions: "Gợi ý gắn thẻ",
+      // Only the link-purpose suffix — the "Sun* Annual Awards 2025" brand
+      // caption stays a hardcoded literal in site-header.tsx/site-footer.tsx
+      // per clarifications.md (brand+year is exempt, this suffix is not).
+      logoHomeSuffix: "trang chủ",
+    },
   },
   login: {
     meta: {
@@ -212,13 +241,25 @@ export const vi = {
   },
   // Sun* Kudos live board (F006, `app/kudos/page.tsx`), MoMorph screenId
   // `MaZUn5xHXZ`. NEW top-level namespace — distinct from `homepage.kudos`
-  // (still owned by the homepage/awards teaser block, untouched). English
-  // design labels ("HIGHLIGHT KUDOS", "SPOTLIGHT BOARD", "ALL KUDOS", the
-  // "KUDOS" wordmark) stay hardcoded in components per clarifications.md,
-  // not keyed here.
+  // (still owned by the homepage/awards teaser block, untouched). The three
+  // section headings ("HIGHLIGHT KUDOS", "SPOTLIGHT BOARD", "ALL KUDOS") are
+  // NOT a hardcode exception — English section headings are not exempt per
+  // `clarifications.md` — they are keyed below under `sections` and rendered
+  // via `KudosSectionHeading`'s `title` prop (audit gap fix, plan phase-01).
+  // The "KUDOS" brand wordmark in `kudos-banner.tsx` is a distinct literal
+  // (a logo/wordmark, not a heading) and stays hardcoded.
   kudos: {
     meta: {
       description: "Bảng ghi nhận Sun* Kudos trực tiếp — Sun* Annual Awards 2025.",
+    },
+    // The 3 repeated `KudosSectionHeading` titles (`kudos-board.tsx`,
+    // `highlight-kudos-carousel.tsx`, `spotlight-board.tsx`) — see the
+    // namespace comment above for why these are keyed, not hardcoded.
+    // Uppercase VI to match the design's uppercase English treatment.
+    sections: {
+      allKudos: "ALL KUDOS",
+      highlightKudos: "HIGHLIGHT KUDOS",
+      spotlightBoard: "SPOTLIGHT BOARD",
     },
     banner: {
       title: "Hệ thống ghi nhận và cảm ơn",
@@ -249,12 +290,23 @@ export const vi = {
       panZoom: "Pan/Zoom",
       tickerSuffix: "đã nhận được một Kudos mới",
     },
+    // `highlight-kudos-carousel.tsx`'s Previous/Next controls — grouped here
+    // (not `shared.a11y`) since they are specific to this one carousel, per
+    // the plan's "keep it one consistent place" call.
+    highlight: {
+      a11y: {
+        prevSlide: "Slide trước",
+        nextSlide: "Slide tiếp theo",
+        prev: "Trước",
+        next: "Tiếp theo",
+      },
+    },
     stats: {
-      received: "Số Kudos nhận được",
-      sent: "Số Kudos đã gửi",
-      hearts: "Số lượt thả tim",
-      secretBoxOpened: "Secret Box đã mở",
-      secretBoxUnopened: "Secret Box chưa mở",
+      received: "Số Kudos bạn nhận được:",
+      sent: "Số Kudos bạn đã gửi:",
+      hearts: "Số tim:",
+      secretBoxOpened: "Secret Box đã mở:",
+      secretBoxUnopened: "Secret Box chưa mở:",
     },
     gift: {
       // Design-verbatim label chosen over the FR-19 spec text ("Mở quà")
@@ -271,6 +323,10 @@ export const vi = {
       subtitle: "Click vào box để mở",
       unopenedCount: "Secretbox chưa mở",
       closeAria: "Đóng hộp quà bí ẩn",
+      emptyState: "Bạn chưa có Secret Box nào để mở.",
+      opening: "Đang mở Secret Box...",
+      openedRewardPrefix: "Bạn vừa",
+      openFailed: "Mở Secret Box thất bại. Vui lòng thử lại.",
     },
     recent: {
       heading: "10 SUNNER NHẬN QUÀ MỚI NHẤT",
@@ -281,6 +337,9 @@ export const vi = {
       cancel: "Hủy",
       submit: "Gửi",
       successToast: "Đã gửi Kudos!",
+      // Backend pivot (Phase 04): shown when `createKudosAction` returns
+      // `{ok:false}` after the optimistic prepend is rolled back.
+      failureToast: "Gửi Kudos thất bại. Vui lòng thử lại.",
       recipient: {
         label: "Người nhận",
         // Ground truth (node I520:11647;520:9873;186:2760) is the trigger's
@@ -399,6 +458,15 @@ export const vi = {
         max: "Tối đa 5",
         error: "Thêm ít nhất 1 hashtag.",
         remove: "Xóa hashtag",
+        // Catalog dropdown + group preset captions (Phase 04, additive —
+        // INVENTED content, see `lib/kudos/kudos-hashtag-catalog.ts`).
+        browse: "Chọn từ danh sách",
+        group: "Chọn một nhóm",
+        groups: {
+          cultureValues: "Văn hoá & giá trị",
+          performance: "Hiệu suất",
+          teamwork: "Làm việc nhóm",
+        },
       },
       images: {
         // Ground truth (node I520:11647;520:9897;416:5534) literally reads

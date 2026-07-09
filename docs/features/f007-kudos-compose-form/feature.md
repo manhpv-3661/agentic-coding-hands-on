@@ -173,3 +173,20 @@ trang "Tiêu chuẩn cộng đồng" thật, backend/API lưu trữ thật.
 - Không còn câu hỏi chặn. `imageCount`-only (không lưu file thật), `CURRENT_USER` mock,
   và stub "Tiêu chuẩn cộng đồng" là các quyết định mock-project hợp lý, đã ghi rõ lý do
   trong `clarifications.md` — một task tương lai có backend/storage thật sẽ thay thế.
+- **[Superseded 2026-07-08] Backend pivot**: `plans/260708-1407-kudos-supabase-backend/` nối
+  `createKudosAction` (`app/kudos/actions.ts`) ghi bài Kudos thật vào Supabase Postgres khi đã
+  cấu hình — supersede claim "session-scoped — mất khi refresh, không có backend" ở §1 và FR-21
+  (§2.8), và mục "backend/API lưu trữ thật" liệt kê ở "Ngoài phạm vi" (§1), nay ĐÃ có (không còn
+  ngoài phạm vi). Riêng ảnh đính kèm (FR-16, §2.6) KHÔNG đổi — vẫn chỉ lưu `imageCount`, chưa có
+  Storage thật (ngoài scope của plan pivot này). `CURRENT_USER` mock cũng được thay bằng
+  `profiles` thật của user đăng nhập ở nhánh Supabase-configured. Chi tiết:
+  `docs/system/architecture.md` § "Kudos — Lớp dữ liệu (Supabase Postgres)",
+  `supabase/README.md`.
+- **[Đảo ngược 2026-07-09] Dữ liệu trang trí Kudos → thật**: không đổi gì riêng cho form compose
+  (F007) — ghi chú chung cho cụm Kudos, xem đầy đủ ở
+  `docs/features/f006-sun-kudos-live-board/feature.md` § Unresolved Questions (bullet
+  "[Đảo ngược 2026-07-09]"): sidebar thống kê, tổng Spotlight, top-10 quà nay đọc thật từ
+  Postgres qua `lib/kudos/kudos-aggregates-repository.ts`; Secret Box nay cũng dùng rule thật
+  dựa trên tim nhận được + `gift_logs`. `CURRENT_USER` mock (§2.7 trên) đã có ghi chú riêng ở bullet "Backend pivot" ngay
+  trên. Full plan: `plans/260709-0822-supabase-dynamic-data-all-screens/`. Chi tiết:
+  `docs/system/architecture.md` § "Content tables (awards / event / kudos gifts)".

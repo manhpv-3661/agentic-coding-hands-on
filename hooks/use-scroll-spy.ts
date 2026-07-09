@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export interface UseScrollSpyOptions {
   /** Passed through to `IntersectionObserver`. Defaults to a center band so
@@ -40,18 +40,16 @@ export function useScrollSpy(
   // closure is guaranteed fresh on the render where `idsKey` changed, which
   // is the only render that re-runs the effect.
   const idsKey = ids.join("|");
-
-  // Reset to `null` synchronously (during render, not inside the effect)
-  // the moment the requested id set changes, so a stale id from the
-  // previous `ids` never lingers while the new observer spins up — mirrors
-  // the resync pattern in `useEventCountdown`.
-  const [resolvedKey, setResolvedKey] = useState(idsKey);
-  if (idsKey !== resolvedKey) {
-    setResolvedKey(idsKey);
-    setActiveId(null);
-  }
+  const resolvedKeyRef = useRef(idsKey);
+  const idsChanged = idsKey !== resolvedKeyRef.current;
+  const visibleActiveId = idsChanged ? null : activeId;
 
   useEffect(() => {
+    if (idsChanged) {
+      resolvedKeyRef.current = idsKey;
+      setActiveId(null);
+    }
+
     if (typeof IntersectionObserver === "undefined") return undefined;
 
     const nodes = ids
@@ -83,9 +81,9 @@ export function useScrollSpy(
     };
     // `ids` intentionally omitted: `idsKey` already encodes its content, and
     // depending on `ids` directly would re-run this effect on every render
-    // (most callers pass a fresh array literal each time) — see comment above.
+    // (most callers pass a fresh array literal each time).
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [idsKey, rootMargin, threshold]);
+  }, [idsChanged, idsKey, rootMargin, threshold]);
 
-  return activeId;
+  return visibleActiveId;
 }

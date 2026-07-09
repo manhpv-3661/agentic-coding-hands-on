@@ -24,6 +24,10 @@ interface AwardsCatalogProps {
   /** "Giá trị giải thưởng: " label prefix, shared across all 6 cards
    * (`awards.detail.valueLabel`). */
   valueLabel: string;
+  /** Nav landmark aria-label (`shared.a11y.awardCategories`), forwarded to
+   * `AwardsNavMenu` — optional/defaulted so existing callers/tests that
+   * predate this prop keep compiling unchanged. */
+  navAriaLabel?: string;
 }
 
 /**
@@ -32,11 +36,11 @@ interface AwardsCatalogProps {
  * data). Rendered by `app/awards/page.tsx` (Phase 05) between the inline
  * title section and `SunKudosSection`.
  *
- * Layout: two columns at `lg` — nav sticky on the left, cards stacked on the
- * right; single column (nav above cards) below `lg`, matching the phase
- * spec's "two-column desktop / stack on tablet+mobile" requirement.
- * `lg:w-[178px]` (sidebar) matches the measured MoMorph width for
- * `mms_C_Menu list` (`313:8459`). `lg:gap-[121px]` (column gap) is the
+ * Layout (desktop-only, `plans/260709-0724-desktop-only-banner-overlay-fix/`):
+ * two columns — nav sticky on the left, cards stacked on the right, matching
+ * the design's fixed 1440px frame; no responsive stacking below that width.
+ * `w-[178px]` (sidebar) matches the measured MoMorph width for
+ * `mms_C_Menu list` (`313:8459`). `gap-[121px]` (column gap) is the
  * *effective* gap once `mms_B_Hệ thống giải thưởng`'s (`313:8458`)
  * `justify-content: space-between` is accounted for — its declared `gap`
  * style is 80px, but with two fixed-width children (nav 178px, content
@@ -45,15 +49,13 @@ interface AwardsCatalogProps {
  * `1152 - 178 - 853 = 121px` (confirmed via node position deltas, not the
  * declared `gap` property). Using `gap-[121px]` here with a flexible
  * (`w-full min-w-0`) content column reproduces that same 853px effective
- * content width without hard-coding it, so responsive/overflow behavior at
- * other breakpoints is unaffected. (RE-VERIFY@P7 from Phase 04's report —
- * confirmed analytically via `get_node`, not a text-flow risk.)
+ * content width without hard-coding it.
  *
  * Each section carries both the scroll-spy anchor id AND `scroll-mt-24` so
  * hash-anchor deep links from the homepage (`/awards#<slug>`, FR-14) land
  * clear of the sticky header (`min-h-20` in `site-header.tsx`).
  */
-export function AwardsCatalog({ entries, quantityLabel, valueLabel }: AwardsCatalogProps) {
+export function AwardsCatalog({ entries, quantityLabel, valueLabel, navAriaLabel }: AwardsCatalogProps) {
   // `useScrollSpy` returns `null` until an `IntersectionObserver` entry
   // actually intersects — i.e. before the user has scrolled at all. Per the
   // MoMorph ground truth (`313:8459`, item C.1 "Top Talent" marked active
@@ -62,11 +64,11 @@ export function AwardsCatalog({ entries, quantityLabel, valueLabel }: AwardsCata
   const activeSlug = useScrollSpy(CATEGORY_SLUGS) ?? CATEGORY_SLUGS[0];
 
   return (
-    <div className="flex w-full flex-col gap-10 lg:flex-row lg:items-start lg:gap-[121px]">
-      <div className="w-full lg:w-[178px] lg:shrink-0">
-        <AwardsNavMenu items={AWARD_CATEGORIES} activeSlug={activeSlug} />
+    <div className="flex w-full flex-row items-start gap-[121px]">
+      <div className="w-[178px] shrink-0">
+        <AwardsNavMenu items={AWARD_CATEGORIES} activeSlug={activeSlug} ariaLabel={navAriaLabel} />
       </div>
-      <div className="flex w-full min-w-0 flex-col gap-16 lg:gap-20">
+      <div className="flex w-full min-w-0 flex-col gap-20">
         {entries.map((entry, index) => (
           // Fragment (not a bare array) so the trailing divider shares
           // `entry.slug` as its React key without introducing a second

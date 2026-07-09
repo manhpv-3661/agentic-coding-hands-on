@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { getLocale } from "@/lib/i18n/get-locale";
-import { PageGutter } from "../components/layout/page-layout";
+import { ContentFrame, PageGutter } from "../components/layout/page-layout";
 import { montserrat } from "../login/fonts";
 import { PrelaunchBackground } from "./components/prelaunch-background";
 import { PrelaunchContent, type PrelaunchCountdownContent } from "./components/prelaunch-content";
@@ -56,19 +56,21 @@ export default async function PrelaunchPage() {
   // content — mm:2268:35136 ("Countdown time") — sits at absolute
   // startY:314 (= Bìa's startY:218 + Bìa's own padding-top:96), so the true
   // top gap is 314px (~29.2% of frame height), not just Bìa's own 218px
-  // offset. `lg:justify-start` + `lg:pt-[29.2vh]` reproduce that ratio
-  // responsively (the remaining space naturally falls below via flex-start),
-  // matching the `lg:` sizing this frame was designed at.
+  // offset. `justify-start` + `pt-[29.2vh]` reproduce that ratio (the
+  // remaining space naturally falls below via flex-start) at the desktop
+  // sizing this frame was designed at (desktop-only, no breakpoint scaling).
   return (
     <PageGutter
-      className={`${montserrat.variable} relative isolate flex min-h-screen flex-col items-center justify-center overflow-hidden bg-[#00101A] py-12 lg:justify-start lg:pt-[29.2vh] lg:pb-24`}
+      className={`${montserrat.variable} relative isolate flex min-h-screen flex-col items-center justify-start overflow-hidden bg-[#00101A] pt-[29.2vh] pb-24`}
     >
       <PrelaunchBackground />
-      <Suspense
-        fallback={<PrelaunchContent days="00" hours="00" minutes="00" content={content} />}
-      >
-        <PrelaunchCountdownClient content={content} />
-      </Suspense>
+      <ContentFrame width={1224} className="flex justify-center">
+        <Suspense
+          fallback={<PrelaunchContent days="00" hours="00" minutes="00" content={content} />}
+        >
+          <PrelaunchCountdownClient content={content} />
+        </Suspense>
+      </ContentFrame>
     </PageGutter>
   );
 }

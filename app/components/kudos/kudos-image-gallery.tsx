@@ -20,6 +20,7 @@ import Image from "next/image";
 export interface KudosImageGalleryProps {
   /** Number of attachment tiles to render, capped at 5 (design maximum). */
   count: number;
+  imageUrls?: string[];
   className?: string;
 }
 
@@ -34,7 +35,7 @@ const GALLERY_PHOTO = "/kudos/gallery/photo-1.jpg";
  * child share the identical bounding box) — only the radius mismatch
  * (18px outer vs 4px inner) shows thin corner nicks, not a uniform margin.
  */
-export function KudosImageGallery({ count, className }: KudosImageGalleryProps) {
+export function KudosImageGallery({ count, imageUrls, className }: KudosImageGalleryProps) {
   const tileCount = Math.min(Math.max(count, 0), 5);
   if (tileCount === 0) return null;
 
@@ -47,7 +48,7 @@ export function KudosImageGallery({ count, className }: KudosImageGalleryProps) 
           className="flex h-22 w-22 items-center justify-center rounded-[18px] border border-[#998C5F] bg-white"
         >
           <Image
-            src={GALLERY_PHOTO}
+            src={imageUrls?.[index] ?? GALLERY_PHOTO}
             alt=""
             aria-hidden="true"
             width={88}

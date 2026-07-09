@@ -54,7 +54,7 @@ export function HeroCtaButtons({
 }: HeroCtaButtonsProps) {
   return (
     // mm:2167:9062
-    <div className="flex flex-col items-stretch gap-4 sm:flex-row sm:items-start sm:gap-10">
+    <div className="flex flex-row items-start gap-10">
       {/* mm:2167:9063 */}
       <Link
         href={aboutAwardsHref}

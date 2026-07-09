@@ -14,14 +14,13 @@ export interface KudosStatsBoxProps {
 const HEARTS_ROW_KEY = "hearts";
 
 /**
- * Static stats sidebar box (FR-18): received / sent / hearts /
- * secretBoxOpened / secretBoxUnopened — all mock figures, no real
- * points/reward computation exists in this project. Renders 5 rows
- * (the reviewed screenshot ground truth; FR-18's spec text lists 4 —
- * `KudosStats` simply carries whichever fields exist, so both counts are
- * satisfied by the same data-driven row list, see plan.md open item).
+ * Stats sidebar box (FR-18): received / sent / hearts /
+ * secretBoxOpened / secretBoxUnopened.
  *
- * Presentational except for the one client leaf, `OpenGiftButton`.
+ * In configured mode the numbers are real per-current-user aggregates from
+ * `lib/kudos/kudos-aggregates-repository.ts`; in fallback mode they come
+ * from the static mock constants. The component itself stays purely
+ * presentational except for the one client leaf, `OpenGiftButton`.
  */
 export function KudosStatsBox({ stats, statsLabels, giftLabels }: KudosStatsBoxProps) {
   const rows: Array<{ key: string; label: string; value: number }> = [
@@ -46,8 +45,8 @@ export function KudosStatsBox({ stats, statsLabels, giftLabels }: KudosStatsBoxP
           <div key={row.key}>
             {/* Divider between the "tim" row and the secret-box rows. */}
             {row.key === "secretBoxOpened" && <div className="mb-4 h-px w-full bg-[#2E3940]" />}
-            <div className="flex items-center justify-between gap-3">
-              <dt className="font-montserrat text-[22px] leading-7 font-bold text-white">
+            <div className="flex items-center justify-between gap-4">
+              <dt className="font-montserrat flex-1 text-right text-[22px] leading-7 font-bold text-white">
                 {row.label}
               </dt>
               <div className="flex items-center gap-2">

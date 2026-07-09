@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { ContentFrame, PageGutter } from "../layout/page-layout";
+import { Dictionary } from "@/lib/i18n/dictionary";
 
 /**
  * Awards page hero keyvisual mini — MoMorph "Hệ thống giải" screen.
@@ -23,20 +24,36 @@ import { ContentFrame, PageGutter } from "../layout/page-layout";
  *
  * Server-renderable (no `"use client"`) — purely presentational.
  */
-export function AwardsHero() {
+export function AwardsHero({dictionary}: {dictionary: Dictionary}) {
   return (
     // mm:313:8437 + mm:313:8439
-    <PageGutter
-      as="section"
-      className="relative flex h-[280px] items-start overflow-hidden bg-[#00101A] pt-8 sm:h-[380px] sm:pt-14 lg:h-[547px] lg:pt-[104px]"
-    >
-      <Image
-        src="/homepage-saa/Keyvisual-BG.png"
-        alt=""
-        fill
-        priority
-        className="object-cover object-center"
-      />
+    <PageGutter as="section" className="relative h-[547px] overflow-hidden bg-[#00101A]">
+      {/* mm:2167:5138 "image 20" — exact Figma fill transform (position
+          `-0.163px -858.967px`, scale `101.245% 367.889%`) re-expressed as a
+          sized/offset wrapper around the `Image`: the wrapper is sized to
+          the scale percentages (of this 1440×547 band) and offset by the
+          position, then the `Image` stretches to fill that wrapper exactly
+          (`object-fill`, not `cover`) so the wrapper alone carries the crop
+          — bare `object-cover` cannot express a non-uniform (x≠y) scale. */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div
+          className="absolute"
+          style={{
+            left: "-0.163px",
+            top: "-858.967px",
+            width: "101.245%",
+            height: "367.889%",
+          }}
+        >
+          <Image
+            src="/homepage-saa/Keyvisual-BG.png"
+            alt=""
+            fill
+            priority
+            className="object-fill"
+          />
+        </div>
+      </div>
       {/* mm:313:8439 (Cover) — ground truth's gradient stops (-4.23%/52.79%)
           are authored against the Cover rectangle's own 627px box, which
           spans the 80px header (`<header>` is `position: sticky`, so at rest
@@ -66,13 +83,24 @@ export function AwardsHero() {
             "linear-gradient(0deg, #00101A -4.85%, rgba(0, 19, 32, 0.00) 60.51%)",
         }}
       />
-      {/* mm:313:8450 — capped at the design's 1152px content width (same
-          `ContentFrame` primitive every sibling section uses) so this
-          left-aligned content re-centers past the native 1440px frame
-          instead of staying pinned 144px from the viewport edge. */}
+      {/* mm:313:8450 — absolute-overlaid at the contract's `144,184 →
+          1152×150` box: `top-[184px]` offsets from the band's own top edge
+          (the containing block for an absolutely positioned child is the
+          nearest positioned ancestor's padding box, i.e. the full 1440×547
+          section — `PageGutter`'s own `px-36` is inert for this child), and
+          `inset-x-0` + `ContentFrame`'s built-in `mx-auto max-w-[1152px]`
+          center the 1152px box within that 1440px span, landing its left
+          edge at exactly 144px — the same gutter every sibling section
+          uses, reproduced here via absolute positioning instead of normal
+          flow since the KV logo must sit at a fixed 184px offset regardless
+          of the gold-title zone that follows below (313:8453, not part of
+          this band). */}
       <ContentFrame
         width={1152}
-        className="relative z-10 flex flex-col items-start gap-3 sm:gap-4 lg:gap-[10px]"
+        style={{
+          top: "80px"
+        }}
+        className="absolute inset-x-0 top-[184px] z-10 flex flex-col items-start gap-[130px] absolute"
       >
         {/* mm:2789:12915 */}
         <Image
@@ -81,11 +109,16 @@ export function AwardsHero() {
           width={338}
           height={150}
           priority
-          className="h-auto w-[160px] sm:w-[240px] lg:w-[338px]"
+          className="h-auto w-[338px]"
         />
-        <p className="font-montserrat text-base font-bold text-white sm:text-lg lg:text-2xl">
-          Sun* Annual Awards 2025
-        </p>
+       <div className="flex w-full flex-col items-start gap-4">
+          <p className="w-full font-montserrat text-[24px] leading-[32px] font-bold text-center text-white">
+            Sun* Annual Awards 2025
+          </p>
+          <h1 className="w-full font-montserrat text-[57px] leading-[64px] font-bold tracking-[-0.25px] text-center text-[#FFEA9E]">
+            {dictionary.awards.title.heading}
+          </h1>
+        </div>
       </ContentFrame>
     </PageGutter>
   );

@@ -2,22 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Montserrat, Montserrat_Alternates } from "next/font/google";
 import { usePathname } from "next/navigation";
+import { montserrat, montserratAlternates } from "@/app/fonts";
 import { useScrollToTopOnHomeClick } from "@/hooks/use-scroll-to-top-on-home-click";
 import type { Dictionary } from "@/lib/i18n/dictionary";
-
-const montserrat = Montserrat({
-  subsets: ["latin", "vietnamese"],
-  weight: ["700"],
-  display: "swap",
-});
-
-const montserratAlternates = Montserrat_Alternates({
-  subsets: ["latin", "vietnamese"],
-  weight: ["700"],
-  display: "swap",
-});
 
 interface FooterNavLinkProps {
   /** Destination — internal route, same-page anchor, or `#` placeholder. */
@@ -33,14 +21,14 @@ interface SiteFooterProps {
   nav: Dictionary["shared"]["nav"];
   /** Footer copy — copyright line + "General Standards" link (`shared.footer`). */
   footer: Dictionary["shared"]["footer"];
+  /** Icon-only control aria-labels (`shared.a11y`) — optional/defaulted so
+   * existing callers/tests that predate this prop keep compiling unchanged;
+   * falls back to the English design label when omitted. */
+  a11y?: Dictionary["shared"]["a11y"];
 }
 
-/**
- * Note on `rounded-none`: the footer's `mms_7.x_Button-IC` instances are
- * square-cornered per ground truth (`borderRadius: 0px` on all 4 nodes,
- * e.g. `I5001:14800;342:1411`), unlike the header's `NavLink` sibling
- * component which is `4px` — do not "fix" this to match the header.
- */
+// Footer nav instances are square-cornered in Figma (`borderRadius: 0px`),
+// unlike the header nav's 4px buttons.
 function FooterNavLink({ href, label, highlighted = false }: FooterNavLinkProps) {
   const handleClick = useScrollToTopOnHomeClick(href);
 
@@ -69,14 +57,10 @@ function FooterNavLink({ href, label, highlighted = false }: FooterNavLinkProps)
  *
  * Layout: brand logo + nav links (left) vs copyright (right) in one row,
  * full-bleed `border-top` divider (same `border-t` pattern as
- * `login-footer.tsx`) with the design's side padding (90px at the design's
- * 1512px frame width) — the Figma frame is already the full page width, so
- * no separate max-width container is needed here (code-rules.md rule 3,
- * Sizing). Padding scales down at narrower breakpoints
- * (`px-6 sm:px-10 lg:px-22.5`, mirroring `site-header.tsx`'s responsive
- * scale) so the fixed-width nav row + logo don't get crushed into a
- * multi-row wrap on mobile viewports — the 90px value only applies at
- * `lg`+, matching the design's actual (desktop) frame width.
+ * `login-footer.tsx`) with the design's side padding (flat 90px at the
+ * design's 1512px frame width, desktop-only — no breakpoint scaling) — the
+ * Figma frame is already the full page width, so no separate max-width
+ * container is needed here (code-rules.md rule 3, Sizing).
  *
  * The 4 nav items are plain text links in Figma (the `mms_7.x_Button-IC`
  * component supports an icon slot, but none of these instances use it — no
@@ -97,7 +81,7 @@ function FooterNavLink({ href, label, highlighted = false }: FooterNavLinkProps)
  * string ("Bản quyền thuộc về Sun* © 2025") but without this footer's
  * logo/nav row — different structure, so it is intentionally not reused.
  */
-export function SiteFooter({ nav, footer }: SiteFooterProps) {
+export function SiteFooter({ nav, footer, a11y }: SiteFooterProps) {
   const handleLogoClick = useScrollToTopOnHomeClick("/");
   const pathname = usePathname();
   const isActive = (href: string) =>
@@ -105,15 +89,15 @@ export function SiteFooter({ nav, footer }: SiteFooterProps) {
 
   return (
     // mm:5001:14800
-    <footer className="flex w-full flex-wrap items-center justify-between gap-6 border-t border-[#2E3940] px-6 py-10 sm:px-10 lg:px-22.5">
+    <footer className="flex w-full flex-row flex-nowrap items-center justify-between gap-6 border-t border-[#2E3940] px-[90px] py-10">
       {/* mm:I5001:14800;342:1407 */}
-      <div className="flex flex-wrap items-center gap-20">
+      <div className="flex flex-nowrap items-center gap-20">
         {/* mm:I5001:14800;342:1408 */}
         <Link
           href="/"
-          aria-label="Sun* Annual Awards 2025 — home"
+          aria-label={`Sun* Annual Awards 2025 — ${a11y?.logoHomeSuffix ?? "home"}`}
           onClick={handleLogoClick}
-          className="flex items-center gap-2"
+          className="shrink-0"
         >
           {/* mm:I5001:14800;342:1408;178:1030 */}
           <Image
@@ -123,23 +107,9 @@ export function SiteFooter({ nav, footer }: SiteFooterProps) {
             height={64}
             className="h-16 w-[69px] object-cover"
           />
-          {/* Same flattened-raster wordmark gap as site-header.tsx's logo
-              (see its comment for the full rationale) — scaled up for this
-              instance's larger 69x64 box. */}
-          <span
-            aria-hidden="true"
-            className="font-montserrat flex flex-col justify-center text-[13px] leading-4 font-bold tracking-[0.2px] text-white uppercase"
-          >
-            <span>Sun*</span>
-            <span>Annual</span>
-            <span>Awards</span>
-            <span>2025</span>
-          </span>
         </Link>
         {/* mm:I5001:14800;342:1409 */}
-        <nav
-          className={`${montserrat.className} flex flex-wrap items-center gap-12`}
-        >
+        <nav className={`${montserrat.className} flex flex-nowrap items-center gap-12`}>
           {/* mm:I5001:14800;342:1410 */}
           <FooterNavLink href="/" label={nav.aboutSaa} highlighted={isActive("/")} />
           {/* mm:I5001:14800;342:1411 */}
@@ -153,7 +123,7 @@ export function SiteFooter({ nav, footer }: SiteFooterProps) {
 
       {/* mm:I5001:14800;342:1413 */}
       <p
-        className={`${montserratAlternates.className} text-center text-base leading-6 font-bold text-white`}
+        className={`${montserratAlternates.className} text-center text-base leading-6 font-bold text-white whitespace-nowrap`}
       >
         {footer.copyright}
       </p>

@@ -1,0 +1,284 @@
+[
+  {
+    "name": "login",
+    "url": "http://127.0.0.1:3000/login",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "metrics": {
+      "header": {
+        "width": 1440,
+        "height": 80,
+        "left": 0,
+        "top": 0,
+        "paddingLeft": 144,
+        "paddingRight": 144,
+        "className": "w-full px-6 sm:px-10 lg:px-36 sticky top-0 z-20 flex items-center justify-between bg-[rgba(11,15,18,0.8)] py-3"
+      },
+      "main": {
+        "width": 1440,
+        "height": 715,
+        "left": 0,
+        "top": 80,
+        "paddingLeft": 144,
+        "paddingRight": 144,
+        "className": "w-full px-6 sm:px-10 lg:px-36 flex flex-1 items-center py-12 lg:py-24"
+      },
+      "footer": {
+        "width": 1440,
+        "height": 105,
+        "left": 0,
+        "top": 795,
+        "paddingLeft": 90,
+        "paddingRight": 90,
+        "className": "relative z-10 flex items-center justify-center border-t border-[#2E3940] px-[90px] py-10"
+      },
+      "max1152_0": {
+        "width": 1152,
+        "height": 444,
+        "left": 144,
+        "top": 215.5,
+        "paddingLeft": 0,
+        "paddingRight": 0,
+        "className": "mx-auto w-full max-w-[1152px]"
+      },
+      "max1152_1": null,
+      "max1224_0": null,
+      "max1224_1": null,
+      "max1120_0": null,
+      "spotlightFrame": null,
+      "spotlightSearch": null,
+      "spotlightCount": null
+    }
+  },
+  {
+    "name": "home",
+    "url": "http://127.0.0.1:3100/",
+    "viewport": {
+      "width": 1512,
+      "height": 950
+    },
+    "metrics": {
+      "header": {
+        "width": 1512,
+        "height": 80,
+        "left": 0,
+        "top": 0,
+        "paddingLeft": 144,
+        "paddingRight": 144,
+        "className": "w-full px-6 sm:px-10 lg:px-36 sticky top-0 z-20 flex min-h-20 flex-wrap items-center justify-between gap-y-2 bg-[rgba(16,20,23,0.8)] py-3"
+      },
+      "main": {
+        "width": 1512,
+        "height": 4640.90625,
+        "left": 0,
+        "top": 80,
+        "paddingLeft": 0,
+        "paddingRight": 0,
+        "className": "flex flex-1 flex-col gap-12 py-12 sm:gap-16 sm:py-16 lg:gap-[120px] lg:py-24"
+      },
+      "footer": {
+        "width": 1512,
+        "height": 193,
+        "left": 0,
+        "top": 4720.90625,
+        "paddingLeft": 90,
+        "paddingRight": 90,
+        "className": "flex w-full flex-wrap items-center justify-between gap-6 border-t border-[#2E3940] px-6 py-10 sm:px-10 lg:px-22.5"
+      },
+      "max1152_0": {
+        "width": 1152,
+        "height": 1718,
+        "left": 180,
+        "top": 845.90625,
+        "paddingLeft": 104,
+        "paddingRight": 104,
+        "className": "mx-auto w-full max-w-[1152px] flex flex-col items-center justify-center gap-8 rounded-[8px] px-6 py-16 sm:px-10 sm:py-20 lg:px-[104px] lg:py-[120px]"
+      },
+      "max1152_1": null,
+      "max1224_0": {
+        "width": 1224,
+        "height": 549.90625,
+        "left": 144,
+        "top": 176,
+        "paddingLeft": 0,
+        "paddingRight": 0,
+        "className": "mx-auto w-full max-w-[1224px] flex flex-col items-start gap-10"
+      },
+      "max1224_1": {
+        "width": 1224,
+        "height": 1321,
+        "left": 144,
+        "top": 2683.90625,
+        "paddingLeft": 0,
+        "paddingRight": 0,
+        "className": "mx-auto w-full max-w-[1224px] flex flex-col items-start gap-20"
+      },
+      "max1120_0": {
+        "width": 1120,
+        "height": 500,
+        "left": 196,
+        "top": 4124.90625,
+        "paddingLeft": 0,
+        "paddingRight": 0,
+        "className": "mx-auto w-full max-w-[1120px] relative overflow-hidden rounded-2xl lg:aspect-[1120/500]"
+      },
+      "spotlightFrame": null,
+      "spotlightSearch": null,
+      "spotlightCount": null
+    }
+  },
+  {
+    "name": "awards",
+    "url": "http://127.0.0.1:3100/awards",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "metrics": {
+      "header": {
+        "width": 1440,
+        "height": 80,
+        "left": 0,
+        "top": 0,
+        "paddingLeft": 144,
+        "paddingRight": 144,
+        "className": "w-full px-6 sm:px-10 lg:px-36 sticky top-0 z-20 flex min-h-20 flex-wrap items-center justify-between gap-y-2 bg-[rgba(16,20,23,0.8)] py-3"
+      },
+      "main": {
+        "width": 1440,
+        "height": 6097,
+        "left": 0,
+        "top": 80,
+        "paddingLeft": 0,
+        "paddingRight": 0,
+        "className": "flex flex-1 flex-col gap-16 py-12 sm:gap-20 sm:py-16 lg:gap-[120px] lg:py-24"
+      },
+      "footer": {
+        "width": 1440,
+        "height": 193,
+        "left": 0,
+        "top": 6177,
+        "paddingLeft": 90,
+        "paddingRight": 90,
+        "className": "flex w-full flex-wrap items-center justify-between gap-6 border-t border-[#2E3940] px-6 py-10 sm:px-10 lg:px-22.5"
+      },
+      "max1152_0": {
+        "width": 1152,
+        "height": 191.625,
+        "left": 144,
+        "top": 280,
+        "paddingLeft": 0,
+        "paddingRight": 0,
+        "className": "mx-auto w-full max-w-[1152px] relative z-10 flex flex-col items-start gap-3 sm:gap-4 lg:gap-[10px]"
+      },
+      "max1152_1": {
+        "width": 1152,
+        "height": 4618,
+        "left": 144,
+        "top": 843,
+        "paddingLeft": 0,
+        "paddingRight": 0,
+        "className": "mx-auto w-full max-w-[1152px] flex flex-col gap-10 lg:gap-[120px]"
+      },
+      "max1224_0": {
+        "width": 1152,
+        "height": 500,
+        "left": 144,
+        "top": 5581,
+        "paddingLeft": 0,
+        "paddingRight": 0,
+        "className": "mx-auto w-full max-w-[1224px] flex items-center justify-center"
+      },
+      "max1224_1": null,
+      "max1120_0": {
+        "width": 1120,
+        "height": 500,
+        "left": 160,
+        "top": 5581,
+        "paddingLeft": 0,
+        "paddingRight": 0,
+        "className": "mx-auto w-full max-w-[1120px] relative overflow-hidden rounded-2xl lg:aspect-[1120/500]"
+      },
+      "spotlightFrame": null,
+      "spotlightSearch": null,
+      "spotlightCount": null
+    }
+  },
+  {
+    "name": "kudos",
+    "url": "http://127.0.0.1:3100/kudos",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "metrics": {
+      "header": {
+        "width": 1440,
+        "height": 80,
+        "left": 0,
+        "top": 0,
+        "paddingLeft": 144,
+        "paddingRight": 144,
+        "className": "w-full px-6 sm:px-10 lg:px-36 sticky top-0 z-20 flex min-h-20 flex-wrap items-center justify-between gap-y-2 bg-[rgba(16,20,23,0.8)] py-3"
+      },
+      "main": {
+        "width": 1440,
+        "height": 8635.421875,
+        "left": 0,
+        "top": 80,
+        "paddingLeft": 0,
+        "paddingRight": 0,
+        "className": "flex flex-1 flex-col gap-16 pb-16"
+      },
+      "footer": {
+        "width": 1440,
+        "height": 193,
+        "left": 0,
+        "top": 8715.421875,
+        "paddingLeft": 90,
+        "paddingRight": 90,
+        "className": "flex w-full flex-wrap items-center justify-between gap-6 border-t border-[#2E3940] px-6 py-10 sm:px-10 lg:px-22.5"
+      },
+      "max1152_0": {
+        "width": 1152,
+        "height": 8065.421875,
+        "left": 144,
+        "top": 586,
+        "paddingLeft": 0,
+        "paddingRight": 0,
+        "className": "mx-auto w-full max-w-[1152px] flex flex-col gap-16 lg:gap-[120px]"
+      },
+      "max1152_1": null,
+      "max1224_0": null,
+      "max1224_1": null,
+      "max1120_0": null,
+      "spotlightFrame": {
+        "width": 1152,
+        "height": 548,
+        "left": 144,
+        "top": 1649.109375,
+        "paddingLeft": 24,
+        "paddingRight": 24,
+        "className": "relative flex h-137 w-full flex-col gap-4 overflow-hidden rounded-[47px] border border-[#998C5F] p-6"
+      },
+      "spotlightSearch": {
+        "width": 154,
+        "height": 16.375,
+        "left": 207.8125,
+        "top": 1686.109375,
+        "paddingLeft": 0,
+        "paddingRight": 0,
+        "className": "bg-transparent text-[10.919px] font-medium tracking-[0.102px] text-white placeholder:text-white focus:outline-none"
+      },
+      "spotlightCount": {
+        "text": "KUDOS",
+        "left": 497,
+        "top": 198,
+        "width": 446,
+        "height": 98
+      }
+    }
+  }
+]

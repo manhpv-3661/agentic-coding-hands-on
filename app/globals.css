@@ -1,8 +1,27 @@
-@import "tailwindcss";
+@import "tailwindcss" source(none);
+@source "./";
+@source "../lib";
+@source "../hooks";
+
+/* Tailwind v4 auto-scans the whole repo (respecting .gitignore) for class
+   candidates. `plans/`, `docs/`, `.claude/`, `output/`, and `supabase/` hold
+   markdown reports and leftover binary screenshot crops from prior planning
+   sessions — none of it is app source, and scanning binary/report content
+   has produced corrupt utility candidates (e.g. a stray null byte inside a
+   generated `.tracking-[...]` selector) that broke the CSS build. Exclude
+   them explicitly so only real source is scanned. */
+@source not "../plans";
+@source not "../docs";
+@source not "../.claude";
+@source not "../output";
+@source not "../supabase";
+@source not "../coverage";
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-montserrat: "Montserrat", "Avenir Next", "Segoe UI", sans-serif;
+  --font-montserrat-alternates: "Montserrat Alternates", "Montserrat", "Avenir Next", "Segoe UI", sans-serif;
 }
 
 @theme inline {
@@ -27,4 +46,20 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-montserrat), system-ui, sans-serif;
+}
+
+.font-montserrat-variable {
+  --font-montserrat: "Montserrat", "Avenir Next", "Segoe UI", sans-serif;
+}
+
+.font-montserrat-alternates-variable {
+  --font-montserrat-alternates: "Montserrat Alternates", "Montserrat", "Avenir Next", "Segoe UI", sans-serif;
+}
+
+.font-montserrat {
+  font-family: var(--font-montserrat), system-ui, sans-serif;
+}
+
+.font-montserrat-alternates {
+  font-family: var(--font-montserrat-alternates), var(--font-montserrat), system-ui, sans-serif;
 }

@@ -22,6 +22,10 @@ interface SiteHeaderProps {
   account: Dictionary["shared"]["account"];
   /** Notification panel copy (`shared.notifications`). */
   notifications: Dictionary["shared"]["notifications"];
+  /** Icon-only control aria-labels (`shared.a11y`) — optional/defaulted so
+   * existing callers/tests that predate this prop keep compiling unchanged;
+   * falls back to the English design labels when omitted. */
+  a11y?: Dictionary["shared"]["a11y"];
 }
 
 /**
@@ -31,9 +35,8 @@ interface SiteHeaderProps {
  * Layout: logo + nav links (left) vs language/notification/account (right),
  * `justify-between` across the full viewport width — the Figma frame is
  * 1512px wide but the header itself must fill 100% of the real viewport
- * (see code-rules.md rule 3, Sizing), so padding uses the same responsive
- * scale as `login-header.tsx` (`lg:px-36` = 144px matches the design at
- * desktop width).
+ * (see code-rules.md rule 3, Sizing), padded via `PageGutter`'s flat 144px
+ * gutter (desktop-only, no breakpoint scaling — matches `login-header.tsx`).
  *
  * Nav hrefs: "About SAA 2025" is `/`, "Award Information" routes to
  * `/awards`, "Sun* Kudos" routes to `/kudos` (FR-7) — both are real,
@@ -42,7 +45,7 @@ interface SiteHeaderProps {
  * route highlighted "About SAA 2025") — `/` matches exactly, `/awards`
  * and `/kudos` match by prefix so nested routes under them stay active.
  */
-export function SiteHeader({ locale, nav, account, notifications }: SiteHeaderProps) {
+export function SiteHeader({ locale, nav, account, notifications, a11y }: SiteHeaderProps) {
   const handleLogoClick = useScrollToTopOnHomeClick("/");
   const pathname = usePathname();
   const isActive = (href: string) =>
@@ -55,13 +58,13 @@ export function SiteHeader({ locale, nav, account, notifications }: SiteHeaderPr
       className="sticky top-0 z-20 flex min-h-20 flex-wrap items-center justify-between gap-y-2 bg-[rgba(16,20,23,0.8)] py-3"
     >
       {/* mm:I2167:9091;186:2166 */}
-      <div className="flex items-center gap-4 sm:gap-8 lg:gap-16">
+      <div className="flex items-center gap-16">
         {/* mm:I2167:9091;178:1033 */}
         <Link
           href="/"
-          aria-label="Sun* Annual Awards 2025 — home"
+          aria-label={`Sun* Annual Awards 2025 — ${a11y?.logoHomeSuffix ?? "home"}`}
           onClick={handleLogoClick}
-          className="flex items-center gap-2"
+          className="shrink-0"
         >
           {/* mm:I2167:9091;178:1033;178:1030 */}
           <Image
@@ -71,33 +74,9 @@ export function SiteHeader({ locale, nav, account, notifications }: SiteHeaderPr
             height={48}
             priority
           />
-          {/*
-           * Ground truth (I2167:9091;178:1033;178:1030) is a single
-           * flattened 52x48 raster that bakes a 4-line "Sun* / Annual /
-           * Awards / 2025" wordmark into the icon pixels — confirmed by
-           * sampling the exported PNG directly (white, anti-aliased text
-           * spans roughly x:26-52,y:16-48). There's no separate TEXT child
-           * node in the Figma tree to read an exact font from
-           * (get_node_context on the instance returns one RECTANGLE child
-           * only), so a pixel-identical recreation isn't recoverable from
-           * MCP data. `public/homepage-saa/Logo.png` ships icon-only.
-           * Rather than guess a font match or drop the wordmark, render
-           * the same words as real text next to the icon using this
-           * header's existing brand typeface (`font-montserrat`, the same
-           * token `NavLink` uses) so the brand name stays legible.
-           */}
-          <span
-            aria-hidden="true"
-            className="font-montserrat flex flex-col justify-center text-[10px] leading-2.75 font-bold tracking-[0.2px] text-white uppercase"
-          >
-            <span>Sun*</span>
-            <span>Annual</span>
-            <span>Awards</span>
-            <span>2025</span>
-          </span>
         </Link>
         {/* mm:I2167:9091;178:653 */}
-        <nav className="flex flex-wrap items-center gap-1 sm:gap-3 lg:gap-6">
+        <nav className="flex flex-wrap items-center gap-6">
           <NavLink href="/" label={nav.aboutSaa} selected={isActive("/")} />
           <NavLink href="/awards" label={nav.awardInfo} selected={isActive("/awards")} />
           <NavLink href="/kudos" label={nav.kudos} selected={isActive("/kudos")} />
@@ -108,9 +87,14 @@ export function SiteHeader({ locale, nav, account, notifications }: SiteHeaderPr
           -> Account (I2167:9091;186:1597), per re-fetched node x-offsets
           0-40 / 56-164 / 180-220 within the 220px cluster. */}
       <div className="flex items-center gap-4">
-        <NotificationBell empty={notifications.empty} />
+        <NotificationBell empty={notifications.empty} ariaLabel={a11y?.notifications} />
         <LanguageSelector initialLocale={locale} />
-        <AccountMenuButton profile={account.profile} signOut={account.signOut} />
+        <AccountMenuButton
+          profile={account.profile}
+          signOut={account.signOut}
+          menuAriaLabel={a11y?.accountMenu}
+          panelAriaLabel={a11y?.account}
+        />
       </div>
     </PageGutter>
   );

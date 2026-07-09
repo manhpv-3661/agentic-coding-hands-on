@@ -11,6 +11,10 @@ export interface MentionSuggestionsProps {
    * `contentEditable` while this popup is open. Defaults to the first
    * option. */
   highlightedIndex?: number;
+  /** Listbox aria-label (`kudos.compose.content.mentionSuggestionsAria`) —
+   * optional/defaulted so existing callers/tests that predate this prop
+   * keep compiling unchanged. */
+  ariaLabel?: string;
 }
 
 /** Case-insensitive substring filter shared with `RichTextEditor`'s
@@ -36,6 +40,7 @@ export function MentionSuggestions({
   onSelect,
   open,
   highlightedIndex = 0,
+  ariaLabel = "Mention suggestions",
 }: MentionSuggestionsProps) {
   if (!open) return null;
 
@@ -45,7 +50,7 @@ export function MentionSuggestions({
   return (
     <ul
       role="listbox"
-      aria-label="mention-suggestions"
+      aria-label={ariaLabel}
       onMouseDown={(event) => event.preventDefault()}
       className="absolute z-20 mt-1 flex max-h-40 flex-col gap-1 overflow-y-auto rounded-md border border-white/20 bg-[#101317] p-1 shadow-lg"
     >

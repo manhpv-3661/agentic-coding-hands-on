@@ -1,6 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { KUDOS_HASHTAGS_MAX_COUNT } from "@/lib/kudos/kudos-compose-limits";
+import { addTag, addTags, isDuplicateTag } from "@/lib/kudos/kudos-hashtag-merge";
+import { HashtagCatalogDropdown, type HashtagCatalogDropdownGroupLabels } from "./hashtag-catalog-dropdown";
 
 export interface HashtagInputLabels {
   /** Field caption, also the closed trigger's first text line (ground truth
@@ -12,12 +15,18 @@ export interface HashtagInputLabels {
   max: string;
   error: string;
   remove: string;
+  /** Catalog/group-preset captions (Phase 04, additive; optional+defaulted). */
+  browse?: string;
+  group?: string;
+  groups?: HashtagCatalogDropdownGroupLabels;
 }
 
 export interface HashtagInputProps {
   value: string[];
   onChange: (tags: string[]) => void;
-  /** Cap on the number of chips (default 5, F007 FR-11/12). */
+  /** Cap on the number of chips (default `KUDOS_HASHTAGS_MAX_COUNT`, F007
+   * FR-11/12 — same constant the server re-checks in `createKudosAction`,
+   * review finding H1). */
   max?: number;
   error?: string;
   labels: HashtagInputLabels;
@@ -48,8 +57,19 @@ function PlusIcon() {
  * truth componentId 186:2757, the same closed button `image-upload.tsx`
  * uses for "+Ảnh") — the text-entry row is revealed only once the user
  * clicks it (FR-22 restyle).
- */
-export function HashtagInput({ value, onChange, max = 5, error, labels, id }: HashtagInputProps) {
+ *
+ * Phase 04 additively wires in `HashtagCatalogDropdown` (predefined-tag
+ * checklist + group presets, INVENTED content, see
+ * `lib/kudos/kudos-hashtag-catalog.ts`), via `toggleCatalogTag`/`applyGroup`
+ * below reusing `addTag`/`addTags` — same rule as `commit()`. */
+export function HashtagInput({
+  value,
+  onChange,
+  max = KUDOS_HASHTAGS_MAX_COUNT,
+  error,
+  labels,
+  id,
+}: HashtagInputProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [text, setText] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -61,19 +81,30 @@ export function HashtagInput({ value, onChange, max = 5, error, labels, id }: Ha
   }, [isOpen]);
 
   function commit() {
-    const trimmed = text.trim();
-    if (!trimmed || atMax) return;
-
-    const tag = trimmed.startsWith("#") ? trimmed : `#${trimmed}`;
-    const isDuplicate = value.some((existing) => existing.toLowerCase() === tag.toLowerCase());
-    if (!isDuplicate) {
-      onChange([...value, tag]);
-    }
+    if (!text.trim()) return;
+    const next = addTag(value, text, max);
+    if (next !== value) onChange(next);
     setText("");
   }
 
   function removeAt(index: number) {
     onChange(value.filter((_, i) => i !== index));
+  }
+
+  /** Dropdown row click: remove if selected, else add (no-op at max). */
+  function toggleCatalogTag(tag: string) {
+    if (isDuplicateTag(value, tag)) {
+      onChange(value.filter((existing) => existing.toLowerCase() !== tag.toLowerCase()));
+      return;
+    }
+    const next = addTag(value, tag, max);
+    if (next !== value) onChange(next);
+  }
+
+  /** Group preset: bulk-add, silently dropping overflow past `max`. */
+  function applyGroup(tags: string[]) {
+    const next = addTags(value, tags, max);
+    if (next !== value) onChange(next);
   }
 
   return (
@@ -147,6 +178,15 @@ export function HashtagInput({ value, onChange, max = 5, error, labels, id }: Ha
             </span>
           </button>
         )}
+
+        {/* Catalog dropdown + group preset (Phase 04, additive). */}
+        <HashtagCatalogDropdown
+          value={value}
+          atMax={atMax}
+          onToggleTag={toggleCatalogTag}
+          onApplyGroup={applyGroup}
+          labels={labels}
+        />
       </div>
 
       {error && (

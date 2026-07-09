@@ -5,6 +5,11 @@ import { useDismissableMenu } from "@/hooks/use-dismissable-menu";
 interface NotificationBellProps {
   /** Empty-state copy shown in the notification panel (`shared.notifications.empty`). */
   empty: string;
+  /** Trigger + panel aria-label (`shared.a11y.notifications`) — the same
+   * text labels both (identical ground-truth string), so one prop covers
+   * both spots. Optional/defaulted to the English design label so existing
+   * callers/tests that predate this prop keep compiling unchanged. */
+  ariaLabel?: string;
 }
 
 /**
@@ -55,7 +60,7 @@ function BellIcon() {
  * `role="status"` rather than `role="menu"` — `menu` implies `menuitem`
  * children for assistive tech to navigate, which this empty state has none of.
  */
-export function NotificationBell({ empty }: NotificationBellProps) {
+export function NotificationBell({ empty, ariaLabel = "Notifications" }: NotificationBellProps) {
   const { open, containerRef, triggerProps } = useDismissableMenu();
 
   return (
@@ -64,7 +69,7 @@ export function NotificationBell({ empty }: NotificationBellProps) {
       {/* mm:I2167:9091;186:2101;186:2020 */}
       <button
         type="button"
-        aria-label="Notifications"
+        aria-label={ariaLabel}
         {...triggerProps}
         className="flex h-10 w-10 items-center justify-center rounded-[4px] bg-transparent text-white transition-colors duration-200 ease-out hover:bg-white/10"
       >
@@ -73,7 +78,7 @@ export function NotificationBell({ empty }: NotificationBellProps) {
       {open && (
         <div
           role="status"
-          aria-label="Notifications"
+          aria-label={ariaLabel}
           className="absolute top-12 right-0 z-30 w-64 rounded-lg border border-[#2E3940] bg-[#101317] p-4 text-sm text-white shadow-lg"
         >
           {empty}

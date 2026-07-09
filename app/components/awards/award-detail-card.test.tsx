@@ -6,12 +6,17 @@ vi.mock("next/font/google", () => ({
 }));
 
 import { AWARD_CATEGORIES } from "@/lib/awards/award-categories";
+import { AWARD_CATEGORY_FALLBACK_ROWS } from "@/lib/awards/award-categories-fallback";
 import { AwardDetailCard } from "./award-detail-card";
 import { buildAwardDetailEntries } from "./award-detail-data";
 import { vi as viDictionary } from "@/lib/i18n/dictionaries/vi";
 import { en as enDictionary } from "@/lib/i18n/dictionaries/en";
 
-const sampleEntries = buildAwardDetailEntries(viDictionary.awards.detail);
+const sampleEntries = buildAwardDetailEntries(
+  AWARD_CATEGORY_FALLBACK_ROWS,
+  viDictionary.awards.detail,
+  "vi",
+);
 const sampleEntry = sampleEntries[0];
 
 describe("AwardDetailCard", () => {
@@ -68,7 +73,11 @@ describe("AwardDetailCard", () => {
   });
 
   it("renders EN quantity/value labels and split figures correctly (regression: en.ts label spacing)", () => {
-    const enEntries = buildAwardDetailEntries(enDictionary.awards.detail);
+    const enEntries = buildAwardDetailEntries(
+      AWARD_CATEGORY_FALLBACK_ROWS,
+      enDictionary.awards.detail,
+      "en",
+    );
     const enEntry = enEntries[0];
     const quantityLabel = enDictionary.awards.detail.quantityLabel;
     const valueLabel = enDictionary.awards.detail.valueLabel;

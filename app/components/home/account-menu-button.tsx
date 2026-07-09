@@ -8,6 +8,13 @@ interface AccountMenuButtonProps {
   profile: string;
   /** "Sign out" menu item label (`shared.account.signOut`). */
   signOut: string;
+  /** Trigger button aria-label (`shared.a11y.accountMenu`) — distinct from
+   * `panelAriaLabel` (the audit found these are two different strings, not
+   * a repeat). Optional/defaulted to the English design label so existing
+   * callers/tests that predate this prop keep compiling unchanged. */
+  menuAriaLabel?: string;
+  /** Opened panel aria-label (`shared.a11y.account`). */
+  panelAriaLabel?: string;
 }
 
 /**
@@ -45,7 +52,12 @@ function UserProfileIcon() {
  * stub (no navigation); "Sign out" calls the real `signOutAction` server
  * action (Supabase `auth.signOut()` + redirect to `/login`).
  */
-export function AccountMenuButton({ profile, signOut }: AccountMenuButtonProps) {
+export function AccountMenuButton({
+  profile,
+  signOut,
+  menuAriaLabel = "Account menu",
+  panelAriaLabel = "Account",
+}: AccountMenuButtonProps) {
   const { open, containerRef, triggerProps } = useDismissableMenu();
 
   return (
@@ -53,7 +65,7 @@ export function AccountMenuButton({ profile, signOut }: AccountMenuButtonProps) 
     <div ref={containerRef} className="relative">
       <button
         type="button"
-        aria-label="Account menu"
+        aria-label={menuAriaLabel}
         {...triggerProps}
         className="flex h-10 w-10 items-center justify-center rounded-[4px] border border-[#998C5F] bg-transparent text-white transition-colors duration-200 ease-out hover:bg-white/10"
       >
@@ -62,7 +74,7 @@ export function AccountMenuButton({ profile, signOut }: AccountMenuButtonProps) 
       {open && (
         <div
           role="menu"
-          aria-label="Account"
+          aria-label={panelAriaLabel}
           className="absolute top-12 right-0 z-30 flex w-48 flex-col overflow-hidden rounded-lg border border-[#2E3940] bg-[#101317] text-sm text-white shadow-lg"
         >
           <button

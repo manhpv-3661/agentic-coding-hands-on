@@ -54,7 +54,11 @@
     "build-verify-final/types/**/*.ts",
     "build-verify-final/dev/types/**/*.ts",
     "build-measure-p3/types/**/*.ts",
-    "build-measure-p3/dev/types/**/*.ts"
+    "build-measure-p3/dev/types/**/*.ts",
+    "build-manual-verify/types/**/*.ts",
+    "build-manual-verify/dev/types/**/*.ts",
+    "dev-authless/types/**/*.ts",
+    "dev-authless/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"
