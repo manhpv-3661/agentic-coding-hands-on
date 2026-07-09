@@ -2,7 +2,58 @@
 
 import type { RefObject } from "react";
 import type { Dictionary } from "@/lib/i18n/dictionary";
-import { COLLECTION_ICONS, HERO_TIER_IDS, splitHeadingAndBody } from "./community-standards-content";
+
+/**
+ * Hero-tier ids, in display order — index-aligned with the dictionary's
+ * `heroTiers` array (New/Rising/Super/Legend Hero). Used only as React
+ * `key`s; the badge pill itself reuses the exact style already shipped for
+ * `KudosPersonBlock` (F008, MoMorph component set `3007:17505`) for pixel
+ * parity — no new badge component.
+ */
+const HERO_TIER_IDS = ["new-hero", "rising-hero", "super-hero", "legend-hero"] as const;
+
+interface CollectionIconMeta {
+  id: string;
+  /** Rendered inside the swatch circle. */
+  initials: string;
+  /** Swatch fill — reuses `avatar.tsx`'s existing palette hexes so the new
+   * swatches read as the same design language as every other
+   * initials-in-a-colored-circle placeholder in this app. */
+  color: string;
+}
+
+/**
+ * Collection-icon ids + swatch metadata, in display order — index-aligned
+ * with the dictionary's `collectionIcons` array (Revival, Touch of Light,
+ * Stay Gold, Flow to Horizon, Beyond the Boundary, Root Further). No
+ * exportable illustration assets exist for these 6 badges (Figma nodes are
+ * component *instances*, not exported images — the same situation
+ * `avatar.tsx` already solved for people avatars), so each renders as an
+ * initials-in-colored-circle swatch instead of a fetched image.
+ */
+const COLLECTION_ICONS: CollectionIconMeta[] = [
+  { id: "revival", initials: "RV", color: "#8FD3FF" },
+  { id: "touch-of-light", initials: "TL", color: "#FFD08A" },
+  { id: "stay-gold", initials: "SG", color: "#FFEA9E" },
+  { id: "flow-to-horizon", initials: "FH", color: "#FFB0B0" },
+  { id: "beyond-the-boundary", initials: "BB", color: "#B6F2C0" },
+  { id: "root-further", initials: "RF", color: "#D7B8FF" },
+];
+
+/**
+ * Splits a "heading\nbody" dictionary string into its two parts. The P1
+ * dictionary bundles the gold section heading and its white description
+ * paragraph into one string (`recipientHeading`/`senderHeading`) — this
+ * mirrors the ground truth's two separate Figma text nodes at render time
+ * without re-shaping the dictionary (out of this phase's file ownership).
+ * Falls back to an empty body when no newline is present (matches
+ * `nationalHeading`, which the dictionary keeps heading-only).
+ */
+function splitHeadingAndBody(text: string): { heading: string; body: string } {
+  const newlineIndex = text.indexOf("\n");
+  if (newlineIndex === -1) return { heading: text, body: "" };
+  return { heading: text.slice(0, newlineIndex), body: text.slice(newlineIndex + 1) };
+}
 
 type CommunityStandardsLabels = Dictionary["kudos"]["compose"]["communityStandards"];
 
@@ -29,9 +80,9 @@ function HeroTierRow({ tier }: { tier: CommunityStandardsLabels["heroTiers"][num
 }
 
 /** One collection-icon swatch — initials-in-colored-circle substitute for
- * the un-exportable Figma badge illustrations (`community-standards-content.ts`
- * doc comment), same convention as `avatar.tsx`'s people avatars. */
-function CollectionIconTile({ icon, name }: { icon: (typeof COLLECTION_ICONS)[number]; name: string }) {
+ * the un-exportable Figma badge illustrations (see `COLLECTION_ICONS`
+ * above), same convention as `avatar.tsx`'s people avatars. */
+function CollectionIconTile({ icon, name }: { icon: CollectionIconMeta; name: string }) {
   return (
     <div className="flex w-20 flex-col items-center gap-2 text-center">
       <span

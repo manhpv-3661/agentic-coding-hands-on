@@ -33,7 +33,7 @@ export interface ComposeFormErrors {
   nickname?: string;
 }
 
-export interface ComposeFormErrorMessages {
+interface ComposeFormErrorMessages {
   recipient: string;
   title: string;
   content: string;

@@ -3,7 +3,9 @@
 import { useState } from "react";
 import { useDismissableMenu } from "@/hooks/use-dismissable-menu";
 import type { KudosPerson } from "@/lib/kudos/kudos-types";
+import { cn } from "@/lib/ui/cn";
 import { ChevronDownIcon } from "./chevron-down-icon";
+import { FieldError } from "./field-error";
 
 export interface RecipientSelectLabels {
   placeholder: string;
@@ -59,9 +61,10 @@ export function RecipientSelect({ options, value, onChange, error, labels, id }:
         className="flex w-full items-center justify-between rounded-lg border border-[#998C5F] bg-white px-6 py-4 text-left text-[#00101A]"
       >
         <span
-          className={`text-base leading-6 font-bold tracking-[0.15px] ${
-            value ? "text-[#00101A]" : "text-[#999]"
-          }`}
+          className={cn(
+            "text-base leading-6 font-bold tracking-[0.15px]",
+            value ? "text-[#00101A]" : "text-[#999]",
+          )}
         >
           {value?.name ?? labels.placeholder}
         </span>
@@ -99,11 +102,7 @@ export function RecipientSelect({ options, value, onChange, error, labels, id }:
         </div>
       )}
 
-      {error && (
-        <p id={errorId} className="text-xs font-semibold text-[#CF1322]">
-          {error}
-        </p>
-      )}
+      {error && <FieldError id={errorId}>{error}</FieldError>}
     </div>
   );
 }

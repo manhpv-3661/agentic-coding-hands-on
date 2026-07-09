@@ -1,3 +1,12 @@
+// Shared with `compose-dialog-fields.tsx`'s title input — both fields render
+// the exact same bordered/rounded text-input chrome (ground truth: identical
+// class cluster was duplicated verbatim in both files). Aligns with
+// `insert-link-dialog.tsx`'s local `FIELD_CLASS` pattern, exported here
+// since `compose-dialog-fields.tsx` already imports `AnonymousToggle` from
+// this module.
+export const INPUT_FIELD_CLASS =
+  "h-14 w-full rounded-lg border border-[#998C5F] bg-white px-4 text-base font-bold text-[#00101A] placeholder:text-[#999] focus:outline-none";
+
 export interface AnonymousToggleLabels {
   checkbox: string;
   nicknameLabel: string;
@@ -46,7 +55,7 @@ export function AnonymousToggle({
             value={nickname}
             onChange={(event) => onNicknameChange(event.target.value)}
             placeholder={labels.nicknamePlaceholder}
-            className="h-14 w-full rounded-lg border border-[#998C5F] bg-white px-4 text-base font-bold text-[#00101A] placeholder:text-[#999] focus:outline-none"
+            className={INPUT_FIELD_CLASS}
           />
           {nicknameError && (
             <p className="text-sm font-bold text-[#D4271D]">{nicknameError}</p>

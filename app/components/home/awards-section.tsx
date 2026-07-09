@@ -1,4 +1,5 @@
 import { montserrat } from "@/app/fonts";
+import { AWARD_CATEGORY_TITLES, resolveAwardCategoryMeta } from "@/lib/awards/award-category-meta";
 import type { AwardCategoryRow } from "@/lib/awards/award-categories-repository";
 import type { Dictionary } from "@/lib/i18n/dictionary";
 import { ContentFrame, PageGutter } from "../layout/page-layout";
@@ -9,18 +10,17 @@ type AwardSlug = keyof Dictionary["homepage"]["awards"]["items"];
 
 /**
  * Per-slug static metadata that never comes from the DB and never changes
- * with locale: the hardcoded English title (brand/category name, not
- * translated — locked decision, mirrors `award-detail-data.ts`'s
- * `CATEGORY_META`) and which `homepage.awards.items.<key>` dictionary entry
- * supplies this card's description. Kept as its own copy here (not imported
- * from `award-detail-data.ts`) because that map is private to the
- * `/awards`-detail feature (phase-02, `app/components/awards/*` is out of
- * this phase's ownership) and keys into a different dict slice
- * (`awards.detail.entries`, not `homepage.awards.items`).
+ * with locale: which `homepage.awards.items.<key>` dictionary entry supplies
+ * this card's description. The title itself now lives in the shared
+ * `AWARD_CATEGORY_TITLES` map (`lib/awards/award-category-meta.ts`, also
+ * used by `award-detail-data.ts`'s `/awards` catalog) — this map only
+ * carries what's unique to this consumer (mirrors `award-detail-data.ts`'s
+ * `CATEGORY_META` shape).
  *
  * Keyed by slug (not DB row order) so a slug present in `award_categories`
  * but missing here is detected explicitly — skipped with a `console.warn`
- * rather than silently misaligned, same guard as `buildAwardDetailEntries`.
+ * rather than silently misaligned, same guard
+ * (`resolveAwardCategoryMeta`) as `buildAwardDetailEntries`.
  *
  * Original MoMorph instance node ids (node `5005:14974`, kept here only for
  * traceability — no longer threaded per-row since the grid order now comes
@@ -29,13 +29,13 @@ type AwardSlug = keyof Dictionary["homepage"]["awards"]["items"];
  * best-manager = `2167:9079`, signature-2025-creator = `2167:9080`,
  * mvp = `2167:9081`.
  */
-const AWARD_CARD_META: Readonly<Record<string, { title: string; itemKey: AwardSlug }>> = {
-  "top-talent": { title: "Top Talent", itemKey: "topTalent" },
-  "top-project": { title: "Top Project", itemKey: "topProject" },
-  "top-project-leader": { title: "Top Project Leader", itemKey: "topProjectLeader" },
-  "best-manager": { title: "Best Manager", itemKey: "bestManager" },
-  "signature-2025-creator": { title: "Signature 2025 - Creator", itemKey: "signatureCreator" },
-  mvp: { title: "MVP (Most Valuable Person)", itemKey: "mvp" },
+const AWARD_ITEM_KEYS: Readonly<Record<string, { itemKey: AwardSlug }>> = {
+  "top-talent": { itemKey: "topTalent" },
+  "top-project": { itemKey: "topProject" },
+  "top-project-leader": { itemKey: "topProjectLeader" },
+  "best-manager": { itemKey: "bestManager" },
+  "signature-2025-creator": { itemKey: "signatureCreator" },
+  mvp: { itemKey: "mvp" },
 };
 
 type AwardCardEntry = Omit<AwardCardProps, "detailsCta"> & { nodeId: string };
@@ -43,11 +43,12 @@ type AwardCardEntry = Omit<AwardCardProps, "detailsCta"> & { nodeId: string };
 /**
  * Builds this grid's card props by merging `award_categories` rows (slug,
  * order, thumbnail — `getAwardCategories()`, phase-02) with
- * `homepage.awards.items` (localized description) and the local
- * `AWARD_CARD_META` (title, dict key) by `slug` — the same slug-merge shape
- * `award-detail-data.ts`'s `buildAwardDetailEntries` uses for the `/awards`
- * page, scoped to this file since the homepage grid needs a different dict
- * slice and title set (no quantity/value unit captions here).
+ * `homepage.awards.items` (localized description), the shared
+ * `AWARD_CATEGORY_TITLES` map (title), and the local `AWARD_ITEM_KEYS`
+ * (dict key) by `slug` — the same slug-merge shape `award-detail-data.ts`'s
+ * `buildAwardDetailEntries` uses for the `/awards` page, scoped to this
+ * file since the homepage grid needs a different dict slice (no
+ * quantity/value unit captions here).
  */
 function buildAwardCards(
   categories: AwardCategoryRow[],
@@ -56,19 +57,16 @@ function buildAwardCards(
   const cards: AwardCardEntry[] = [];
 
   for (const row of categories) {
-    const meta = AWARD_CARD_META[row.slug];
+    const meta = resolveAwardCategoryMeta(row.slug, AWARD_ITEM_KEYS, "awards-section", "title metadata");
 
     if (!meta) {
-      console.warn(
-        `[awards-section] no title metadata for award slug "${row.slug}", skipping card`,
-      );
       continue;
     }
 
     cards.push({
       nodeId: row.slug,
       thumbnailSrc: row.thumbnailSrc,
-      titleAlt: meta.title,
+      titleAlt: AWARD_CATEGORY_TITLES[row.slug],
       description: items[meta.itemKey].description,
       detailsHref: `/awards#${row.slug}`,
     });
@@ -77,7 +75,7 @@ function buildAwardCards(
   return cards;
 }
 
-export interface AwardsSectionProps {
+interface AwardsSectionProps {
   /** Section heading + per-award descriptions (`homepage.awards`). */
   awards: Dictionary["homepage"]["awards"];
   /** "Chi tiết" / "Details" CTA label, forwarded to every `<AwardCard>`

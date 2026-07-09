@@ -2,6 +2,7 @@ import type { KudosStats } from "@/lib/kudos/kudos-types";
 import type { Dictionary } from "@/lib/i18n/dictionary";
 import { HeartIcon } from "./kudos-card-icons";
 import { OpenGiftButton } from "./open-gift-button";
+import { SidebarPanel } from "./sidebar-panel";
 
 export interface KudosStatsBoxProps {
   stats: KudosStats;
@@ -36,7 +37,7 @@ export function KudosStatsBox({ stats, statsLabels, giftLabels }: KudosStatsBoxP
   ];
 
   return (
-    <div className="flex w-full flex-col gap-4 rounded-[17px] border border-[#998C5F] bg-[#00070C] p-6">
+    <SidebarPanel className="p-6">
       {/* Row/divider/button spacing: MoMorph `Nội dung` (2940:13490) is a
        * flex column with a uniform 16px gap across ALL its children
        * (rows + divider), not the 12px `gap-3` this used to carry. */}
@@ -73,6 +74,6 @@ export function KudosStatsBox({ stats, statsLabels, giftLabels }: KudosStatsBoxP
         ))}
       </dl>
       <OpenGiftButton labels={giftLabels} unopenedCount={stats.secretBoxUnopened} />
-    </div>
+    </SidebarPanel>
   );
 }

@@ -1,6 +1,6 @@
 import type { Dictionary } from "@/lib/i18n/dictionary";
 import type { KudosPerson } from "@/lib/kudos/kudos-types";
-import { AnonymousToggle } from "./anonymous-toggle";
+import { AnonymousToggle, INPUT_FIELD_CLASS } from "./anonymous-toggle";
 import type { ComposeFormErrors, ComposeFormState } from "./compose-form-helpers";
 import { FieldGroup } from "./field-group";
 import { HashtagInput } from "./hashtag-input";
@@ -8,7 +8,7 @@ import { ImageUpload } from "./image-upload";
 import { RecipientSelect } from "./recipient-select";
 import { RichTextEditor } from "./rich-text-editor";
 
-export interface ComposeDialogFieldsProps {
+interface ComposeDialogFieldsProps {
   state: ComposeFormState;
   errors: ComposeFormErrors;
   updateState: (patch: Partial<ComposeFormState>, errorKeys?: (keyof ComposeFormErrors)[]) => void;
@@ -71,7 +71,7 @@ export function ComposeDialogFields({
             value={state.title}
             onChange={(event) => updateState({ title: event.target.value }, ["title"])}
             placeholder={labels.title.placeholder}
-            className="h-14 w-full rounded-lg border border-[#998C5F] bg-white px-4 text-base font-bold text-[#00101A] placeholder:text-[#999] focus:outline-none"
+            className={INPUT_FIELD_CLASS}
           />
           {errors.title && (
             <p className="text-sm font-bold text-[#D4271D]">{errors.title}</p>

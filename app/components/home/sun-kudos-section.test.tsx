@@ -5,6 +5,10 @@ vi.mock("next/font/google", () => ({
   Montserrat: vi.fn(() => ({ className: "font-montserrat" })),
 }));
 
+vi.mock("next/font/local", () => ({
+  default: vi.fn(() => ({ className: "font-digital-numbers" })),
+}));
+
 import { SunKudosSection } from "./sun-kudos-section";
 import { vi as viDictionary } from "@/lib/i18n/dictionaries/vi";
 import { en as enDictionary } from "@/lib/i18n/dictionaries/en";

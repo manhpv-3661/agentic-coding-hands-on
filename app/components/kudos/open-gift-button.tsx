@@ -5,6 +5,7 @@ import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { openSecretBoxAction } from "@/app/kudos/actions";
 import { useDismissableMenu } from "@/hooks/use-dismissable-menu";
+import { CloseIcon, GiftIcon } from "./kudos-card-icons";
 
 export interface OpenGiftButtonLabels {
   openButton: string;
@@ -31,43 +32,6 @@ export interface OpenGiftButtonProps {
   labels: OpenGiftButtonLabels;
   /** `stats.secretBoxUnopened` threaded from `KudosStatsBox` — never duplicated/hardcoded here. */
   unopenedCount: number;
-}
-
-/** Gift icon on the "Mở Secret Box" button — `currentColor` inline SVG, 24px per design. */
-function GiftIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <rect x="3" y="9" width="18" height="11" rx="1" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M3 13h18" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M12 9v11" stroke="currentColor" strokeWidth="1.5" />
-      <path
-        d="M12 9c0-2 -1.5-4-3.5-4S5 6.5 5 8c0 1 1 1 1 1h6z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M12 9c0-2 1.5-4 3.5-4S19 6.5 19 8c0 1-1 1-1 1h-6z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-/** Top-right X close icon for the dialog (`MM_MEDIA_Close` in the ground truth, 19x19px). */
-function CloseIcon() {
-  return (
-    <svg width="19" height="19" viewBox="0 0 19 19" fill="none" aria-hidden="true">
-      <path
-        d="M1.5 1.5l16 16M17.5 1.5l-16 16"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
 }
 
 /**

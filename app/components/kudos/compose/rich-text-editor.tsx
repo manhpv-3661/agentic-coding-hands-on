@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { KUDOS_CONTENT_MAX_LENGTH } from "@/lib/kudos/kudos-compose-limits";
 import { CommunityStandardsLink } from "./community-standards-link";
+import { FieldError } from "./field-error";
 import { filterMentionNames, MentionSuggestions } from "./mention-suggestions";
 import {
   computeMentionInsertion,
@@ -13,7 +14,7 @@ import {
 } from "./rich-text-caret-helpers";
 import { RichTextToolbar, type RichTextToolbarLabels } from "./rich-text-toolbar";
 
-export interface RichTextEditorLabels {
+interface RichTextEditorLabels {
   placeholder: string;
   mentionHint: string;
   counterMax: string;
@@ -207,11 +208,7 @@ export function RichTextEditor({
         </span>
       </div>
 
-      {error && (
-        <p id="compose-content-error" className="text-xs font-semibold text-[#CF1322]">
-          {error}
-        </p>
-      )}
+      {error && <FieldError id="compose-content-error">{error}</FieldError>}
     </div>
   );
 }

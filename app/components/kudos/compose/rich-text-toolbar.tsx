@@ -7,10 +7,6 @@ export interface RichTextToolbarLabels {
   strikethrough: string;
   list: string;
   link: string;
-  /** Retired (FR-24): the link button no longer calls `window.prompt`, so
-   * this key is unused. Left in place — `lib/i18n` dict cleanup is owned by
-   * a later phase, not this one. */
-  linkPrompt: string;
   quote: string;
   /** Labels for the `InsertLinkDialog` opened by the link button (FR-24). */
   addLink: InsertLinkDialogLabels;

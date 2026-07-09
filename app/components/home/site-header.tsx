@@ -9,7 +9,7 @@ import type { Dictionary } from "@/lib/i18n/dictionary";
 import type { Locale } from "@/lib/i18n/locale";
 import { AccountMenuButton } from "./account-menu-button";
 import { PageGutter } from "../layout/page-layout";
-import { NavLink } from "./nav-link";
+import { isNavLinkActive, NavLink } from "./nav-link";
 import { NotificationBell } from "./notification-bell";
 
 interface SiteHeaderProps {
@@ -48,8 +48,7 @@ interface SiteHeaderProps {
 export function SiteHeader({ locale, nav, account, notifications, a11y }: SiteHeaderProps) {
   const handleLogoClick = useScrollToTopOnHomeClick("/");
   const pathname = usePathname();
-  const isActive = (href: string) =>
-    href === "/" ? pathname === "/" : pathname?.startsWith(href) ?? false;
+  const isActive = (href: string) => isNavLinkActive(pathname, href);
 
   return (
     // mm:2167:9091

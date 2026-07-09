@@ -14,7 +14,6 @@ const labels = {
     strikethrough: "Gạch ngang",
     list: "Danh sách",
     link: "Chèn liên kết",
-    linkPrompt: "Đường dẫn liên kết",
     quote: "Trích dẫn",
     addLink: {
       title: "Thêm đường dẫn",

@@ -1,32 +1,7 @@
 import Link from "next/link";
-import type { SVGProps } from "react";
+import { UpChevronIcon } from "./up-chevron-icon";
 
-/**
- * Up-right arrow icon shared by both hero CTA buttons — MoMorph component
- * `186:2691` (MM_MEDIA_Up), exported with `fill="white"` baked in. Inlined
- * with `currentColor` so each button's text color drives the icon color
- * (code-rules.md rule 2a).
- */
-function IconUp(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-      {...props}
-    >
-      <path
-        d="M8.49945 18.3104L5.68945 15.5004L12.0595 9.12043H7.10945V5.69043H18.3095V16.8904H14.8895V11.9404L8.49945 18.3104Z"
-        fill="currentColor"
-      />
-    </svg>
-  );
-}
-
-export interface HeroCtaButtonsProps {
+interface HeroCtaButtonsProps {
   /** "ABOUT AWARDS" destination — defaults to `/awards` (FR-17), matching
    * the header's "Award Information" nav link (see site-header.tsx). */
   aboutAwardsHref?: string;
@@ -68,7 +43,7 @@ export function HeroCtaButtons({
           </span>
         </span>
         {/* mm:I2167:9063;186:1766 */}
-        <IconUp className="h-6 w-6" />
+        <UpChevronIcon className="h-6 w-6" />
       </Link>
       {/* mm:2167:9064 */}
       <Link
@@ -83,7 +58,7 @@ export function HeroCtaButtons({
           </span>
         </span>
         {/* mm:I2167:9064;186:2761 */}
-        <IconUp className="h-6 w-6" />
+        <UpChevronIcon className="h-6 w-6" />
       </Link>
     </div>
   );

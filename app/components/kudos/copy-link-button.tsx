@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { cn } from "@/lib/ui/cn";
 import { LinkIcon } from "./kudos-card-icons";
 
 export interface CopyLinkButtonProps {
@@ -63,7 +64,7 @@ export function CopyLinkButton({ link, label, copiedLabel, copyFailedLabel, clas
   }
 
   return (
-    <span className={`relative inline-flex items-center ${className ?? ""}`}>
+    <span className={cn("relative inline-flex items-center", className)}>
       <button
         type="button"
         onClick={() => void handleCopy()}

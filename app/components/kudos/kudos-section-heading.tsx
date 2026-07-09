@@ -15,6 +15,8 @@
  * Pure presentational — no directive, safe on the server tree.
  */
 
+import { cn } from "@/lib/ui/cn";
+
 export interface KudosSectionHeadingProps {
   subtitle: string;
   title: string;
@@ -23,7 +25,7 @@ export interface KudosSectionHeadingProps {
 
 export function KudosSectionHeading({ subtitle, title, className }: KudosSectionHeadingProps) {
   return (
-    <div className={`flex w-full flex-col items-start gap-3 ${className ?? ""}`}>
+    <div className={cn("flex w-full flex-col items-start gap-3", className)}>
       <p className="font-montserrat text-2xl leading-8 font-bold text-white">{subtitle}</p>
       {/* Divider under subtitle, full content width, per MoMorph ground truth. */}
       <div className="h-px w-full bg-[#2E3940]" />

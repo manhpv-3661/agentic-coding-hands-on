@@ -375,7 +375,6 @@ export const vi = {
           strikethrough: "Gạch ngang",
           list: "Danh sách",
           link: "Chèn liên kết",
-          linkPrompt: "Đường dẫn liên kết",
           quote: "Trích dẫn",
           // FR-24 (F007 conformance) — MoMorph `OyDLDuSGEa` ("Addlink Box",
           // done), verbatim. Replaces the bare `window.prompt()` with a

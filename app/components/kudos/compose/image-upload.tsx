@@ -2,18 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { KUDOS_IMAGES_MAX_COUNT } from "@/lib/kudos/kudos-compose-limits";
-
-/** Ground-truth `MM_MEDIA_Plus` icon (24x24, screen ihQ26W78P2 node
- * I520:11647;662:9133;186:2760) — inlined since no icon set exists in this
- * repo yet. Decorative only; the button's own text carries the accessible
- * name. */
-function PlusIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    </svg>
-  );
-}
+import { ChipAddTrigger } from "./chip-add-trigger";
 
 export interface ImageUploadLabels {
   /** Field caption, also the closed trigger's first text line (ground truth
@@ -109,26 +98,16 @@ export function ImageUpload({
       {atMax ? (
         <span className="text-xs text-[#999]">{labels.max}</span>
       ) : (
-        <button
-          type="button"
-          // Explicit `aria-label`: the trigger's visible text is now the
-          // ground-truth two-line "Image / Tối đa 5" caption, but the
-          // accessible name should stay the concise "+Image" action label
-          // (same pattern `hashtag-input.tsx`'s closed trigger already uses).
-          aria-label={labels.add}
+        // Explicit `aria-label`: the trigger's visible text is now the
+        // ground-truth two-line "Image / Tối đa 5" caption, but the
+        // accessible name should stay the concise "+Image" action label
+        // (same pattern `hashtag-input.tsx`'s closed trigger already uses).
+        <ChipAddTrigger
+          ariaLabel={labels.add}
           onClick={() => inputRef.current?.click()}
-          className="inline-flex h-12 items-center gap-1 rounded-lg border border-[#998C5F] bg-white px-2 py-1"
-        >
-          <PlusIcon />
-          {/* Ground truth's trigger caption is one two-line TEXT node
-           * ("Image\nTối đa 5") rather than a "+Image" single line — the
-           * word and the max-count hint are always shown together, not
-           * swapped for a separate node once full. */}
-          <span className="flex flex-col text-left text-[11px] leading-4 font-bold tracking-[0.5px] text-[#999]">
-            <span>{labels.label}</span>
-            <span>{labels.max}</span>
-          </span>
-        </button>
+          label={labels.label}
+          max={labels.max}
+        />
       )}
 
       <input

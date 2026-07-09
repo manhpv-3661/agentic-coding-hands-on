@@ -5,6 +5,7 @@ import {
   KUDOS_HASHTAG_CATALOG,
   KUDOS_HASHTAG_GROUPS,
 } from "@/lib/kudos/kudos-hashtag-catalog";
+import { isDuplicateTag } from "@/lib/kudos/kudos-hashtag-merge";
 import { ChevronDownIcon } from "./chevron-down-icon";
 
 export interface HashtagCatalogDropdownGroupLabels {
@@ -13,7 +14,7 @@ export interface HashtagCatalogDropdownGroupLabels {
   teamwork: string;
 }
 
-export interface HashtagCatalogDropdownLabels {
+interface HashtagCatalogDropdownLabels {
   /** Trigger caption, e.g. "Add from list". */
   browse: string;
   /** Caption for the group preset `<select>`, doubles as its placeholder. */
@@ -41,10 +42,6 @@ const DEFAULT_LABELS: HashtagCatalogDropdownLabels = {
   group: "Choose a group",
   groups: { cultureValues: "Culture & values", performance: "Performance", teamwork: "Teamwork" },
 };
-
-function isSelected(value: string[], tag: string): boolean {
-  return value.some((existing) => existing.toLowerCase() === tag.toLowerCase());
-}
 
 /**
  * Additive catalog dropdown + group preset selector for `HashtagInput`
@@ -111,7 +108,7 @@ export function HashtagCatalogDropdown({
 
           <ul role="listbox" className="flex max-h-48 flex-col gap-1 overflow-y-auto">
             {KUDOS_HASHTAG_CATALOG.map((tag) => {
-              const selected = isSelected(value, tag);
+              const selected = isDuplicateTag(value, tag);
               const disableRow = atMax && !selected;
               return (
                 <li key={tag}>

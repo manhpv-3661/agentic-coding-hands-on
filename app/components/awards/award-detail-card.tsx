@@ -1,13 +1,12 @@
 import Image from "next/image";
-import { montserrat } from "@/app/fonts";
+import { GOLD_GLOW_BOX_SHADOW } from "@/lib/ui/gold-glow";
 import { AwardValueSection } from "./award-value-section";
 import type { AwardDetailEntry } from "./award-detail-types";
 
 // Data-model types live in `award-detail-types.ts` (split out to keep this
-// file under the project's 200-line guideline) — re-exported here since
-// `awards-catalog.tsx`/`award-detail-data.ts`/`award-value-section.tsx`
-// already import them from this module.
-export type { AwardValueVariant, AwardMetric, AwardDetailEntry } from "./award-detail-types";
+// file under the project's 200-line guideline) — `awards-catalog.tsx`,
+// `award-detail-data.ts`, and `award-value-section.tsx` import them directly
+// from there rather than via this module.
 
 export interface AwardDetailCardProps extends AwardDetailEntry {
   /** "Số lượng giải thưởng: " / English equivalent label prefix, already
@@ -68,7 +67,7 @@ export function AwardDetailCard({
   return (
     <div
       data-award-slug={slug}
-      className={`${montserrat.variable} flex w-full flex-row items-start gap-10 ${
+      className={`flex w-full flex-row items-start gap-10 ${
         imageSide === "right" ? "flex-row-reverse" : ""
       }`}
     >
@@ -77,7 +76,7 @@ export function AwardDetailCard({
           shared background with a runtime text overlay. */}
       <div
         className="relative aspect-square w-[336px] shrink-0 overflow-hidden rounded-3xl border-[0.955px] border-[#FFEA9E]"
-        style={{ boxShadow: "0 4px 4px 0 rgba(0, 0, 0, 0.25), 0 0 6px 0 #FAE287" }}
+        style={{ boxShadow: GOLD_GLOW_BOX_SHADOW }}
       >
         <Image
           src={titleImageSrc}

@@ -1,4 +1,5 @@
 import type { AwardCategory } from "@/lib/awards/award-categories";
+import { GOLD_GLOW_TEXT_SHADOW } from "@/lib/ui/gold-glow";
 
 export interface AwardsNavMenuProps {
   /** Categories to render, in display order (FR-6). Passed as a prop rather
@@ -73,11 +74,7 @@ export function AwardsNavMenu({ items, activeSlug, ariaLabel = "Award categories
                     ? "border-b border-[#FFEA9E] text-[#FFEA9E]"
                     : "text-white hover:bg-white/10"
                 }`}
-                style={
-                  isActive
-                    ? { textShadow: "0 4px 4px rgba(0, 0, 0, 0.25), 0 0 6px #FAE287" }
-                    : undefined
-                }
+                style={isActive ? { textShadow: GOLD_GLOW_TEXT_SHADOW } : undefined}
               >
                 <IconTarget className="h-6 w-6 shrink-0" />
                 <span>{title}</span>

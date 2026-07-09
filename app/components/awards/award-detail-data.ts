@@ -1,8 +1,9 @@
+import { AWARD_CATEGORY_TITLES, resolveAwardCategoryMeta } from "@/lib/awards/award-category-meta";
 import type { AwardCategoryRow } from "@/lib/awards/award-categories-repository";
 import { formatAwardQuantity, formatVnd } from "@/lib/awards/format-prize-amount";
 import type { Dictionary } from "@/lib/i18n/dictionary";
 import type { Locale } from "@/lib/i18n/locale";
-import type { AwardDetailEntry } from "./award-detail-card";
+import type { AwardDetailEntry } from "./award-detail-types";
 
 export type { AwardDetailEntry };
 
@@ -11,27 +12,22 @@ type AwardDetailEntryKey = keyof AwardDetailDict["entries"];
 
 /**
  * Per-slug static metadata that never comes from the DB and never changes
- * with locale: the hardcoded English title (brand/category name, not
- * translated — locked decision) and which `awards.detail.entries.<key>`
- * slice of the dictionary supplies the quantity/value unit captions. Keyed
- * by slug (not index) so a slug present in the DB but missing here is
- * detected explicitly rather than silently misaligned — see the `skip +
- * console.warn` guard in `buildAwardDetailEntries` below. Source:
- * `spec/awards-page/feature.md` §2.5 (FR-12) — note the MVP title includes
- * its long form ("MVP (Most Valuable Person)"), matching the FR-12 table
- * and the homepage precedent (`awards-section.tsx`'s `titleAlt`), even
- * though `lib/awards/award-categories.ts` stores the short "MVP".
+ * with locale: which `awards.detail.entries.<key>` slice of the dictionary
+ * supplies the quantity/value unit captions for that slug. The title itself
+ * now lives in the shared `AWARD_CATEGORY_TITLES` map
+ * (`lib/awards/award-category-meta.ts`) — this map only carries what's
+ * unique to this consumer. Keyed by slug (not index) so a slug present in
+ * the DB but missing here is detected explicitly rather than silently
+ * misaligned — see the `skip + console.warn` guard
+ * (`resolveAwardCategoryMeta`) in `buildAwardDetailEntries` below.
  */
-const CATEGORY_META: Readonly<Record<string, { title: string; dictEntryKey: AwardDetailEntryKey }>> = {
-  "top-talent": { title: "Top Talent", dictEntryKey: "topTalent" },
-  "top-project": { title: "Top Project", dictEntryKey: "topProject" },
-  "top-project-leader": { title: "Top Project Leader", dictEntryKey: "topProjectLeader" },
-  "best-manager": { title: "Best Manager", dictEntryKey: "bestManager" },
-  "signature-2025-creator": {
-    title: "Signature 2025 - Creator",
-    dictEntryKey: "signatureCreator",
-  },
-  mvp: { title: "MVP (Most Valuable Person)", dictEntryKey: "mvp" },
+const CATEGORY_META: Readonly<Record<string, { dictEntryKey: AwardDetailEntryKey }>> = {
+  "top-talent": { dictEntryKey: "topTalent" },
+  "top-project": { dictEntryKey: "topProject" },
+  "top-project-leader": { dictEntryKey: "topProjectLeader" },
+  "best-manager": { dictEntryKey: "bestManager" },
+  "signature-2025-creator": { dictEntryKey: "signatureCreator" },
+  mvp: { dictEntryKey: "mvp" },
 };
 
 /**
@@ -63,14 +59,13 @@ export function buildAwardDetailEntries(
   const entries: AwardDetailEntry[] = [];
 
   for (const row of rows) {
-    const meta = CATEGORY_META[row.slug];
+    const meta = resolveAwardCategoryMeta(row.slug, CATEGORY_META, "award-detail-data");
 
     if (!meta) {
-      console.warn(
-        `[award-detail-data] no title/dict metadata for award slug "${row.slug}", skipping card`,
-      );
       continue;
     }
+
+    const title = AWARD_CATEGORY_TITLES[row.slug];
 
     // Signature 2025 - Creator is the one category with a dual value
     // structure (individual vs. collective award, mm:313:8490/8498/8501) —
@@ -81,7 +76,7 @@ export function buildAwardDetailEntries(
 
       entries.push({
         slug: row.slug,
-        title: meta.title,
+        title,
         description: detail.descriptions.signatureCreator,
         quantity: { number: formatAwardQuantity(row.quantityNumber), unit: dictEntry.quantity.unit },
         valueVariants: {
@@ -104,7 +99,7 @@ export function buildAwardDetailEntries(
 
     entries.push({
       slug: row.slug,
-      title: meta.title,
+      title,
       description: detail.descriptions.sharedUnfinished,
       quantity: { number: formatAwardQuantity(row.quantityNumber), unit: dictEntry.quantity.unit },
       value: {

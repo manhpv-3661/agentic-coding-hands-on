@@ -291,7 +291,6 @@ export const en = {
           strikethrough: "Strikethrough",
           list: "List",
           link: "Insert link",
-          linkPrompt: "Link URL",
           quote: "Quote",
           addLink: {
             title: "Add link",

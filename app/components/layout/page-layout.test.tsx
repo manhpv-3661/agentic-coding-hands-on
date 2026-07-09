@@ -8,9 +8,9 @@ describe("page layout primitives", () => {
     const element = container.firstElementChild as HTMLElement | null;
 
     expect(element).not.toBeNull();
-    expect(element?.className).toContain("px-6");
-    expect(element?.className).toContain("sm:px-10");
-    expect(element?.className).toContain("lg:px-36");
+    // Desktop-only: flat 144px gutter at all widths (no breakpoint scaling)
+    expect(element?.className).toContain("px-36");
+    expect(element?.className).toContain("w-full");
     expect(element?.className).not.toContain("max-w-[");
   });
 

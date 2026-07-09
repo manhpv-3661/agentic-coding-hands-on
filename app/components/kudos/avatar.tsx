@@ -23,6 +23,7 @@
  */
 
 import Image from "next/image";
+import { cn } from "@/lib/ui/cn";
 
 export interface AvatarProps {
   /** Full display name — used to derive initials/color/photo and as the
@@ -55,8 +56,9 @@ const AVATAR_PHOTOS = [
 ];
 
 /** First letter of up to the first 2 words in `name`, uppercased. Falls
- * back to "?" for an empty/blank name. */
-export function initials(name: string): string {
+ * back to "?" for an empty/blank name. Internal — exercised only through
+ * `Avatar`'s rendered output (see `avatar.test.tsx`), not exported. */
+function initials(name: string): string {
   const words = name.trim().split(/\s+/).filter(Boolean);
   if (words.length === 0) return "?";
   return words
@@ -71,15 +73,17 @@ function hashSum(name: string): number {
   return name.split("").reduce((total, char) => total + char.charCodeAt(0), 0);
 }
 
-/** Deterministic palette index derived from the sum of `name`'s char codes. */
-export function colorFor(name: string): string {
+/** Deterministic palette index derived from the sum of `name`'s char codes.
+ * Internal — see `initials` above for the export-scope rationale. */
+function colorFor(name: string): string {
   return PALETTE[hashSum(name) % PALETTE.length];
 }
 
 /** Deterministic photo pick from the 3-person pool, keyed off `name` (same
  * hash as `colorFor`, different modulus). Empty `name` (e.g. an anonymous
- * sender with no identity yet) gets no photo — initials fallback instead. */
-export function photoFor(name: string): string | null {
+ * sender with no identity yet) gets no photo — initials fallback instead.
+ * Internal — see `initials` above for the export-scope rationale. */
+function photoFor(name: string): string | null {
   if (!name.trim()) return null;
   return AVATAR_PHOTOS[hashSum(name) % AVATAR_PHOTOS.length];
 }
@@ -94,7 +98,7 @@ export function Avatar({ name, size = 40, className }: AvatarProps) {
         alt={name}
         width={size}
         height={size}
-        className={`inline-flex shrink-0 rounded-full object-cover ${className ?? ""}`}
+        className={cn("inline-flex shrink-0 rounded-full object-cover", className)}
         style={{ width: size, height: size }}
       />
     );
@@ -104,7 +108,10 @@ export function Avatar({ name, size = 40, className }: AvatarProps) {
     <span
       role="img"
       aria-label={name}
-      className={`inline-flex shrink-0 items-center justify-center rounded-full font-semibold text-[#00101A] ${className ?? ""}`}
+      className={cn(
+        "inline-flex shrink-0 items-center justify-center rounded-full font-semibold text-[#00101A]",
+        className,
+      )}
       style={{
         width: size,
         height: size,

@@ -5,7 +5,7 @@ import { CountdownTimer } from "./countdown-timer";
 import { EventInfo } from "./event-info";
 import { HeroCtaButtons } from "./hero-cta-buttons";
 
-export interface HeroSectionProps {
+interface HeroSectionProps {
   /** Hero copy — event info, comingSoon subtitle, CTA labels
    * (`homepage.hero`). */
   hero: Dictionary["homepage"]["hero"];

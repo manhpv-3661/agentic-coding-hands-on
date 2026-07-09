@@ -40,8 +40,11 @@ describe("RootLayout", () => {
   it("applies the Montserrat + Montserrat Alternates variables on <html> (FR-F1)", async () => {
     const { className } = await renderLayout();
 
-    expect(className).toContain("--font-montserrat");
-    expect(className).toContain("--font-montserrat-alternates");
+    // fonts.ts exports custom objects with Tailwind class names (not CSS custom properties):
+    // montserrat.variable = "font-montserrat-variable"
+    // montserratAlternates.variable = "font-montserrat-alternates-variable"
+    expect(className).toContain("font-montserrat-variable");
+    expect(className).toContain("font-montserrat-alternates-variable");
   });
 
   it("does not carry any Geist font variable (FR-F4)", async () => {

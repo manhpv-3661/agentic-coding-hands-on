@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import { GOLD_GLOW_BOX_SHADOW } from "@/lib/ui/gold-glow";
+import { UpChevronIcon } from "./up-chevron-icon";
 
 export interface AwardCardProps {
   /** Per-award thumbnail (background + gold-ring + name pre-composited),
@@ -18,37 +20,6 @@ export interface AwardCardProps {
   /** "Chi tiết" / "Details" CTA label, shared with `sun-kudos-section.tsx`
    * (`shared.detailsCta`). */
   detailsCta: string;
-}
-
-/**
- * Up-chevron icon on every "Chi tiết" details link in the awards grid.
- * Inlined (not `<img>`) so `currentColor` can be driven by CSS instead of
- * the hardcoded `fill="white"` baked into the exported SVG.
- * Shared master component `178:1020`, reused by all 6 award instances:
- */
-// mm:I2167:9075;214:1023;186:1441
-// mm:I2167:9076;214:1023;186:1441
-// mm:I2167:9077;214:1023;186:1441
-// mm:I2167:9079;214:1023;186:1441
-// mm:I2167:9080;214:1023;186:1441
-// mm:I2167:9081;214:1023;186:1441
-function IconUp({ className }: { className?: string }) {
-  return (
-    <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-      aria-hidden="true"
-    >
-      <path
-        d="M8.49945 18.3104L5.68945 15.5004L12.0595 9.12043H7.10945V5.69043H18.3095V16.8904H14.8895V11.9404L8.49945 18.3104Z"
-        fill="currentColor"
-      />
-    </svg>
-  );
 }
 
 /**
@@ -81,7 +52,16 @@ export function AwardCard({
       {/* mm:81:2443 — pre-composited thumbnail (background + gold-ring +
           name baked in), not a shared background with a text overlay. */}
       <div
-        className="relative aspect-square w-full overflow-hidden rounded-3xl border-[0.955px] border-[#FFEA9E] shadow-[0_4px_4px_0_rgba(0,0,0,0.25),0_0_6px_0_#FAE287] transition-[transform,box-shadow] duration-200 ease-out group-hover:-translate-y-1 group-hover:shadow-[0_8px_16px_0_rgba(0,0,0,0.35),0_0_14px_0_#FAE287]"
+        // Resting glow is the shared `GOLD_GLOW_BOX_SHADOW` token (inline
+        // style); the hover-only, more-intense glow (FR-22) has no shared
+        // equivalent, so it stays a Tailwind arbitrary-value class with a
+        // `!` override — `!important` always wins over a plain inline
+        // style, so this still swaps to the bigger glow on hover and back
+        // to the shared token on mouse-leave (the box-shadow transition
+        // fires normally regardless of which side is a class vs. inline
+        // style).
+        className="relative aspect-square w-full overflow-hidden rounded-3xl border-[0.955px] border-[#FFEA9E] transition-[transform,box-shadow] duration-200 ease-out group-hover:-translate-y-1 group-hover:shadow-[0_8px_16px_0_rgba(0,0,0,0.35),0_0_14px_0_#FAE287]!"
+        style={{ boxShadow: GOLD_GLOW_BOX_SHADOW }}
       >
         <Image
           src={thumbnailSrc}
@@ -107,7 +87,9 @@ export function AwardCard({
           <span className="font-montserrat text-center text-[16px] leading-[24px] font-medium tracking-[0.15px]">
             {detailsCta}
           </span>
-          <IconUp className="h-6 w-6" />
+          {/* mm:I2167:9075;214:1023;186:1441 (shared master `178:1020`,
+              instanced identically across all 6 award cards) */}
+          <UpChevronIcon className="h-6 w-6" />
         </span>
       </div>
     </Link>

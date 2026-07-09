@@ -20,7 +20,7 @@ const labels = {
     error: "Vui lòng nhập nội dung.",
     toolbar: {
       bold: "In đậm", italic: "In nghiêng", strikethrough: "Gạch ngang", list: "Danh sách",
-      link: "Chèn liên kết", linkPrompt: "Đường dẫn liên kết", quote: "Trích dẫn",
+      link: "Chèn liên kết", quote: "Trích dẫn",
       addLink: { title: "Thêm đường dẫn", contentLabel: "Nội dung", urlLabel: "URL", save: "Lưu", cancel: "Hủy", urlError: "Vui lòng nhập URL." },
     },
   },

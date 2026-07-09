@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { KUDOS_HASHTAGS_MAX_COUNT } from "@/lib/kudos/kudos-compose-limits";
 import { addTag, addTags, isDuplicateTag } from "@/lib/kudos/kudos-hashtag-merge";
+import { ChipAddTrigger } from "./chip-add-trigger";
+import { FieldError } from "./field-error";
 import { HashtagCatalogDropdown, type HashtagCatalogDropdownGroupLabels } from "./hashtag-catalog-dropdown";
 
 export interface HashtagInputLabels {
@@ -33,18 +35,6 @@ export interface HashtagInputProps {
   /** Id applied to the "add new tag" trigger/input, so a wrapping
    * `FieldGroup` label can point `htmlFor` at it. */
   id?: string;
-}
-
-/** Ground-truth `MM_MEDIA_Plus` icon (24x24, screen ihQ26W78P2 node
- * I520:11647;662:8911's child, componentId 490:5726) — mirrors the same
- * icon already inlined in `image-upload.tsx`'s identical "+Ảnh" trigger
- * (both share componentId 186:2757). */
-function PlusIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    </svg>
-  );
 }
 
 /**
@@ -155,28 +145,19 @@ export function HashtagInput({
             </button>
           </span>
         ) : (
-          <button
+          // Explicit `aria-label` because `id` also carries the
+          // `FieldGroup` label's `htmlFor` association — without it, the
+          // native label/control pairing would override this button's own
+          // "+Hashtag" text with the field label's "Hashtag" text as the
+          // accessible name (same reasoning `image-upload.tsx` sidesteps
+          // by putting `id` on its hidden file input instead).
+          <ChipAddTrigger
             id={id}
-            type="button"
-            // Explicit `aria-label` because `id` also carries the
-            // `FieldGroup` label's `htmlFor` association — without it, the
-            // native label/control pairing would override this button's own
-            // "+Hashtag" text with the field label's "Hashtag" text as the
-            // accessible name (same reasoning `image-upload.tsx` sidesteps
-            // by putting `id` on its hidden file input instead).
-            aria-label={labels.add}
+            ariaLabel={labels.add}
             onClick={() => setIsOpen(true)}
-            className="inline-flex h-12 items-center gap-1 rounded-lg border border-[#998C5F] bg-white px-2 py-1"
-          >
-            <PlusIcon />
-            {/* Ground truth's trigger caption is one two-line TEXT node
-             * ("Hashtag\nTối đa 5") rather than a "+Hashtag" single line —
-             * the word and the max-count hint are always shown together. */}
-            <span className="flex flex-col text-left text-[11px] leading-4 font-bold tracking-[0.5px] text-[#999]">
-              <span>{labels.label}</span>
-              <span>{labels.max}</span>
-            </span>
-          </button>
+            label={labels.label}
+            max={labels.max}
+          />
         )}
 
         {/* Catalog dropdown + group preset (Phase 04, additive). */}
@@ -189,11 +170,7 @@ export function HashtagInput({
         />
       </div>
 
-      {error && (
-        <p id={errorId} className="text-xs font-semibold text-[#CF1322]">
-          {error}
-        </p>
-      )}
+      {error && <FieldError id={errorId}>{error}</FieldError>}
     </div>
   );
 }

@@ -1,3 +1,5 @@
+import { cn } from "@/lib/ui/cn";
+
 export interface MentionSuggestionsProps {
   /** Candidate names to suggest — the same distinct-people list used by
    * `RecipientSelect` (F007, FR-7). */
@@ -61,9 +63,10 @@ export function MentionSuggestions({
             role="option"
             aria-selected={index === highlightedIndex}
             onClick={() => onSelect(name)}
-            className={`w-full rounded-md px-2 py-1 text-left text-sm text-white hover:bg-white/10 ${
-              index === highlightedIndex ? "bg-white/10" : ""
-            }`}
+            className={cn(
+              "w-full rounded-md px-2 py-1 text-left text-sm text-white hover:bg-white/10",
+              index === highlightedIndex && "bg-white/10",
+            )}
           >
             @{name}
           </button>

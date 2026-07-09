@@ -37,7 +37,7 @@ import { ContentFrame, PageGutter } from "../layout/page-layout";
  * inset from its own card edge), not the page gutter, so they are kept
  * as-is on the inner `ContentFrame(1152)`.
  */
-export interface RootFurtherContentProps {
+interface RootFurtherContentProps {
   /** Paragraph 1/2 + pull-quote copy (`homepage.rootFurther`). */
   content: Dictionary["homepage"]["rootFurther"];
 }

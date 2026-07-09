@@ -2,6 +2,11 @@
  * Inline `currentColor`-driven SVG icons shared by `KudosCard` and its
  * "Copy Link" action (extracted from `kudos-card.tsx` to keep it under the
  * 200-line budget). All pure/stateless — safe on the server tree.
+ *
+ * `PencilIcon`, `SearchIcon`, `GiftIcon`, `CloseIcon` were folded in here
+ * from `kudos-banner.tsx`/`spotlight-board.tsx`/`open-gift-button.tsx`
+ * (phase-02 dedup) — this is now the single icon module for the Kudos
+ * feature, not just the card.
  */
 
 /** Sender→recipient arrow between the two `KudosPersonBlock`s. Ground truth
@@ -53,14 +58,17 @@ export function HeartIcon({ filled, className }: { filled: boolean; className?: 
   );
 }
 
-/** Decorative 32px "edit" pencil beside the feed-card title (design node
- * `I3127:21871;2234:33040`) — no click handler, mirrors the composer
- * pill's pencil precedent in `kudos-banner.tsx`. */
-export function PencilIcon({ className }: { className?: string }) {
+/** Decorative "edit" pencil beside the feed-card title (design node
+ * `I3127:21871;2234:33040`) — no click handler. Default 32px matches the
+ * feed-card call site (`kudos-card.tsx`); the composer pill
+ * (`kudos-banner.tsx`) passes `size={24}` to match its own ground truth.
+ * Both callers share the identical `viewBox="0 0 24 24"` glyph, so a plain
+ * width/height prop is an exact rescale — not a redraw. */
+export function PencilIcon({ size = 32, className }: { size?: number; className?: string }) {
   return (
     <svg
-      width="32"
-      height="32"
+      width={size}
+      height={size}
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -72,6 +80,86 @@ export function PencilIcon({ className }: { className?: string }) {
         stroke="currentColor"
         strokeWidth="1.5"
         strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+/** Magnifier icon shared by the two search-style pills: "Tìm kiếm profile
+ * Sunner" (`kudos-banner.tsx`, 24px) and the Spotlight board's search
+ * filter (`spotlight-board.tsx`, 16px). Unlike `PencilIcon`, these two
+ * ground-truth glyphs are NOT the same path at different scales — the 16px
+ * version has its own hand-tuned `viewBox`/stroke-width (thicker relative
+ * stroke for legibility at that size), so `size` selects between the two
+ * literal glyphs instead of rescaling one shared path. */
+export function SearchIcon({ size = 24, className }: { size?: number; className?: string }) {
+  if (size === 16) {
+    return (
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+        className={className}
+      >
+        <circle cx="7" cy="7" r="4.5" stroke="currentColor" strokeWidth="1.3" />
+        <path d="M13.5 13.5L10.5 10.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      className={className}
+    >
+      <circle cx="11" cy="11" r="6.5" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M20 20L16 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/** Gift icon on the "Mở Secret Box" button (`open-gift-button.tsx`) —
+ * `currentColor` inline SVG, 24px per design. */
+export function GiftIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect x="3" y="9" width="18" height="11" rx="1" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M3 13h18" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M12 9v11" stroke="currentColor" strokeWidth="1.5" />
+      <path
+        d="M12 9c0-2 -1.5-4-3.5-4S5 6.5 5 8c0 1 1 1 1 1h6z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M12 9c0-2 1.5-4 3.5-4S19 6.5 19 8c0 1-1 1-1 1h-6z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+/** Top-right X close icon for the Secret Box dialog (`open-gift-button.tsx`)
+ * (`MM_MEDIA_Close` in the ground truth, 19x19px). */
+export function CloseIcon() {
+  return (
+    <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path
+        d="M1.5 1.5l16 16M17.5 1.5l-16 16"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
       />
     </svg>
   );

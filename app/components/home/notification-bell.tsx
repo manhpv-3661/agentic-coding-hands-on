@@ -1,6 +1,7 @@
 "use client";
 
 import { useDismissableMenu } from "@/hooks/use-dismissable-menu";
+import { DismissablePanel } from "./dismissable-panel";
 
 interface NotificationBellProps {
   /** Empty-state copy shown in the notification panel (`shared.notifications.empty`). */
@@ -76,13 +77,9 @@ export function NotificationBell({ empty, ariaLabel = "Notifications" }: Notific
         <BellIcon />
       </button>
       {open && (
-        <div
-          role="status"
-          aria-label={ariaLabel}
-          className="absolute top-12 right-0 z-30 w-64 rounded-lg border border-[#2E3940] bg-[#101317] p-4 text-sm text-white shadow-lg"
-        >
+        <DismissablePanel role="status" ariaLabel={ariaLabel} className="absolute top-12 right-0 z-30 w-64 p-4">
           {empty}
-        </div>
+        </DismissablePanel>
       )}
     </div>
   );

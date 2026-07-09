@@ -1,4 +1,4 @@
-import type { AwardMetric, AwardValueVariant } from "./award-detail-card";
+import type { AwardMetric, AwardValueVariant } from "./award-detail-types";
 
 interface AwardValueSectionProps {
   /** "Giá trị giải thưởng: " label prefix, shared across all cards
@@ -21,15 +21,31 @@ interface AwardValueSectionProps {
 /**
  * One value block: icon+label row, then a large value figure, then a small
  * suffix line underneath (mm:313:8491 "Frame 443" — icon/label 313:8492,
- * value figure 313:8495, suffix 313:8497).
+ * value figure 313:8495, suffix 313:8497). Shared by all 3 render sites this
+ * component used to be duplicated across (the two `valueVariants` rows plus
+ * the single-`value` fallback).
+ *
+ * `guardEmptySuffix` preserves a real behavioral difference between the two
+ * former call sites rather than papering over it: the single-`value`
+ * fallback branch always guarded its suffix line with `unit &&` (some
+ * categories have no "per award" caption), while the `valueVariants` rows
+ * never guarded (both individual/collective suffixes are always populated
+ * in practice) — collapsing them without this flag would risk silently
+ * hiding/showing an empty `<p>` at the `valueVariants` call sites.
  */
-function ValueVariantBlock({
+function ValueBlock({
   valueLabel,
-  variant,
+  number,
+  suffix,
+  guardEmptySuffix = false,
 }: {
   valueLabel: string;
-  variant: AwardValueVariant;
+  number: string;
+  suffix: string;
+  guardEmptySuffix?: boolean;
 }) {
+  const showSuffix = guardEmptySuffix ? Boolean(suffix) : true;
+
   return (
     <div className="flex w-full flex-col items-start gap-4">
       <div className="flex items-center gap-4">
@@ -43,12 +59,12 @@ function ValueVariantBlock({
           {valueLabel}
         </span>
       </div>
-      <p className="font-montserrat text-[36px] leading-[44px] font-bold text-white">
-        {variant.value}
-      </p>
-      <p className="font-montserrat text-[14px] leading-[20px] font-bold tracking-[0.1px] text-white">
-        {variant.suffix}
-      </p>
+      <p className="font-montserrat text-[36px] leading-[44px] font-bold text-white">{number}</p>
+      {showSuffix && (
+        <p className="font-montserrat text-[14px] leading-[20px] font-bold tracking-[0.1px] text-white">
+          {suffix}
+        </p>
+      )}
     </div>
   );
 }
@@ -66,14 +82,22 @@ export function AwardValueSection({ valueLabel, value, valueVariants }: AwardVal
   if (valueVariants) {
     return (
       <div className="flex w-full flex-col items-start gap-4">
-        <ValueVariantBlock valueLabel={valueLabel} variant={valueVariants.individual} />
+        <ValueBlock
+          valueLabel={valueLabel}
+          number={valueVariants.individual.value}
+          suffix={valueVariants.individual.suffix}
+        />
         <div className="flex w-full items-center gap-2">
           <span className="font-montserrat text-[14px] leading-[20px] font-bold text-[#2E3940]">
             {valueVariants.orLabel}
           </span>
           <div className="h-px flex-1 bg-[#2E3940]" />
         </div>
-        <ValueVariantBlock valueLabel={valueLabel} variant={valueVariants.collective} />
+        <ValueBlock
+          valueLabel={valueLabel}
+          number={valueVariants.collective.value}
+          suffix={valueVariants.collective.suffix}
+        />
       </div>
     );
   }
@@ -85,24 +109,6 @@ export function AwardValueSection({ valueLabel, value, valueVariants }: AwardVal
   const { number, unit } = value ?? { number: "", unit: "" };
 
   return (
-    <div className="flex w-full flex-col items-start gap-4">
-      <div className="flex items-center gap-4">
-        <img
-          src="/awards-saa/Icon-License.svg"
-          alt=""
-          aria-hidden="true"
-          className="h-6 w-6 shrink-0"
-        />
-        <span className="font-montserrat text-[24px] leading-[32px] font-bold text-[#FFEA9E]">
-          {valueLabel}
-        </span>
-      </div>
-      <p className="font-montserrat text-[36px] leading-[44px] font-bold text-white">{number}</p>
-      {unit && (
-        <p className="font-montserrat text-[14px] leading-[20px] font-bold tracking-[0.1px] text-white">
-          {unit}
-        </p>
-      )}
-    </div>
+    <ValueBlock valueLabel={valueLabel} number={number} suffix={unit} guardEmptySuffix />
   );
 }

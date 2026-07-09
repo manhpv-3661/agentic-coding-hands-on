@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { FieldError } from "./field-error";
 
 export interface InsertLinkDialogLabels {
   title: string;
@@ -94,11 +95,7 @@ export function InsertLinkDialog({ open, onCancel, onSave, labels }: InsertLinkD
             className={FIELD_CLASS}
           />
         </label>
-        {error && (
-          <p id="insert-link-url-error" className="text-xs font-semibold text-[#CF1322]">
-            {labels.urlError}
-          </p>
-        )}
+        {error && <FieldError id="insert-link-url-error">{labels.urlError}</FieldError>}
 
         <div className="flex items-center justify-end gap-3 pt-2">
           <button

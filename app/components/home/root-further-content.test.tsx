@@ -5,6 +5,10 @@ vi.mock("next/font/google", () => ({
   Montserrat: vi.fn(() => ({ className: "font-montserrat" })),
 }));
 
+vi.mock("next/font/local", () => ({
+  default: vi.fn(() => ({ className: "font-digital-numbers" })),
+}));
+
 import { RootFurtherContent } from "./root-further-content";
 
 const CONTENT = {

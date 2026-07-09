@@ -1,5 +1,6 @@
 import type { GiftRecipient } from "@/lib/kudos/kudos-types";
 import { Avatar } from "./avatar";
+import { SidebarPanel } from "./sidebar-panel";
 
 export interface RecentGiftRecipientsProps {
   heading: string;
@@ -19,7 +20,7 @@ export function RecentGiftRecipients({ heading, recipients, emptyLabel }: Recent
     // this used to carry. The list's own `pr-2` below supplies half of that
     // 16px right total (scrollbar-thumb clearance); `pr-2` here supplies
     // the other half so both states (idle/scrolling) land on 16px.
-    <div className="flex w-full flex-col items-stretch gap-4 rounded-[17px] border border-[#998C5F] bg-[#00070C] py-6 pr-2 pl-6">
+    <SidebarPanel className="items-stretch py-6 pr-2 pl-6">
       {/* The heading is a sibling of the `<ul>` below, not a wrapper around
        * it, so it needs its own matching `pr-2` to reach the same 16px
        * right inset the list gets — otherwise it centers ~4px off from
@@ -58,6 +59,6 @@ export function RecentGiftRecipients({ heading, recipients, emptyLabel }: Recent
           ))}
         </ul>
       )}
-    </div>
+    </SidebarPanel>
   );
 }

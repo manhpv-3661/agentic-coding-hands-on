@@ -5,6 +5,10 @@ vi.mock("next/font/google", () => ({
   Montserrat: vi.fn(() => ({ variable: "font-montserrat" })),
 }));
 
+vi.mock("next/font/local", () => ({
+  default: vi.fn(() => ({ className: "font-digital-numbers" })),
+}));
+
 import { AWARD_CATEGORIES } from "@/lib/awards/award-categories";
 import { AWARD_CATEGORY_FALLBACK_ROWS } from "@/lib/awards/award-categories-fallback";
 import { AwardDetailCard } from "./award-detail-card";

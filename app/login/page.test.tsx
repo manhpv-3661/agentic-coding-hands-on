@@ -137,21 +137,58 @@ describe("/app/login/page.tsx", () => {
       searchParams: Promise.resolve({ error: "auth_callback_failed" }),
     });
 
-    // Walk down to LoginButtonContainer's initialError prop to confirm it
-    // reads the single dict key instead of a hardcoded duplicate.
-    // div > [LoginHeader, main, LoginFooter] > main > ContentFrame (1152px
-    // MoMorph content cap, phase-04-login-screen.md) > LoginHeroContent >
-    // LoginButtonContainer
+    // Phase-04 refactor: LoginPage structure is:
+    // div > [header, PageGutter(as=main), overlays, footer]
+    // PageGutter > ContentFrame > LoginHeroContent > LoginButtonContainer
+    // Walk through the JSX tree to confirm LoginButtonContainer gets the
+    // initialError from the dict, not a hardcoded duplicate.
     const element = result as {
-      props: { children: Array<{ props?: { children?: unknown } }> };
+      props: {
+        children: Array<{
+          type?: unknown;
+          props?: { children?: unknown; width?: number };
+        }>;
+      };
     };
-    const main = element.props.children[1] as { props: { children: unknown } };
-    const contentFrame = main.props.children as { props: { children: unknown } };
-    const loginHeroContent = contentFrame.props.children as { props: { children: unknown } };
-    const loginButtonContainer = loginHeroContent.props.children as {
-      props: { initialError: string };
-    };
-    expect(loginButtonContainer.props.initialError).toBe(viDict.login.error.oauthFailed);
+
+    // Find the PageGutter (rendered as <main>), which is among the root's children
+    const children = element.props.children;
+    let main: {
+      type?: unknown;
+      props?: { children?: unknown };
+    } | null = null;
+    for (const child of Array.isArray(children) ? children : [children]) {
+      if (!child?.props) continue;
+      if (child.type === "main" || typeof child.props.children === "object") {
+        // This is likely the PageGutter rendered as main
+        // Check if it has ContentFrame as a child
+        const childOfMain = Array.isArray(child.props.children)
+          ? child.props.children[0]
+          : child.props.children;
+        if (childOfMain?.props?.width === 1152) {
+          main = child;
+          break;
+        }
+      }
+    }
+
+    if (!main) {
+      // Fallback: element.props.children[1] should be PageGutter based on structure
+      main = element.props.children[1];
+    }
+
+    // Navigate: PageGutter > ContentFrame > LoginHeroContent > LoginButtonContainer
+    const contentFrameChild = Array.isArray(main?.props?.children)
+      ? (main.props.children[0] as { props?: { children?: unknown } })
+      : (main?.props?.children as { props?: { children?: unknown } });
+    const loginHeroContentChild = Array.isArray(contentFrameChild?.props?.children)
+      ? (contentFrameChild.props.children[0] as { props?: { children?: unknown } })
+      : (contentFrameChild?.props?.children as { props?: { children?: unknown } });
+    const loginButtonContainer = loginHeroContentChild?.props?.children as
+      | { props: { initialError: string } }
+      | undefined;
+
+    expect(loginButtonContainer?.props?.initialError).toBe(viDict.login.error.oauthFailed);
   });
 
   it("does not pass error when error param is not auth_callback_failed", async () => {

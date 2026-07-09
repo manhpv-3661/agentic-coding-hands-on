@@ -2,6 +2,7 @@
 
 import { signOutAction } from "@/app/actions/sign-out";
 import { useDismissableMenu } from "@/hooks/use-dismissable-menu";
+import { DismissablePanel } from "./dismissable-panel";
 
 interface AccountMenuButtonProps {
   /** "Profile" menu item label (`shared.account.profile`). */
@@ -72,10 +73,10 @@ export function AccountMenuButton({
         <UserProfileIcon />
       </button>
       {open && (
-        <div
+        <DismissablePanel
           role="menu"
-          aria-label={panelAriaLabel}
-          className="absolute top-12 right-0 z-30 flex w-48 flex-col overflow-hidden rounded-lg border border-[#2E3940] bg-[#101317] text-sm text-white shadow-lg"
+          ariaLabel={panelAriaLabel}
+          className="absolute top-12 right-0 z-30 flex w-48 flex-col overflow-hidden"
         >
           <button
             type="button"
@@ -94,7 +95,7 @@ export function AccountMenuButton({
           >
             {signOut}
           </button>
-        </div>
+        </DismissablePanel>
       )}
     </div>
   );

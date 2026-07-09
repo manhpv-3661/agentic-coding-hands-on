@@ -5,6 +5,10 @@ vi.mock("next/font/google", () => ({
   Montserrat: vi.fn(() => ({ variable: "font-montserrat" })),
 }));
 
+vi.mock("next/font/local", () => ({
+  default: vi.fn(() => ({ className: "font-digital-numbers" })),
+}));
+
 vi.mock("@/hooks/use-scroll-spy", () => ({
   useScrollSpy: vi.fn(),
 }));

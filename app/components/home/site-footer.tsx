@@ -6,15 +6,7 @@ import { usePathname } from "next/navigation";
 import { montserrat, montserratAlternates } from "@/app/fonts";
 import { useScrollToTopOnHomeClick } from "@/hooks/use-scroll-to-top-on-home-click";
 import type { Dictionary } from "@/lib/i18n/dictionary";
-
-interface FooterNavLinkProps {
-  /** Destination — internal route, same-page anchor, or `#` placeholder. */
-  href: string;
-  /** Link label, taken verbatim from the Figma text layer. */
-  label: string;
-  /** Reproduces the design's gold-tinted "Award Information" highlight state. */
-  highlighted?: boolean;
-}
+import { isNavLinkActive, NavLink } from "./nav-link";
 
 interface SiteFooterProps {
   /** Nav link labels (`shared.nav`). */
@@ -25,30 +17,6 @@ interface SiteFooterProps {
    * existing callers/tests that predate this prop keep compiling unchanged;
    * falls back to the English design label when omitted. */
   a11y?: Dictionary["shared"]["a11y"];
-}
-
-// Footer nav instances are square-cornered in Figma (`borderRadius: 0px`),
-// unlike the header nav's 4px buttons.
-function FooterNavLink({ href, label, highlighted = false }: FooterNavLinkProps) {
-  const handleClick = useScrollToTopOnHomeClick(href);
-
-  return (
-    <Link
-      href={href}
-      onClick={handleClick}
-      aria-current={highlighted ? "page" : undefined}
-      className={`inline-flex items-center justify-center rounded-none px-4 py-4 text-center text-base leading-6 font-bold tracking-[0.15px] whitespace-nowrap transition-colors duration-200 ease-out ${
-        highlighted ? "bg-[#FFEA9E]/10 text-white" : "text-white hover:bg-white/10"
-      }`}
-      style={
-        highlighted
-          ? { textShadow: "0 4px 4px rgba(0, 0, 0, 0.25), 0 0 6px #FAE287" }
-          : undefined
-      }
-    >
-      {label}
-    </Link>
-  );
 }
 
 /**
@@ -84,8 +52,7 @@ function FooterNavLink({ href, label, highlighted = false }: FooterNavLinkProps)
 export function SiteFooter({ nav, footer, a11y }: SiteFooterProps) {
   const handleLogoClick = useScrollToTopOnHomeClick("/");
   const pathname = usePathname();
-  const isActive = (href: string) =>
-    href === "/" ? pathname === "/" : pathname.startsWith(href);
+  const isActive = (href: string) => isNavLinkActive(pathname, href);
 
   return (
     // mm:5001:14800
@@ -111,13 +78,13 @@ export function SiteFooter({ nav, footer, a11y }: SiteFooterProps) {
         {/* mm:I5001:14800;342:1409 */}
         <nav className={`${montserrat.className} flex flex-nowrap items-center gap-12`}>
           {/* mm:I5001:14800;342:1410 */}
-          <FooterNavLink href="/" label={nav.aboutSaa} highlighted={isActive("/")} />
+          <NavLink href="/" label={nav.aboutSaa} selected={isActive("/")} variant="footer" />
           {/* mm:I5001:14800;342:1411 */}
-          <FooterNavLink href="/awards" label={nav.awardInfo} highlighted={isActive("/awards")} />
+          <NavLink href="/awards" label={nav.awardInfo} selected={isActive("/awards")} variant="footer" />
           {/* mm:I5001:14800;342:1412 */}
-          <FooterNavLink href="/kudos" label={nav.kudos} highlighted={isActive("/kudos")} />
+          <NavLink href="/kudos" label={nav.kudos} selected={isActive("/kudos")} variant="footer" />
           {/* mm:I5001:14800;1161:9487 */}
-          <FooterNavLink href="#" label={footer.generalStandards} />
+          <NavLink href="#" label={footer.generalStandards} variant="footer" />
         </nav>
       </div>
 

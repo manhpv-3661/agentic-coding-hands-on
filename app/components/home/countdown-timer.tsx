@@ -20,7 +20,7 @@ import type { Dictionary } from "@/lib/i18n/dictionary";
  * Numbers"`, self-hosted via `next/font/local` in `app/fonts.ts` (FR-F5).
  */
 
-export interface CountdownTimerProps {
+interface CountdownTimerProps {
   /**
    * ISO-8601 date/time string, or `Date`, to count down to. Defaults (via
    * `useEventCountdown`) to `process.env.NEXT_PUBLIC_EVENT_START_AT`.

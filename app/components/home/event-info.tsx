@@ -1,4 +1,4 @@
-export interface EventInfoProps {
+interface EventInfoProps {
   /** "Thời gian: " / "Time:" label (`homepage.hero.eventInfo.timeLabel`). */
   timeLabel: string;
   /** "Địa điểm:" / "Venue:" label (`homepage.hero.eventInfo.venueLabel`). */

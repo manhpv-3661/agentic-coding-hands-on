@@ -3,8 +3,8 @@
 import { Fragment } from "react";
 import { useScrollSpy } from "@/hooks/use-scroll-spy";
 import { AWARD_CATEGORIES } from "@/lib/awards/award-categories";
-import type { AwardDetailEntry } from "./award-detail-card";
 import { AwardDetailCard } from "./award-detail-card";
+import type { AwardDetailEntry } from "./award-detail-types";
 import { AwardsNavMenu } from "./awards-nav-menu";
 
 /** Stable id list for the scroll-spy — matches `AWARD_CATEGORIES` order, the

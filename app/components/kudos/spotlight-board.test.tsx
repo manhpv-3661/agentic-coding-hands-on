@@ -57,9 +57,20 @@ describe("SpotlightBoard", () => {
     // Phase 07 fix: the backdrop no longer renders an `<img>` — the previous
     // `spotlight-crop.png` baked ~120 interactive names into pixels under
     // the real DOM name-cloud (duplicate names + asset-rule violation).
-    // It is now a CSS-only decorative layer (`spotlight-collage-backdrop.tsx`),
-    // so this asserts the `aria-hidden` backdrop container renders instead.
+    // It is now a CSS-only decorative layer (inlined into `spotlight-board.tsx`,
+    // phase-02 dedup), so this asserts the `aria-hidden` backdrop container
+    // renders instead.
     const { container } = render(<SpotlightBoard names={names} total={388} labels={labels} />);
     expect(container.querySelector('[aria-hidden="true"]')).toBeInTheDocument();
+  });
+
+  it("renders the search icon at 16px (phase-02 consolidation: not 24px default)", () => {
+    // Phase 02 found and fixed a regression: SearchIcon was defaulting to 24px
+    // in spotlight-board when the ground-truth design calls for 16px (to match
+    // the pill's proportions). This test locks in the explicit size={16} call.
+    const { container } = render(<SpotlightBoard names={names} total={388} labels={labels} />);
+    const svg = container.querySelector("input[placeholder='Tìm kiếm']")?.parentElement?.querySelector("svg");
+    expect(svg).toHaveAttribute("width", "16");
+    expect(svg).toHaveAttribute("height", "16");
   });
 });

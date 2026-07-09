@@ -3,37 +3,13 @@ import Link from "next/link";
 import type { Dictionary } from "@/lib/i18n/dictionary";
 import { montserrat } from "@/app/fonts";
 import { ContentFrame, PageGutter } from "../layout/page-layout";
+import { UpChevronIcon } from "./up-chevron-icon";
 
 interface SunKudosSectionProps {
   /** Eyebrow + body copy for the promo block (`homepage.kudos`). */
   kudos: Dictionary["homepage"]["kudos"];
   /** "Chi tiết" CTA label, shared with `award-card.tsx` (`shared.detailsCta`). */
   detailsCta: Dictionary["shared"]["detailsCta"];
-}
-
-/**
- * "Chi tiết" CTA arrow — MoMorph node `I3390:10349;313:8426;186:1766`
- * (MM_MEDIA_Up). Figma's exported asset ships with a hardcoded `fill`, so it
- * is inlined here with `currentColor` and picks up the button's dark
- * (`#00101A`) text color instead.
- */
-function UpArrowIcon() {
-  return (
-    // mm:I3390:10349;313:8426;186:1766
-    <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
-      <path
-        d="M8.49945 18.3104L5.68945 15.5004L12.0595 9.12043H7.10945V5.69043H18.3095V16.8904H14.8895V11.9404L8.49945 18.3104Z"
-        fill="currentColor"
-      />
-    </svg>
-  );
 }
 
 /**
@@ -118,7 +94,8 @@ export function SunKudosSection({ kudos, detailsCta }: SunKudosSectionProps) {
               <span className="text-base leading-6 font-bold tracking-[0.15px]">
                 {detailsCta}
               </span>
-              <UpArrowIcon />
+              {/* mm:I3390:10349;313:8426;186:1766 */}
+              <UpChevronIcon />
             </Link>
           </div>
 

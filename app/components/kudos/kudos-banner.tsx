@@ -1,4 +1,5 @@
 import type { DismissableMenuTriggerProps } from "@/hooks/use-dismissable-menu";
+import { PencilIcon, SearchIcon } from "./kudos-card-icons";
 import { ContentFrame, PageGutter } from "../layout/page-layout";
 
 export interface KudosBannerLabels {
@@ -32,30 +33,6 @@ export interface KudosBannerProps {
 const PILL_CLASS =
   "flex items-center gap-4 rounded-[68px] border border-[#998C5F] bg-[rgba(255,234,158,0.10)] px-4 py-6 text-left text-white";
 
-/** Pencil icon on the composer pill — `currentColor` inline SVG, 24px per design. */
-function PencilIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M4 20L4.5 16.5L15 6L18 9L7.5 19.5L4 20Z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-/** Magnifier icon on the search pill — `currentColor` inline SVG, 24px per design. */
-function SearchIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="11" cy="11" r="6.5" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M20 20L16 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
-}
-
 /**
  * "Tìm kiếm profile Sunner" pill (MoMorph hero, `A_KV Kudos` search node).
  * Profile search/navigation is locked out of scope (clarifications.md),
@@ -77,7 +54,7 @@ function SearchPill({ placeholder }: { placeholder: string }) {
       tabIndex={-1}
       className={`${PILL_CLASS} w-[381px] shrink-0 pointer-events-none`}
     >
-      <SearchIcon />
+      <SearchIcon size={24} />
       <span className="font-montserrat text-base leading-6 font-bold">{placeholder}</span>
     </button>
   );
@@ -174,7 +151,7 @@ export function KudosBanner({ labels, composer, composerTriggerProps }: KudosBan
               {...composerTriggerProps}
               className={`${PILL_CLASS} w-[738px] shrink-0`}
             >
-              <PencilIcon />
+              <PencilIcon size={24} />
               <span className="font-montserrat text-base leading-6 font-bold">
                 {composer.placeholder}
               </span>

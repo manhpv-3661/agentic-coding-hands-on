@@ -16,6 +16,7 @@
  */
 
 import Image from "next/image";
+import { cn } from "@/lib/ui/cn";
 
 export interface KudosImageGalleryProps {
   /** Number of attachment tiles to render, capped at 5 (design maximum). */
@@ -40,7 +41,7 @@ export function KudosImageGallery({ count, imageUrls, className }: KudosImageGal
   if (tileCount === 0) return null;
 
   return (
-    <div className={`flex flex-wrap gap-4 ${className ?? ""}`}>
+    <div className={cn("flex flex-wrap gap-4", className)}>
       {Array.from({ length: tileCount }).map((_, index) => (
         <div
           key={index}

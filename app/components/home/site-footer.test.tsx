@@ -12,6 +12,10 @@ vi.mock("next/font/google", () => ({
   Montserrat_Alternates: vi.fn(() => ({ className: "font-montserrat-alternates" })),
 }));
 
+vi.mock("next/font/local", () => ({
+  default: vi.fn(() => ({ className: "font-digital-numbers" })),
+}));
+
 import { vi as viDictionary } from "@/lib/i18n/dictionaries/vi";
 import { SiteFooter } from "./site-footer";
 
@@ -53,5 +57,38 @@ describe("SiteFooter", () => {
     );
 
     expect(window.scrollTo).not.toHaveBeenCalled();
+  });
+
+  it("highlights only the nav link matching the current path (post NavLink-variant migration)", () => {
+    mockUsePathname.mockReturnValue("/awards");
+    render(
+      <SiteFooter
+        nav={viDictionary.shared.nav}
+        footer={viDictionary.shared.footer}
+      />,
+    );
+
+    expect(screen.getByRole("link", { name: viDictionary.shared.nav.awardInfo })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+    expect(screen.getByRole("link", { name: viDictionary.shared.nav.aboutSaa })).not.toHaveAttribute(
+      "aria-current",
+    );
+    expect(screen.getByRole("link", { name: viDictionary.shared.nav.kudos })).not.toHaveAttribute(
+      "aria-current",
+    );
+  });
+
+  it("renders footer nav links with square corners (footer variant), unlike the header's rounded pill", () => {
+    mockUsePathname.mockReturnValue("/");
+    render(
+      <SiteFooter
+        nav={viDictionary.shared.nav}
+        footer={viDictionary.shared.footer}
+      />,
+    );
+
+    expect(screen.getByRole("link", { name: viDictionary.shared.nav.aboutSaa })).toHaveClass("rounded-none");
   });
 });
