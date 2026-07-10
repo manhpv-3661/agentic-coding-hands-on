@@ -7,6 +7,7 @@ import { LoginButtonContainer } from "./components/login-button-container";
 import { LoginFooter } from "./components/login-footer";
 import { LoginHeader } from "./components/login-header";
 import { LoginHeroContent } from "./components/login-hero-content";
+import { LoginKeyvisualBackground } from "./components/login-keyvisual-background";
 import { ContentFrame, PageGutter } from "../components/layout/page-layout";
 import { montserrat, montserratAlternates } from "./fonts";
 
@@ -52,23 +53,8 @@ async function redirectIfAuthenticated() {
  * Login screen.
  * MoMorph: https://momorph.ai/files/9ypp4enmFmdK3YAFJLIu6C/screens/GzbNeVGJHz
  *
- * Background note: the hero art (Figma node `662:14389`, "image 1") isn't a
- * tagged `MM_MEDIA_*` asset and `get_figma_image`/`get_media_file` are
- * unauthorized/500 for it, so there's no clean source export from MoMorph.
- * `/public/login/hero-waves.jpg` is therefore a crop of the design's own
- * 1440x1024 frame render (x≥620, header+footer bands removed) so it holds
- * ONLY the wave artwork — no baked wordmark/body/logo/selector to ghost
- * against the real DOM content. Rendered as a sized keyvisual box (see
- * `keyvisualBoxClassName` below), NOT a page-wide `bg-cover` — the box is
- * 1441x1022 (Figma's own box for `662:14389`, x:0 y:2 in the 1440x1024 root
- * frame), right-anchored via `bg-right` so the waves stay in view under
- * `bg-cover` scaling against the substitute asset's own aspect ratio. Since
- * the substitute is a crop, not the original crop-transformed layer, this is
- * a documented reconstruction tuned to the substitute asset, not a claim of
- * pixel-perfect fidelity. The left→right dark scrim painted over the image in
- * the same box mirrors Figma's `Rectangle 57` (662:14392) fade exactly: a
- * flat opaque `#00101A` band held through the first 25.41% of width, then a
- * single fade to transparent by 100%.
+ * Hero keyvisual background: see `LoginKeyvisualBackground` for the crop
+ * source and responsive-sizing rationale.
  *
  * A second, independent overlay (rendered just above the footer below)
  * reproduces the design's
@@ -77,10 +63,8 @@ async function redirectIfAuthenticated() {
  * above the hero content and below the footer in paint order (same as the
  * Figma z-order: content -> Cover -> Footer). It stays a separate, full-width
  * overlay (not nested inside the keyvisual box) because the Cover fade is
- * itself x-independent, so scoping it to the 1441px box would add nothing.
+ * itself x-independent, so scoping it to that box would add nothing.
  */
-const keyvisualBoxClassName =
-  "pointer-events-none absolute left-0 top-[2px] -z-10 h-[1022px] w-[1441px] bg-[linear-gradient(to_right,#00101A_0%,#00101A_25.41%,rgba(0,16,26,0)_100%),url('/login/hero-waves.jpg')] bg-cover bg-right bg-no-repeat";
 export default async function LoginPage({
   searchParams,
 }: {
@@ -98,7 +82,7 @@ export default async function LoginPage({
     <div
       className={`${montserrat.variable} ${montserratAlternates.variable} relative isolate flex min-h-screen w-full flex-col overflow-hidden bg-[#00101A]`}
     >
-      <div aria-hidden className={keyvisualBoxClassName} />
+      <LoginKeyvisualBackground />
       <LoginHeader initialLocale={locale} />
       <PageGutter as="main" className="flex flex-1 items-center py-24">
         {/* Content max-width cap (Figma `Main` node: 1152 = 1440 − 2×144 page
