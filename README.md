@@ -13,32 +13,56 @@ pnpm dev
 # or
 bun dev
 ```
-# Typecheck
-npx tsc --noEmit
-
-# Lint toàn bộ
-npm run lint
-
-# Test toàn bộ (một lần, không watch)
-npx vitest run
-
-# Test 1 file/thư mục cụ thể
-npx vitest run app/components/kudos
-
-# Build production (bị agent-sandbox chặn với tôi, nhưng bạn chạy bình thường)
-npm run build
-
-# Restart dev server
-pkill -f "next dev"; npm run dev
-
-# E2E Playwright (nhớ tắt dev server đang chạy trước, vì e2e tự build+start server riêng ở port 3000/3100/3200)
-pkill -f "next dev"; npm run e2e
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Development Commands
+
+Typecheck:
+
+```bash
+npx tsc --noEmit
+```
+
+Lint toàn bộ:
+
+```bash
+npm run lint
+```
+
+Test toàn bộ (một lần, không watch):
+
+```bash
+npx vitest run
+```
+
+Test 1 file/thư mục cụ thể:
+
+```bash
+npx vitest run app/components/kudos
+```
+
+Build production (bị agent-sandbox chặn với tôi, nhưng bạn chạy bình thường):
+
+```bash
+npm run build
+```
+
+Restart dev server:
+
+```bash
+pkill -f "next dev"; npm run dev
+```
+
+E2E Playwright (nhớ tắt dev server đang chạy trước, vì e2e tự build+start server riêng ở port 3000/3100/3200):
+
+```bash
+pkill -f "next dev"; npm run e2e
+```
 
 ## Learn More
 
