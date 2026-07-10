@@ -53,7 +53,7 @@ export default defineConfig({
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"], baseURL: "http://localhost:3000" },
-      testIgnore: /homepage-content|awards-content|prelaunch-countdown|i18n-content|layout-contract\.spec/,
+      testIgnore: /(?:homepage-content|awards-content|prelaunch-countdown|i18n-content|layout-contract|kudos-board-content|kudos-compose-content|kudos-like-content)\.spec/,
     },
     {
       name: "chromium-authless",
@@ -64,7 +64,7 @@ export default defineConfig({
       // of redirecting to /login (see file header above). Matched on
       // `\.spec` specifically so this pattern doesn't also sweep up
       // `layout-contract-helpers.ts` (a non-test module it imports).
-      testMatch: /homepage-content|awards-content|i18n-content|layout-contract\.spec/,
+      testMatch: /(?:homepage-content|awards-content|i18n-content|layout-contract|kudos-board-content|kudos-compose-content|kudos-like-content)\.spec/,
     },
     {
       name: "chromium-prelaunch",
