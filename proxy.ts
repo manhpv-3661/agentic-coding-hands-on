@@ -113,9 +113,22 @@ export async function proxy(request: NextRequest) {
 
   // getUser() validates the JWT with the Supabase Auth server (safe on any
   // project); it also refreshes the session cookie via setAll above.
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  //
+  // Review finding (Important): this matcher covers nearly every route, so
+  // an unhandled throw here (e.g. a transient Supabase Auth API outage, not
+  // just missing env) would 500 the entire site. Fail open the same way the
+  // missing-env branch above does — log once, let the request through —
+  // rather than let one Auth API hiccup take down every page.
+  let user = null;
+  try {
+    const {
+      data: { user: fetchedUser },
+    } = await supabase.auth.getUser();
+    user = fetchedUser;
+  } catch (err) {
+    console.error("[proxy] supabase.auth.getUser() threw, failing open:", err);
+    return response;
+  }
 
   if (user && pathname === "/login") {
     return NextResponse.redirect(new URL("/", request.url));

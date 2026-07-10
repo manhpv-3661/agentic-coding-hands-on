@@ -28,8 +28,10 @@ export interface KudosBoardProps {
   /** F008: the logged-in Sunner — forwarded so the carousel/feed can gate
    * each card's like-ability via `canLikeKudos`. */
   currentUser: KudosPerson;
-  /** F008: session-only "liked by me" post ids, owned by `KudosPageClient`
-   * and forwarded unchanged — this component has no like state itself. */
+  /** F008: "liked by me" post ids, owned by `KudosPageClient` and forwarded
+   * unchanged — this component has no like state itself. Client-side
+   * `useState`, but seeded from `getLikedPostIds` (backend pivot) so it
+   * survives a reload, not session-only. */
   likedIds: Set<string>;
   /** F008: flips a post's liked state, owned by `KudosPageClient`. */
   onToggleLike: (postId: string) => void;

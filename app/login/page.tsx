@@ -25,14 +25,27 @@ export async function generateMetadata(): Promise<Metadata> {
 /** Already-authenticated users skip the login screen (defense-in-depth
  * alongside proxy.ts, which redirects this same case to `/` — kept in sync
  * so this fallback can never disagree with the real gate). No-op when
- * Supabase env is absent. */
+ * Supabase env is absent. `getUser()` is wrapped so a transient Supabase
+ * Auth failure just renders the login page (proxy.ts remains the real
+ * gate) instead of crashing this page render — review finding, same class
+ * of gap as `proxy.ts`'s own `getUser()` call. */
 async function redirectIfAuthenticated() {
   if (!isSupabaseConfigured()) return;
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (user) redirect("/");
+
+  // `redirect()` throws internally (Next.js's own control-flow signal) and
+  // must NOT be caught, so it's called after — not inside — the try block.
+  let isAuthenticated = false;
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    isAuthenticated = Boolean(user);
+  } catch (err) {
+    console.error("[login page] redirectIfAuthenticated getUser() threw:", err);
+  }
+
+  if (isAuthenticated) redirect("/");
 }
 
 /**

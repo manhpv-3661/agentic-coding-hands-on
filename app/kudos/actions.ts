@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import { validateCreateKudosInput } from "@/lib/kudos/kudos-input-validation";
+import { KUDOS_HASHTAGS_MAX_COUNT } from "@/lib/kudos/kudos-compose-limits";
 import {
   getSecretBoxRewardForOpenIndex,
   getUnlockedSecretBoxCount,
@@ -101,6 +102,17 @@ export async function createKudosAction(
     const normalizedContent = input.content.trim();
     const normalizedAnonymousName = input.anonymousName.trim();
     const storedHashtags = buildStoredHashtags(input);
+
+    // Review finding (High): `validateCreateKudosInput` only bounds
+    // `input.hashtags` (the compose form's chips) — `buildStoredHashtags`
+    // above additionally unions in every `#word` extracted from free-text
+    // `content`, which is unbounded. Re-check the MERGED array here so
+    // content-derived hashtags can't bypass the cap the UI otherwise
+    // enforces (mirrors the `kudos_image_urls_max_5` DB constraint's
+    // defense-in-depth for images).
+    if (storedHashtags.length > KUDOS_HASHTAGS_MAX_COUNT) {
+      return { ok: false, error: "too_many_hashtags" };
+    }
 
     const { data, error } = await supabase
       .from("kudos")

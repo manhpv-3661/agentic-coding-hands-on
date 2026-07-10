@@ -9,9 +9,10 @@ vi.mock("@/lib/supabase/server", () => ({
       exchangeCodeForSession: vi.fn(),
     },
   })),
+  isSupabaseConfigured: vi.fn(() => true),
 }));
 
-import { createClient } from "@/lib/supabase/server";
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 
 describe("/app/auth/callback/route.ts", () => {
   beforeEach(() => {
@@ -164,5 +165,44 @@ describe("/app/auth/callback/route.ts", () => {
     await GET(request);
 
     expect(mockExchange).toHaveBeenCalledWith(testCode);
+  });
+
+  // Review finding: this route was the one Supabase entry point without an
+  // `isSupabaseConfigured()` guard, and `createClient()` throws synchronously
+  // when env is missing — regression coverage for both the guard and the
+  // try/catch around a thrown exchange failure.
+  it("redirects to /login?error=auth_callback_failed without calling createClient when Supabase isn't configured", async () => {
+    vi.mocked(isSupabaseConfigured).mockReturnValueOnce(false);
+
+    const request = new NextRequest(
+      new URL("http://localhost:3000/auth/callback?code=test-code")
+    );
+
+    const response = await GET(request);
+
+    expect(response.status).toBe(307);
+    expect(response.headers.get("location")).toContain(
+      "/login?error=auth_callback_failed"
+    );
+    expect(createClient).not.toHaveBeenCalled();
+  });
+
+  it("redirects to /login?error=auth_callback_failed instead of throwing when exchangeCodeForSession throws", async () => {
+    vi.mocked(createClient).mockResolvedValueOnce({
+      auth: {
+        exchangeCodeForSession: vi.fn().mockRejectedValue(new Error("network error")),
+      },
+    } as unknown as Awaited<ReturnType<typeof createClient>>);
+
+    const request = new NextRequest(
+      new URL("http://localhost:3000/auth/callback?code=test-code")
+    );
+
+    const response = await GET(request);
+
+    expect(response.status).toBe(307);
+    expect(response.headers.get("location")).toContain(
+      "/login?error=auth_callback_failed"
+    );
   });
 });

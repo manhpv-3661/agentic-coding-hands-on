@@ -33,9 +33,10 @@ function setLocaleCookie(locale: Locale) {
  * VN/EN language selector from the header (MoMorph node
  * `I662:14391;186:1601` / component "Language").
  *
- * Scope note (see clarifications.md): this only toggles the `NEXT_LOCALE`
- * cookie and the trigger label — it does not translate page content. Full
- * i18n is a separate screen's concern.
+ * This toggles the `NEXT_LOCALE` cookie and the trigger label, then calls
+ * `router.refresh()` — F005 wired real page-content translation on top of
+ * this later (server components re-read the cookie on refresh), so
+ * selecting a language DOES translate the page now, not just the trigger.
  *
  * Design note: the Figma design only exports a flag asset for Vietnamese
  * (`MM_MEDIA_VN`). No English flag asset exists in the source file, so the

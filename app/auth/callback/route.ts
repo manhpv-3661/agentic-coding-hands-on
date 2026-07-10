@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 
 /**
  * OAuth callback. Supabase redirects here with `?code=...` after Google
@@ -19,11 +19,22 @@ export async function GET(request: NextRequest) {
       ? nextParam
       : "/";
 
-  if (code) {
-    const supabase = await createClient();
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) {
-      return NextResponse.redirect(`${origin}${next}`);
+  // Review finding (Important): this was the one Supabase entry point in
+  // the auth flow without the `isSupabaseConfigured()` guard every other
+  // caller uses — `createClient()` throws SYNCHRONOUSLY when env is
+  // missing (`supabaseUrl is required.`, verified directly), which would
+  // otherwise 500 instead of bouncing to the same graceful error path as
+  // every other failure here. The try/catch also covers a transient
+  // Supabase Auth API failure (not just missing env).
+  if (code && isSupabaseConfigured()) {
+    try {
+      const supabase = await createClient();
+      const { error } = await supabase.auth.exchangeCodeForSession(code);
+      if (!error) {
+        return NextResponse.redirect(`${origin}${next}`);
+      }
+    } catch (err) {
+      console.error("[auth/callback] exchangeCodeForSession threw:", err);
     }
   }
 

@@ -67,6 +67,19 @@ export function useKudosOptimisticPosts({
           return;
         }
 
+        // Review finding (Medium): a real insert returns the DB's own
+        // `postId` — swap it in for the client-generated optimistic id
+        // (`kudos-new-{timestamp}-{seq}`), otherwise anything keying off
+        // `post.id` (e.g. `CopyLinkButton`'s `/kudos#${post.id}` anchor)
+        // stays permanently desynced from the row a page reload will show.
+        if (!result.skipped) {
+          setPosts((previous) =>
+            previous.map((post) =>
+              post.id === optimisticPost.id ? { ...post, id: result.postId } : post,
+            ),
+          );
+        }
+
         onSuccess();
       } catch {
         setPosts((previous) => previous.filter((post) => post.id !== optimisticPost.id));

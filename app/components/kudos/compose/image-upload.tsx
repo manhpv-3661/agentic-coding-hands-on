@@ -1,8 +1,24 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { KUDOS_IMAGES_MAX_COUNT } from "@/lib/kudos/kudos-compose-limits";
+import {
+  KUDOS_IMAGES_MAX_COUNT,
+  KUDOS_IMAGE_ALLOWED_MIME_TYPES,
+  KUDOS_IMAGE_MAX_BYTES,
+} from "@/lib/kudos/kudos-compose-limits";
 import { ChipAddTrigger } from "./chip-add-trigger";
+
+/** Review finding (Medium): the only prior gate was `accept="image/*"` on
+ * the `<input>`, trivially bypassed (e.g. drag-drop, a renamed file). The
+ * real enforcement is the `kudos-images` bucket's `file_size_limit`/
+ * `allowed_mime_types` (see `kudos-compose-limits.ts`) — this just rejects
+ * obviously-invalid files before a wasted upload round-trip. */
+function isAcceptableImageFile(file: File): boolean {
+  return (
+    (KUDOS_IMAGE_ALLOWED_MIME_TYPES as readonly string[]).includes(file.type) &&
+    file.size <= KUDOS_IMAGE_MAX_BYTES
+  );
+}
 
 export interface ImageUploadLabels {
   /** Field caption, also the closed trigger's first text line (ground truth
@@ -58,10 +74,15 @@ export function ImageUpload({
   }, [previewUrls]);
 
   function handleFilesSelected(event: React.ChangeEvent<HTMLInputElement>) {
-    const selected = Array.from(event.target.files ?? []);
+    const selected = Array.from(event.target.files ?? []).filter(isAcceptableImageFile);
+    const rejectedCount = (event.target.files?.length ?? 0) - selected.length;
     const current = value.slice(0, max);
     const remainingCapacity = max - current.length;
-    setTruncated(selected.length > remainingCapacity);
+    // Reuses the existing "truncated" hint for any dropped file — over the
+    // count cap OR failing the type/size check — rather than adding a new
+    // dictionary key for what's still fundamentally "some files didn't make
+    // it in".
+    setTruncated(rejectedCount > 0 || selected.length > remainingCapacity);
     if (remainingCapacity > 0 && selected.length > 0) {
       onChange([...current, ...selected.slice(0, remainingCapacity)].slice(0, max));
     }
