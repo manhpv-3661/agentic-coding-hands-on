@@ -24,18 +24,27 @@ import { ContentFrame, PageGutter } from "../layout/page-layout";
  * the pull-quote (`3204:10161`), which carries the same
  * `--Details-Text-Secondary-1` (`#FFF`) token explicitly.
  *
- * Desktop-only (native 1512 frame): `get_node('3204:10152')`'s single
- * authored frame is 1152px wide with `padding: 120px 104px` — reproduced
- * verbatim as `px-[104px] py-[120px]` on the inner `ContentFrame(1152)`
- * (interior card padding, not a viewport gutter — see below).
+ * Desktop-only (native 1512 frame): `get_node('3204:10152')` ("Frame 486")
+ * DECLARES `padding: 120px 104px 120px 104px`, but re-verified 2026-07-10
+ * against its actual child bounds (`get_node`, screen `i87tDx10uM`) — the
+ * declared padding is NOT applied to the real content: child `5001:14827`
+ * (the paragraph/pull-quote group) spans `startX:180 → endX:1332`,
+ * IDENTICAL to the parent frame's own bounds (`180 → 1332`), i.e. zero
+ * horizontal inset; the vertical numbers don't reconcile either (child
+ * height 1090 vs. the 1219 − 2×120 = 979 the declared padding would
+ * predict, and the child's bottom edge sits slightly BELOW the parent's).
+ * Conclusion: this frame's `padding` value is vestigial Figma metadata that
+ * doesn't drive the actual visual layout (likely the child has
+ * fixed/ignore-auto-layout sizing in the source file) — the content
+ * genuinely fills the full 1152px `ContentFrame`, no interior padding.
+ * (A prior pass added `px-[104px] py-[120px]` by trusting the declared
+ * property alone without this cross-check — do not reintroduce it without
+ * re-verifying against child bounds first.)
  *
  * Outer gutter: the outer `<section>` carries the shared `PageGutter`
  * (144px, the same 'Bìa' column used by
  * `hero-section.tsx`/`awards-section.tsx`/`sun-kudos-section.tsx`) so this
- * block stays flush with its siblings. The 104px/120px values inside
- * `get_node('3204:10152')` are that node's own *interior* padding (its text
- * inset from its own card edge), not the page gutter, so they are kept
- * as-is on the inner `ContentFrame(1152)`.
+ * block stays flush with its siblings.
  */
 interface RootFurtherContentProps {
   /** Paragraph 1/2 + pull-quote copy (`homepage.rootFurther`). */

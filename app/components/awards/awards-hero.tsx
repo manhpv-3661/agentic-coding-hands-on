@@ -83,24 +83,32 @@ export function AwardsHero({dictionary}: {dictionary: Dictionary}) {
             "linear-gradient(0deg, #00101A -4.85%, rgba(0, 19, 32, 0.00) 60.51%)",
         }}
       />
-      {/* mm:313:8450 — absolute-overlaid at the contract's `144,184 →
-          1152×150` box: `top-[184px]` offsets from the band's own top edge
-          (the containing block for an absolutely positioned child is the
-          nearest positioned ancestor's padding box, i.e. the full 1440×547
-          section — `PageGutter`'s own `px-36` is inert for this child), and
+      {/* mm:313:8450 ("KV" frame) — re-verified 2026-07-10 directly against
+          live MoMorph data (`get_node`/`get_node_context`, screen zFYDgyj_pD),
+          correcting a prior derivation error:
+            - Header (313:8440): absolute Y 0→80.
+            - mms_3_Keyvisual (313:8437, this section's own background/box):
+              absolute Y 80→627, height 547 — i.e. THIS is the Figma
+              equivalent of the React `<section className="h-[547px]">`
+              below, flush against the header with zero gap.
+            - KV (313:8450): absolute Y 184→334 (within `Bìa`, whose own
+              padding-top(96) + absolute start(88) = 184, confirmed).
+          Section-local offset = KV's absolute Y (184) − the section's own
+          absolute start (80) = 104, i.e. `top-26` (Tailwind canonical for
+          104px) — NOT `top-[184px]` as this comment previously claimed
+          (that value was KV's raw Figma-absolute Y, used directly without
+          subtracting the section's own 80px start — an off-by-header-height
+          bug that shipped as "correct per spec" for a while).
           `inset-x-0` + `ContentFrame`'s built-in `mx-auto max-w-[1152px]`
-          center the 1152px box within that 1440px span, landing its left
+          center the 1152px box within the 1440px span, landing its left
           edge at exactly 144px — the same gutter every sibling section
           uses, reproduced here via absolute positioning instead of normal
-          flow since the KV logo must sit at a fixed 184px offset regardless
-          of the gold-title zone that follows below (313:8453, not part of
+          flow since the KV logo must sit at a fixed offset regardless of
+          the gold-title zone that follows below (313:8453, not part of
           this band). */}
       <ContentFrame
         width={1152}
-        style={{
-          top: "80px"
-        }}
-        className="absolute inset-x-0 top-[184px] z-10 flex flex-col items-start gap-[130px] absolute"
+        className="absolute inset-x-0 top-26 z-10 flex flex-col items-start gap-[130px]"
       >
         {/* mm:2789:12915 */}
         <Image

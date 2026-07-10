@@ -8,7 +8,6 @@ import {
   expectClose,
   expectNeverExceeds,
   expectNoDoubleGutter,
-  expectNoNestedGutterClass,
   assertStructuralInvariants,
 } from "./layout-contract-helpers";
 
@@ -122,9 +121,13 @@ test.describe("Layout contract — Kudos + Spotlight (1440-only design)", () => 
     expectClose(header.paddingLeft, 144, TOLERANCE_PX, "kudos header gutter");
     expectClose(header.height, 80, HEIGHT_TOLERANCE_PX, "kudos header height");
 
-    const content = await measureBox(page, CONTENT_1152);
+    // Index 0: KudosBanner's own ContentFrame (title/pills overlay, rendered
+    // first in kudos-page-client.tsx). Index 1: KudosBoard's ContentFrame —
+    // the one this assertion is actually about (review finding: this test
+    // previously defaulted to index 0 and silently measured the banner).
+    const content = await measureBox(page, CONTENT_1152, 1);
     expectClose(content.width, 1152, TOLERANCE_PX, "kudos board content max-width");
-    await expectNoDoubleGutter(page, CONTENT_1152);
+    await expectNoDoubleGutter(page, CONTENT_1152, 1);
   });
 
   for (const viewport of VIEWPORTS.filter((v) => v.width !== 1440)) {
@@ -164,12 +167,12 @@ test.describe("Layout contract — Home (1512-only design)", () => {
 
     const rootFurther = await measureBox(page, `main > :nth-child(2) ${CONTENT_1152}`);
     expectClose(rootFurther.width, 1152, TOLERANCE_PX, "home root-further max-width");
-    // Not `expectNoDoubleGutter`: this ContentFrame's own `lg:px-[104px]
-    // lg:py-[120px]` is a documented exception (root-further-content.tsx) —
-    // it reproduces that Figma node's own interior card padding, not a
-    // re-applied viewport gutter. Only the "no nested gutter class" half of
-    // the invariant applies here.
-    await expectNoNestedGutterClass(page, `main > :nth-child(2) ${CONTENT_1152}`);
+    // Re-verified 2026-07-10: root-further-content.tsx's ContentFrame has NO
+    // interior padding (the Figma node's declared `padding: 120px 104px` was
+    // found NOT to apply to the real content — see that file's docblock) —
+    // no exception needed here anymore, full invariant applies like any
+    // other ContentFrame.
+    await expectNoDoubleGutter(page, `main > :nth-child(2) ${CONTENT_1152}`);
 
     const awards = await measureBox(page, '#awards-section [class*="max-w-[1224px]"]');
     expectClose(awards.width, 1224, TOLERANCE_PX, "home awards max-width");

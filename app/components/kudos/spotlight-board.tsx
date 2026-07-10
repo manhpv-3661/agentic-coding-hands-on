@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { SearchIcon } from "./kudos-card-icons";
 import { KudosSectionHeading } from "./kudos-section-heading";
@@ -12,35 +13,42 @@ import { SpotlightTicker } from "./spotlight-ticker";
  * the former standalone `spotlight-collage-backdrop.tsx` (phase-02 dedup —
  * single consumer, zero props, pure decorative).
  *
- * CONFIRMED DEFECT (fixed here): this previously rendered
+ * CONFIRMED DEFECT (fixed previously): this used to render
  * `public/kudos/spotlight-crop.png`, a flattened screenshot of the whole
  * board with ~120 interactive names baked into the pixels, layered UNDER
  * the real DOM name-cloud (`spotlight-name-cloud.tsx`). That doubled every
- * name (once as illegible baked pixels, once as real DOM/interactive text)
- * and violated the asset rule — background layers must be decorative-only;
- * text/interactive content must be DOM
+ * name and violated the asset rule — background layers must be
+ * decorative-only; text/interactive content must be DOM
  * (`.claude/rules/momorph/momorph-layout-system.md`).
  *
- * INTERIM FIX: the design's clean decorative-only exports (`image 24`/
- * `image 25`/`Root further mo rong 1`) cannot be re-exported right now —
- * `get_figma_image`/`get_media_file` return 500/401 (credential gap, not a
- * code issue; re-checked and still failing as of this fix). Per phase-07's
- * strategy (b), this backdrop is reconstructed from CSS-only layers instead
- * of any bitmap: a radial wash in the section's own flat navy
- * (`rgba(0,16,26,1)`, mm:`MaZUn5xHXZ`) for depth, the same accent color
- * blobs the previous crop-based version used (kept — they read close to the
- * design's warm/green/red accent hues), and a faint repeating diagonal
- * line texture standing in for the photo's wave/network pattern. No baked
- * text, so the DOM name-cloud is the single source of truth for names.
- *
- * FOLLOW-UP (tracked in plan.md open questions): once MoMorph Figma image
- * export auth is restored, swap this for the real `image 24`/`image 25`/
- * `Root further mo rong 1` decorative exports and delete this
- * reconstruction.
+ * STATUS (2026-07-10): `get_figma_image`/`get_media_file` still 500/401 for
+ * these nodes via MoMorph MCP (re-checked, still failing), but one of the 3
+ * layers was hand-exported directly from Figma and supplied:
+ * `public/kudos/kudos/spotlight-bg-root-further.jpg` ("Root further mo rong
+ * 1", 1157×548, real content — the same tree-root/wave artwork reused
+ * elsewhere in this build). The other two hand-exports
+ * (`spotlight-bg-image-24.jpg`, `spotlight-bg-image-25.jpg`) came back
+ * invalid — one is a 1×1px file, the other is 1065×548 but fully blank
+ * white — both need re-exporting from the correct Figma layer before they
+ * can replace the CSS stand-ins below. Until then, the real image is the
+ * base layer; the CSS gradient/texture layers stay on top as a stand-in for
+ * `image 24`/`image 25` (kept from the prior reconstruction — they read
+ * close to the design's warm/green/red accent hues). No baked text, so the
+ * DOM name-cloud remains the single source of truth for names.
  */
 function SpotlightCollageBackdrop() {
   return (
     <div aria-hidden="true" className="absolute inset-0 z-0 overflow-hidden rounded-[47px]">
+      {/* Real export: "Root further mo rong 1" — the one valid asset of the
+       * 3-layer stack so far. */}
+      <Image
+        src="/kudos/kudos/spotlight-bg-root-further.jpg"
+        alt=""
+        fill
+        className="object-cover"
+      />
+      {/* Stand-ins for "image 24"/"image 25" — both hand-exports came back
+       * invalid (1x1px / fully blank); replace once re-exported correctly. */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_-10%,rgba(30,58,74,0.55),rgba(0,16,26,1)_60%)]" />
       <div className="absolute inset-0 opacity-[0.07] bg-[repeating-linear-gradient(115deg,rgba(255,234,158,0.6)_0px,rgba(255,234,158,0.6)_1px,transparent_1px,transparent_64px)]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_88%,rgba(228,117,33,0.18),transparent_21%),radial-gradient(circle_at_7%_22%,rgba(102,177,88,0.14),transparent_17%),radial-gradient(circle_at_34%_90%,rgba(166,64,38,0.16),transparent_19%)]" />

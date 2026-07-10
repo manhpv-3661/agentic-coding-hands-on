@@ -162,11 +162,12 @@ export async function expectNoNestedGutterClass(page: Page, contentFrameSelector
  * must never carry its OWN horizontal padding (it only owns `max-width` +
  * `mx-auto`) on top of {@link expectNoNestedGutterClass}'s check.
  *
- * NOT universal: `root-further-content.tsx`'s `ContentFrame(1152)` is a
- * documented exception — its `lg:px-[104px] lg:py-[120px]` reproduces that
- * exact node's own *interior* card padding from the live Figma source (see
- * that file's docblock), not a re-applied viewport gutter. Use
- * {@link expectNoNestedGutterClass} alone for that one.
+ * Universal, no per-screen exceptions: `root-further-content.tsx`'s
+ * `ContentFrame(1152)` was thought to need one (a Figma node's *declared*
+ * `padding: 120px 104px`), but re-verified 2026-07-10 against that node's
+ * actual child bounds — the declared padding does not apply to the real
+ * content (see that file's docblock) — so it carries zero interior padding
+ * like every other `ContentFrame` and needs no exception here.
  */
 export async function expectNoDoubleGutter(page: Page, contentFrameSelector: string, index = 0) {
   const result = await page.evaluate(

@@ -86,10 +86,11 @@ export function HighlightKudosCarousel({
 
   return (
     <section className="flex w-full flex-col gap-10">
-      <div className="flex w-full flex-wrap items-end justify-between gap-4">
-        <KudosSectionHeading subtitle="Sun* Annual Awards 2025" title={title} />
-        {filtersSlot}
-      </div>
+      <KudosSectionHeading
+        subtitle="Sun* Annual Awards 2025"
+        title={title}
+        trailingSlot={filtersSlot}
+      />
 
       {posts.length === 0 ? (
         <p className="font-montserrat text-sm text-white/60">{emptyLabel}</p>
