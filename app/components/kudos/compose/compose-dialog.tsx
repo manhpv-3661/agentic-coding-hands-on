@@ -171,7 +171,7 @@ export function ComposeDialog({
   return (
     <>
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+        <div className="animate-fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
           <div
             ref={containerRef}
             role="dialog"
@@ -179,7 +179,7 @@ export function ComposeDialog({
             aria-label={labels.dialogTitle}
             tabIndex={-1}
             onKeyDown={handlePanelKeyDown}
-            className="flex max-h-[90vh] w-full max-w-188 flex-col gap-8 overflow-y-auto rounded-3xl bg-[#FFF8E1] p-10 text-[#00101A] outline-none"
+            className="animate-scale-in flex max-h-[90vh] w-full max-w-188 flex-col gap-8 overflow-y-auto rounded-3xl bg-[#FFF8E1] p-10 text-[#00101A] outline-none"
           >
             <h2 className="font-montserrat text-center text-[32px] leading-10 font-bold text-[#00101A]">
               {labels.dialogTitle}
@@ -199,7 +199,7 @@ export function ComposeDialog({
               <button
                 type="button"
                 onClick={onClose}
-                className="flex shrink-0 items-center gap-2 rounded border border-[#998C5F] bg-[#FFEA9E]/10 px-10 py-4 text-base font-bold tracking-[0.15px] text-[#00101A] hover:bg-[#FFEA9E]/20"
+                className="flex shrink-0 items-center gap-2 rounded border border-[#998C5F] bg-[#FFEA9E]/10 px-10 py-4 text-base font-bold tracking-[0.15px] text-[#00101A] transition-colors duration-150 hover:bg-[#FFEA9E]/20"
               >
                 {labels.cancel}
                 <CloseIcon />
@@ -207,7 +207,7 @@ export function ComposeDialog({
               <button
                 type="button"
                 onClick={handleSubmit}
-                className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-[#FFEA9E] p-4 text-[22px] leading-7 font-bold text-[#00101A] hover:opacity-90"
+                className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-[#FFEA9E] p-4 text-[22px] leading-7 font-bold text-[#00101A] transition-all duration-150 hover:scale-[1.01] hover:opacity-90 active:scale-[0.99]"
               >
                 {labels.submit}
                 <SendIcon />

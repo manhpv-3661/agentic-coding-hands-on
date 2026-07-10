@@ -62,12 +62,12 @@ export function InsertLinkDialog({ open, onCancel, onSave, labels }: InsertLinkD
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+    <div className="animate-fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
       <div
         role="dialog"
         aria-modal="true"
         aria-label={labels.title}
-        className="flex w-full max-w-sm flex-col gap-4 rounded-2xl bg-[#FFF8E1] p-6 text-[#00101A]"
+        className="animate-scale-in flex w-full max-w-sm flex-col gap-4 rounded-2xl bg-[#FFF8E1] p-6 text-[#00101A]"
       >
         <h2 className="text-center text-lg font-bold text-[#00101A]">{labels.title}</h2>
 
@@ -101,14 +101,14 @@ export function InsertLinkDialog({ open, onCancel, onSave, labels }: InsertLinkD
           <button
             type="button"
             onClick={onCancel}
-            className="rounded-lg border border-[#998C5F] bg-[#FFEA9E]/10 px-4 py-2 text-sm font-semibold text-[#00101A] hover:bg-[#FFEA9E]/20"
+            className="rounded-lg border border-[#998C5F] bg-[#FFEA9E]/10 px-4 py-2 text-sm font-semibold text-[#00101A] transition-colors duration-150 hover:bg-[#FFEA9E]/20"
           >
             {labels.cancel}
           </button>
           <button
             type="button"
             onClick={handleSave}
-            className="rounded-lg bg-[#FFEA9E] px-4 py-2 text-sm font-bold text-[#00101A] hover:opacity-90"
+            className="rounded-lg bg-[#FFEA9E] px-4 py-2 text-sm font-bold text-[#00101A] transition-all duration-150 hover:scale-[1.03] hover:opacity-90 active:scale-[0.97]"
           >
             {labels.save}
           </button>

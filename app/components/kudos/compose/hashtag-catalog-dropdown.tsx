@@ -74,7 +74,7 @@ export function HashtagCatalogDropdown({
       <button
         type="button"
         {...triggerProps}
-        className="inline-flex h-12 items-center gap-1 rounded-lg border border-[#998C5F] bg-white px-3 text-xs font-semibold text-[#00101A]"
+        className="inline-flex h-12 items-center gap-1 rounded-lg border border-[#998C5F] bg-white px-3 text-xs font-semibold text-[#00101A] transition-colors duration-150 hover:bg-[#FFF8E1]"
       >
         {labels.browse}
         <span aria-hidden="true" className="text-[#998C5F]">
@@ -83,7 +83,7 @@ export function HashtagCatalogDropdown({
       </button>
 
       {open && (
-        <div className="absolute top-full left-0 z-10 mt-1 w-64 rounded-lg border border-[#998C5F] bg-white p-2 shadow-lg">
+        <div className="animate-scale-in origin-top-left absolute top-full left-0 z-10 mt-1 w-64 rounded-lg border border-[#998C5F] bg-white p-2 shadow-lg">
           <label className="mb-2 flex flex-col gap-1 text-xs font-semibold text-[#999]">
             {labels.group}
             <select
@@ -118,7 +118,7 @@ export function HashtagCatalogDropdown({
                     aria-selected={selected}
                     disabled={disableRow}
                     onClick={() => onToggleTag(tag)}
-                    className="flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm text-[#00101A] hover:bg-[#FFF8E1] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-transparent"
+                    className="flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm text-[#00101A] transition-colors duration-150 hover:bg-[#FFF8E1] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-transparent"
                   >
                     <span>{tag}</span>
                     {selected && <span aria-hidden="true">✓</span>}

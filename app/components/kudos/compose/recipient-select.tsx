@@ -58,7 +58,7 @@ export function RecipientSelect({ options, value, onChange, error, labels, id }:
         // the ARIA spec — `aria-describedby` alone still links the error
         // text to this control.
         aria-describedby={error ? errorId : undefined}
-        className="flex w-full items-center justify-between rounded-lg border border-[#998C5F] bg-white px-6 py-4 text-left text-[#00101A]"
+        className="flex w-full items-center justify-between rounded-lg border border-[#998C5F] bg-white px-6 py-4 text-left text-[#00101A] transition-colors duration-150 hover:bg-[#FFF8E1]"
       >
         <span
           className={cn(
@@ -74,7 +74,7 @@ export function RecipientSelect({ options, value, onChange, error, labels, id }:
       </button>
 
       {open && (
-        <div className="absolute top-full z-10 mt-1 w-full rounded-lg border border-[#998C5F] bg-white p-2 shadow-lg">
+        <div className="animate-scale-in origin-top absolute top-full z-10 mt-1 w-full rounded-lg border border-[#998C5F] bg-white p-2 shadow-lg">
           <input
             autoFocus
             type="text"
@@ -91,7 +91,7 @@ export function RecipientSelect({ options, value, onChange, error, labels, id }:
                   role="option"
                   aria-selected={value?.name === person.name}
                   onClick={() => handleSelect(person)}
-                  className="flex w-full flex-col items-start rounded-md px-3 py-2 text-left text-sm text-[#00101A] hover:bg-[#FFF8E1]"
+                  className="flex w-full flex-col items-start rounded-md px-3 py-2 text-left text-sm text-[#00101A] transition-colors duration-150 hover:bg-[#FFF8E1]"
                 >
                   <span className="font-medium">{person.name}</span>
                   <span className="text-xs text-[#999]">{person.department}</span>

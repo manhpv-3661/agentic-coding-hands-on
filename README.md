@@ -13,6 +13,26 @@ pnpm dev
 # or
 bun dev
 ```
+# Typecheck
+npx tsc --noEmit
+
+# Lint toàn bộ
+npm run lint
+
+# Test toàn bộ (một lần, không watch)
+npx vitest run
+
+# Test 1 file/thư mục cụ thể
+npx vitest run app/components/kudos
+
+# Build production (bị agent-sandbox chặn với tôi, nhưng bạn chạy bình thường)
+npm run build
+
+# Restart dev server
+pkill -f "next dev"; npm run dev
+
+# E2E Playwright (nhớ tắt dev server đang chạy trước, vì e2e tự build+start server riêng ở port 3000/3100/3200)
+pkill -f "next dev"; npm run e2e
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 

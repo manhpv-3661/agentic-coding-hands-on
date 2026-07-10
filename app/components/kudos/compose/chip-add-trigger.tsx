@@ -31,7 +31,7 @@ export function ChipAddTrigger({ id, ariaLabel, onClick, label, max }: ChipAddTr
       type="button"
       aria-label={ariaLabel}
       onClick={onClick}
-      className="inline-flex h-12 items-center gap-1 rounded-lg border border-[#998C5F] bg-white px-2 py-1"
+      className="inline-flex h-12 items-center gap-1 rounded-lg border border-[#998C5F] bg-white px-2 py-1 transition-colors duration-150 hover:bg-[#FFF8E1]"
     >
       <PlusIcon />
       {/* Ground truth's trigger caption is one two-line TEXT node

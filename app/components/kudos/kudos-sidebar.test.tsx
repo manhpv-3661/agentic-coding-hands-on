@@ -1,5 +1,10 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ refresh: vi.fn() }),
+}));
+
 import { KudosSidebar } from "./kudos-sidebar";
 import { vi as viDictionary } from "@/lib/i18n/dictionaries/vi";
 

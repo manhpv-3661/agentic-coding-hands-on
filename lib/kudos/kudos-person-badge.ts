@@ -27,6 +27,24 @@ function badgeFor(name: string): string {
   return BADGES[sum % BADGES.length];
 }
 
+/** Stable mock `id` derived from `name` (diacritics stripped, kebab-cased) —
+ * `getDistinctRecipients` already treats `name` as the unique key for mock
+ * people, so a name-derived slug is a safe, deterministic stand-in for the
+ * real `profiles.id` UUID used once Supabase is configured. Without this,
+ * every mock recipient's `id` was `undefined`, so the compose form's
+ * `toCreateKudosInput` always serialized `receiverId: ""` — which
+ * `validateCreateKudosInput` rejects as `invalid_recipient` regardless of
+ * whether Supabase is configured (validation runs before the mock-mode
+ * skip check), silently rolling back every optimistic post in mock mode. */
+function slugFor(name: string): string {
+  return `mock-${name
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")}`;
+}
+
 /** Defensive accessor — `person` is typed as plain `KudosPerson` at every
  * call site (`KudosCard`'s prop type flows from `KudosPost`), so reading
  * the badge requires this narrow, local cast rather than widening the
@@ -39,5 +57,5 @@ export function personBadge(person: KudosPerson): string | undefined {
 /** Builds one `PersonWithBadge` — every `KUDOS_POSTS` sender/recipient
  * goes through this so the badge assignment stays in one place. */
 export function personWithBadge(name: string, department: string, stars: number): PersonWithBadge {
-  return { name, department, stars, badge: badgeFor(name) };
+  return { id: slugFor(name), name, department, stars, badge: badgeFor(name) };
 }

@@ -68,7 +68,7 @@ export function CopyLinkButton({ link, label, copiedLabel, copyFailedLabel, clas
       <button
         type="button"
         onClick={() => void handleCopy()}
-        className="flex items-center gap-2 font-montserrat text-base leading-6 font-bold tracking-[0.15px] text-[#00101A] transition-opacity duration-150 hover:opacity-70"
+        className="flex items-center gap-2 font-montserrat text-base leading-6 font-bold tracking-[0.15px] text-[#00101A] transition-all duration-150 hover:scale-105 hover:opacity-70"
       >
         {label}
         <LinkIcon />
@@ -76,7 +76,7 @@ export function CopyLinkButton({ link, label, copiedLabel, copyFailedLabel, clas
       {status !== "idle" && (
         <span
           role="status"
-          className="absolute bottom-full left-1/2 mb-1 -translate-x-1/2 rounded bg-[#00101A] px-2 py-1 text-xs whitespace-nowrap text-white shadow"
+          className="animate-scale-in absolute bottom-full left-1/2 mb-1 -translate-x-1/2 rounded bg-[#00101A] px-2 py-1 text-xs whitespace-nowrap text-white shadow"
         >
           {status === "copied" ? copiedLabel : copyFailedLabel}
         </span>

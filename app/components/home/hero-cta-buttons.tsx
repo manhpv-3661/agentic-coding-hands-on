@@ -33,7 +33,7 @@ export function HeroCtaButtons({
       {/* mm:2167:9063 */}
       <Link
         href={aboutAwardsHref}
-        className="flex items-center gap-2 rounded-lg bg-[#FFEA9E] px-6 py-4 text-[#00101A] transition-opacity duration-200 ease-out hover:opacity-90"
+        className="flex items-center gap-2 rounded-lg bg-[#FFEA9E] px-6 py-4 text-[#00101A] transition-all duration-200 ease-out hover:scale-105 hover:opacity-90"
       >
         {/* mm:I2167:9063;186:1935 */}
         <span className="flex items-center gap-1">
@@ -48,7 +48,7 @@ export function HeroCtaButtons({
       {/* mm:2167:9064 */}
       <Link
         href={aboutKudosHref}
-        className="flex items-center gap-2 rounded-lg border border-[#998C5F] bg-[#FFEA9E1A] px-6 py-4 text-white transition-colors duration-200 ease-out hover:bg-white/10"
+        className="flex items-center gap-2 rounded-lg border border-[#998C5F] bg-[#FFEA9E1A] px-6 py-4 text-white transition-all duration-200 ease-out hover:scale-105 hover:bg-white/10"
       >
         {/* mm:I2167:9064;186:2758 */}
         <span className="flex items-center gap-1">

@@ -36,17 +36,13 @@ export const TOLERANCE_PX = 1;
 export const HEIGHT_TOLERANCE_PX = 6;
 
 /**
- * `PageGutter`'s OWN Tailwind breakpoints (`app/components/layout/
- * page-layout.tsx`: `w-full px-6 sm:px-10 lg:px-36`). This is the shared
- * primitive's responsive contract, not a per-screen design number, so it is
- * valid to assert at every viewport regardless of whether that viewport has
- * a live Figma frame behind it.
+ * `PageGutter`'s OWN gutter width (`app/components/layout/page-layout.tsx`:
+ * `GUTTER_CLASS = "w-full px-36"`). Desktop-only fix
+ * (plans/260709-0724-desktop-only-banner-overlay-fix): the gutter is a FLAT
+ * 144px at every viewport width now — no `sm:`/`lg:` breakpoint scaling, so
+ * this is a constant rather than a per-width lookup.
  */
-export function expectedGutterForWidth(viewportWidth: number): number {
-  if (viewportWidth >= 1024) return 144; // lg:px-36
-  if (viewportWidth >= 640) return 40; // sm:px-10
-  return 24; // px-6 (base, <640)
-}
+export const EXPECTED_GUTTER_PX = 144; // px-36, flat at every width
 
 interface BoxMeasurement {
   width: number;
@@ -125,10 +121,9 @@ export async function assertStructuralInvariants(
   await page.setViewportSize({ width: viewport.width, height: viewport.height });
   await page.goto(url);
 
-  const expectedGutter = expectedGutterForWidth(viewport.width);
   const header = await measureBox(page, "header");
-  expectClose(header.paddingLeft, expectedGutter, TOLERANCE_PX, `${url} header gutter @${viewport.name}`);
-  expectClose(header.paddingRight, expectedGutter, TOLERANCE_PX, `${url} header gutter @${viewport.name}`);
+  expectClose(header.paddingLeft, EXPECTED_GUTTER_PX, TOLERANCE_PX, `${url} header gutter @${viewport.name}`);
+  expectClose(header.paddingRight, EXPECTED_GUTTER_PX, TOLERANCE_PX, `${url} header gutter @${viewport.name}`);
 
   const content = await measureBox(page, contentSelector, contentIndex);
   expectNeverExceeds(content.width, maxWidthPx, `${url} content @${viewport.name}`);
@@ -137,9 +132,10 @@ export async function assertStructuralInvariants(
 
 /**
  * Structural invariant, safe on every `ContentFrame`: no descendant
- * re-applies the shared `PageGutter` gutter class (`lg:px-36`) — that would
- * mean a second layer silently owns the viewport gutter inside the content
- * column (momorph-layout-system.md §3, "exactly one layer owns gutter").
+ * re-applies the shared `PageGutter` gutter class (`px-36`, flat — see
+ * `expectedGutterForWidth` above) — that would mean a second layer silently
+ * owns the viewport gutter inside the content column
+ * (momorph-layout-system.md §3, "exactly one layer owns gutter").
  */
 export async function expectNoNestedGutterClass(page: Page, contentFrameSelector: string, index = 0) {
   const hasNestedGutter = await page.evaluate(
@@ -150,7 +146,7 @@ export async function expectNoNestedGutterClass(page: Page, contentFrameSelector
           `layout-contract: no element matched "${contentFrameSelector}" at index ${index}`,
         );
       }
-      return el.querySelector('[class*="lg:px-36"]') !== null;
+      return el.querySelector('[class*="px-36"]') !== null;
     },
     { contentFrameSelector, index },
   );

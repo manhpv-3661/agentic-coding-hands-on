@@ -71,8 +71,8 @@ export function KudosCard({
     <article
       className={
         isFeed
-          ? "flex w-full flex-col gap-4 rounded-3xl bg-[#FFF8E1] px-10 pt-10 pb-4"
-          : "flex w-full flex-col gap-4 rounded-2xl border-4 border-[#FFEA9E] bg-[#FFF8E1] px-6 pt-6 pb-4"
+          ? "flex w-full flex-col gap-4 rounded-3xl bg-[#FFF8E1] px-10 pt-10 pb-4 transition-shadow duration-200 hover:shadow-xl"
+          : "flex w-full flex-col gap-4 rounded-2xl border-4 border-[#FFEA9E] bg-[#FFF8E1] px-6 pt-6 pb-4 transition-shadow duration-200 hover:shadow-xl"
       }
     >
       {/* mm:I2940:13464;335:9442 / mm:I3127:21871;256:4857 — 24px gap,
@@ -127,7 +127,7 @@ export function KudosCard({
               key={tag}
               type="button"
               onClick={() => onHashtagClick?.(tag)}
-              className="font-montserrat text-base leading-6 font-bold tracking-[0.5px] text-[#D4271D] transition-opacity duration-150 hover:opacity-70"
+              className="font-montserrat text-base leading-6 font-bold tracking-[0.5px] text-[#D4271D] transition-all duration-150 hover:scale-105 hover:opacity-70"
             >
               {tag}
             </button>
@@ -151,9 +151,11 @@ export function KudosCard({
             aria-label={liked ? labels.unlike : labels.like}
             disabled={isOwnPost}
             onClick={() => onToggleLike?.(post.id)}
-            className="flex items-center gap-2 font-montserrat text-2xl leading-8 font-bold text-[#00101A] transition-opacity duration-150 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex items-center gap-2 font-montserrat text-2xl leading-8 font-bold text-[#00101A] transition-opacity duration-150 hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            <span className={liked ? "text-[#D4271D]" : "text-[#999999]"}>
+            <span
+              className={`inline-block transition-transform duration-150 hover:scale-125 active:scale-90 ${liked ? "text-[#D4271D]" : "text-[#999999]"}`}
+            >
               <HeartIcon filled={Boolean(liked)} />
             </span>
             {displayHearts}

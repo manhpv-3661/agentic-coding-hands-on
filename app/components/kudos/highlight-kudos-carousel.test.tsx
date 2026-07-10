@@ -15,6 +15,18 @@ const cardLabels = {
 
 const currentUser: KudosPerson = { name: "Current User", department: "Dept X", stars: 0 };
 
+/**
+ * The pagination label renders as `<span>1</span> / 5` — two sibling text
+ * nodes inside one wrapping `<span>`, not one flat string — so
+ * `screen.getByText` needs a predicate matching the wrapper's combined,
+ * whitespace-normalized text ("1 / 5") rather than an exact leaf string.
+ */
+function paginationText(text: string) {
+  return (_content: string, element: Element | null) =>
+    element?.tagName.toLowerCase() === "span" &&
+    element.textContent?.replace(/\s+/g, " ").trim() === text;
+}
+
 function makePosts(count: number, overrides?: Partial<KudosPost>): KudosPost[] {
   return Array.from({ length: count }, (_, i) => ({
     id: `p${i}`,
@@ -40,7 +52,7 @@ describe("HighlightKudosCarousel", () => {
     expect(screen.getByText("Content 0")).toBeInTheDocument();
     expect(screen.getByText("Content 1")).toBeInTheDocument();
     expect(screen.getByText("Content 2")).toBeInTheDocument();
-    expect(screen.getByText("1/3")).toBeInTheDocument();
+    expect(screen.getByText(paginationText("1 / 3"))).toBeInTheDocument();
   });
 
   it("disables the previous arrow at the first slide and the next arrow at the last", async () => {
@@ -55,7 +67,7 @@ describe("HighlightKudosCarousel", () => {
 
     await user.click(screen.getByRole("button", { name: "Next" }));
 
-    expect(screen.getByText("2/2")).toBeInTheDocument();
+    expect(screen.getByText(paginationText("2 / 2"))).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Next" })).toBeDisabled();
     expect(screen.getByRole("button", { name: "Previous" })).not.toBeDisabled();
   });
@@ -67,9 +79,9 @@ describe("HighlightKudosCarousel", () => {
       <HighlightKudosCarousel posts={posts} cardLabels={cardLabels} emptyLabel="empty" />,
     );
 
-    expect(screen.getByText("1/5")).toBeInTheDocument();
+    expect(screen.getByText(paginationText("1 / 5"))).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Next" }));
-    expect(screen.getByText("2/5")).toBeInTheDocument();
+    expect(screen.getByText(paginationText("2 / 5"))).toBeInTheDocument();
   });
 
   it("shows the empty-state message and no arrows when there are no posts (FR-8)", () => {

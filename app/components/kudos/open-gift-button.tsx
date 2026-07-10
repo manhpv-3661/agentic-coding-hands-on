@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { openSecretBoxAction } from "@/app/kudos/actions";
 import { useDismissableMenu } from "@/hooks/use-dismissable-menu";
@@ -82,15 +82,24 @@ export function OpenGiftButton({ labels, unopenedCount }: OpenGiftButtonProps) {
   const [rewardMessage, setRewardMessage] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
 
-  useEffect(() => {
+  // Render-phase resets (same pattern as `compose-dialog.tsx`'s
+  // discard-on-close) rather than `useEffect` + `setState` — React's
+  // recommended way to adjust state from a changed prop/value without the
+  // extra render an effect-based sync would cause.
+  const [trackedUnopenedCount, setTrackedUnopenedCount] = useState(unopenedCount);
+  if (unopenedCount !== trackedUnopenedCount) {
+    setTrackedUnopenedCount(unopenedCount);
     setLocalUnopenedCount(unopenedCount);
-  }, [unopenedCount]);
+  }
 
-  useEffect(() => {
-    if (open) return;
-    setRewardMessage(null);
-    setActionError(null);
-  }, [open]);
+  const [trackedOpen, setTrackedOpen] = useState(open);
+  if (open !== trackedOpen) {
+    setTrackedOpen(open);
+    if (!open) {
+      setRewardMessage(null);
+      setActionError(null);
+    }
+  }
 
   const subtitleText = rewardMessage
     ? `${labels.openedRewardPrefix} ${rewardMessage}`
@@ -105,14 +114,14 @@ export function OpenGiftButton({ labels, unopenedCount }: OpenGiftButtonProps) {
       <button
         type="button"
         {...triggerProps}
-        className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#FFEA9E] px-4 py-4 font-montserrat text-[22px] leading-7 font-bold text-[#00101A] transition-opacity duration-150 hover:opacity-90"
+        className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#FFEA9E] px-4 py-4 font-montserrat text-[22px] leading-7 font-bold text-[#00101A] transition-all duration-150 hover:scale-[1.02] hover:opacity-90 active:scale-[0.98]"
       >
         <GiftIcon />
         {labels.openButton}
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+        <div className="animate-fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
           {/*
             Ground truth root frame (1466:7676) is `flex-direction:column; gap:22.275px` applied
             uniformly across its 6 direct children: title, divider, subtitle, illustration,
@@ -125,13 +134,13 @@ export function OpenGiftButton({ labels, unopenedCount }: OpenGiftButtonProps) {
             role="dialog"
             aria-modal="true"
             aria-label={labels.heading}
-            className="relative flex w-full max-w-163 flex-col gap-5.5 rounded-xl bg-[#00101A] px-3 py-6 text-white"
+            className="animate-scale-in relative flex w-full max-w-163 flex-col gap-5.5 rounded-xl bg-[#00101A] px-3 py-6 text-white"
           >
             <button
               type="button"
               onClick={() => setOpen(false)}
               aria-label={labels.closeAria}
-              className="absolute right-[26.5px] top-[30px] text-white/70 transition-colors hover:text-white"
+              className="absolute right-[26.5px] top-[30px] text-white/70 transition-all hover:scale-110 hover:text-white"
             >
               <CloseIcon />
             </button>
@@ -174,7 +183,7 @@ export function OpenGiftButton({ labels, unopenedCount }: OpenGiftButtonProps) {
                     router.refresh();
                   })
                 }
-                className="transition-opacity duration-150 hover:opacity-90 disabled:cursor-wait disabled:opacity-70"
+                className="transition-transform duration-150 hover:scale-[1.03] disabled:cursor-wait disabled:opacity-70 disabled:hover:scale-100"
               >
                 <SecretBoxIllustration />
               </button>

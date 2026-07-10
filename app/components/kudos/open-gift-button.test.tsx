@@ -1,6 +1,15 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ refresh: vi.fn() }),
+}));
+
+vi.mock("@/app/kudos/actions", () => ({
+  openSecretBoxAction: vi.fn(async () => ({ ok: true, skipped: false, giftText: "1 áo phông SAA" })),
+}));
+
 import { OpenGiftButton } from "./open-gift-button";
 
 const labels = {

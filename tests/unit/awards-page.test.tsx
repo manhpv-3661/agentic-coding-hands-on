@@ -120,7 +120,9 @@ describe("AwardsPage", () => {
     expect(wrapper).not.toBeNull();
     // PageGutter (outer) owns only the 144px viewport gutter — it must never
     // also own max-width (single-owner rule, momorph-layout-system.md).
-    expect(wrapper?.className).toContain("lg:px-36");
+    // Desktop-only fix (plans/260709-0724-desktop-only-banner-overlay-fix):
+    // the gutter is flat at every width now, no `lg:` prefix.
+    expect(wrapper?.className).toContain("px-36");
     expect(wrapper?.className).not.toContain("max-w-[1152px]");
     // ContentFrame (nested) owns the 1152px cap so content doesn't stretch
     // unbounded past the native 1440px frame (phase-06-awards-screen.md).

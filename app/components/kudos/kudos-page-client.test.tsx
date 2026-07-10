@@ -2,14 +2,20 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ refresh: vi.fn() }),
+}));
+
 // Backend pivot (Phase 04/05): `addPost` calls `createKudosAction`, `toggleLike`
 // calls `toggleLikeAction`. Both mocked here (not the real actions) so these
 // tests exercise the optimistic-prepend/flip + rollback/reconcile wiring in
 // isolation from Supabase — the real actions' own behavior is covered by
-// `app/kudos/actions.test.ts`.
+// `app/kudos/actions.test.ts`. `openSecretBoxAction` is mocked too since
+// `KudosStatsBox` renders `OpenGiftButton`, which calls it.
 vi.mock("@/app/kudos/actions", () => ({
   createKudosAction: vi.fn(),
   toggleLikeAction: vi.fn(),
+  openSecretBoxAction: vi.fn(async () => ({ ok: true, skipped: false, giftText: "1 áo phông SAA" })),
 }));
 
 import { createKudosAction, toggleLikeAction } from "@/app/kudos/actions";
@@ -309,13 +315,16 @@ describe("KudosPageClient", () => {
     await submitComposeForm(user, "Nội dung gửi backend", "backendcheck");
 
     expect(mockCreateKudosAction).toHaveBeenCalledTimes(1);
+    // `toCreateKudosInput` maps the picked `KudosPerson` to `receiverId`
+    // (Supabase FK, backend pivot) — `recipientOptions` in this test fixture
+    // carries no `id`, so it serializes to "" here, same as production would
+    // for a person row missing an id.
     expect(mockCreateKudosAction).toHaveBeenCalledWith(
       expect.objectContaining({
         title: "Người truyền động lực",
         content: "Nội dung gửi backend",
         hashtags: ["#backendcheck"],
-        recipientName: "Nguyễn Văn An",
-        recipientDepartment: "Phòng Kỹ thuật",
+        receiverId: "",
         isAnonymous: false,
       }),
     );

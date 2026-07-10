@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 export interface UseCarouselResult {
   /** Current active slide index, clamped to `[0, count - 1]`. */
@@ -30,21 +30,23 @@ function clamp(value: number, count: number): number {
  * Kudos dataset, FR-16), the exposed index snaps back to slide 0
  * immediately rather than lingering on a stale, possibly out-of-range
  * index.
+ *
+ * Render-phase reset (same pattern as `compose-dialog.tsx`'s
+ * discard-on-close): a plain `useState` mirror of `count`, compared and
+ * corrected during render, rather than a ref + effect — React's documented
+ * way to adjust state from a changed prop without the extra render an
+ * effect-based `setState` would cause.
  */
 export function useCarousel(count: number): UseCarouselResult {
   const [index, setIndex] = useState(0);
-  const resolvedCountRef = useRef(count);
-  const countChanged = count !== resolvedCountRef.current;
+  const [resolvedCount, setResolvedCount] = useState(count);
 
-  // Avoid render-phase `setState` while still exposing the reset index
-  // immediately on the render where `count` changes.
-  const clampedIndex = countChanged ? 0 : clamp(index, count);
-
-  useEffect(() => {
-    if (!countChanged) return;
-    resolvedCountRef.current = count;
+  if (count !== resolvedCount) {
+    setResolvedCount(count);
     setIndex(0);
-  }, [count, countChanged]);
+  }
+
+  const clampedIndex = clamp(index, count);
 
   return {
     index: clampedIndex,

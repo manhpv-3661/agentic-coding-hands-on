@@ -54,7 +54,7 @@ export function MentionSuggestions({
       role="listbox"
       aria-label={ariaLabel}
       onMouseDown={(event) => event.preventDefault()}
-      className="absolute z-20 mt-1 flex max-h-40 flex-col gap-1 overflow-y-auto rounded-md border border-white/20 bg-[#101317] p-1 shadow-lg"
+      className="animate-scale-in origin-top absolute z-20 mt-1 flex max-h-40 flex-col gap-1 overflow-y-auto rounded-md border border-white/20 bg-[#101317] p-1 shadow-lg"
     >
       {filtered.map((name, index) => (
         <li key={name}>
@@ -64,7 +64,7 @@ export function MentionSuggestions({
             aria-selected={index === highlightedIndex}
             onClick={() => onSelect(name)}
             className={cn(
-              "w-full rounded-md px-2 py-1 text-left text-sm text-white hover:bg-white/10",
+              "w-full rounded-md px-2 py-1 text-left text-sm text-white transition-colors duration-150 hover:bg-white/10",
               index === highlightedIndex && "bg-white/10",
             )}
           >

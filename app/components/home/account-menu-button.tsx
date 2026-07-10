@@ -68,7 +68,7 @@ export function AccountMenuButton({
         type="button"
         aria-label={menuAriaLabel}
         {...triggerProps}
-        className="flex h-10 w-10 items-center justify-center rounded-[4px] border border-[#998C5F] bg-transparent text-white transition-colors duration-200 ease-out hover:bg-white/10"
+        className="flex h-10 w-10 items-center justify-center rounded-[4px] border border-[#998C5F] bg-transparent text-white transition-all duration-200 ease-out hover:scale-110 hover:bg-white/10"
       >
         <UserProfileIcon />
       </button>

@@ -29,7 +29,10 @@ export function DismissablePanel({ role, ariaLabel, className, children }: Dismi
     <div
       role={role}
       aria-label={ariaLabel}
-      className={cn("rounded-lg border border-[#2E3940] bg-[#101317] text-sm text-white shadow-lg", className)}
+      className={cn(
+        "origin-top-right animate-scale-in rounded-lg border border-[#2E3940] bg-[#101317] text-sm text-white shadow-lg",
+        className,
+      )}
     >
       {children}
     </div>

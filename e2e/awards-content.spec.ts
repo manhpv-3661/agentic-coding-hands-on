@@ -9,7 +9,9 @@ import { test, expect } from "@playwright/test";
  * than only HTTP status codes.
  *
  * Source of truth for every selector/string below: `app/awards/page.tsx`
- * and `app/components/awards/*` (read directly, not guessed).
+ * and `app/components/awards/*` (read directly, not guessed). No test here
+ * sets a `NEXT_LOCALE` cookie, so every locale-dependent string (e.g. the
+ * nav's aria-label) asserts the DEFAULT "vi" render.
  */
 
 test.describe("Awards content (authless)", () => {
@@ -95,7 +97,7 @@ test.describe("Awards content (authless)", () => {
     for (const slug of slugs) {
       // Click the nav link for this slug
       const navLink = page
-        .locator(`nav[aria-label="Award categories"] a[href="#${slug}"]`)
+        .locator(`nav[aria-label="Danh mục giải thưởng"] a[href="#${slug}"]`)
         .first();
       await navLink.click();
 
@@ -105,13 +107,13 @@ test.describe("Awards content (authless)", () => {
 
       // Verify this nav item has aria-current set (and others don't)
       const activeLink = page
-        .locator(`nav[aria-label="Award categories"] a[href="#${slug}"]`)
+        .locator(`nav[aria-label="Danh mục giải thưởng"] a[href="#${slug}"]`)
         .first();
       await expect(activeLink).toHaveAttribute("aria-current", "true");
 
       // Verify only ONE nav link has aria-current at a time
       const allActive = page.locator(
-        `nav[aria-label="Award categories"] a[aria-current]`,
+        `nav[aria-label="Danh mục giải thưởng"] a[aria-current]`,
       );
       await expect(allActive).toHaveCount(1);
     }
@@ -128,13 +130,13 @@ test.describe("Awards content (authless)", () => {
 
     // Wait for the MVP nav item to become active
     const mvpNavLink = page.locator(
-      'nav[aria-label="Award categories"] a[href="#mvp"]',
+      'nav[aria-label="Danh mục giải thưởng"] a[href="#mvp"]',
     );
     await expect(mvpNavLink).toHaveAttribute("aria-current", "true");
 
     // Verify only one nav item is active
     const allActive = page.locator(
-      `nav[aria-label="Award categories"] a[aria-current]`,
+      `nav[aria-label="Danh mục giải thưởng"] a[aria-current]`,
     );
     await expect(allActive).toHaveCount(1);
   });
@@ -152,7 +154,7 @@ test.describe("Awards content (authless)", () => {
 
     // Nav item is active
     const mvpNavLink = page.locator(
-      'nav[aria-label="Award categories"] a[href="#mvp"]',
+      'nav[aria-label="Danh mục giải thưởng"] a[href="#mvp"]',
     );
     await expect(mvpNavLink).toHaveAttribute("aria-current", "true");
   });
@@ -166,7 +168,7 @@ test.describe("Awards content (authless)", () => {
     await expect(page.locator("section#best-manager")).toBeInViewport();
 
     const navLink = page.locator(
-      'nav[aria-label="Award categories"] a[href="#best-manager"]',
+      'nav[aria-label="Danh mục giải thưởng"] a[href="#best-manager"]',
     );
     await expect(navLink).toHaveAttribute("aria-current", "true");
   });

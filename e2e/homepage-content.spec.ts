@@ -88,7 +88,12 @@ test.describe("Homepage content (authless)", () => {
   }) => {
     await page.goto("/");
 
-    await expect(page.getByText("26/12/2025", { exact: true })).toBeVisible();
+    // Date is now `Intl.DateTimeFormat`-rendered from
+    // `NEXT_PUBLIC_EVENT_START_AT` (`lib/event/format-event-date.ts`), not a
+    // hand-typed dictionary literal — this project's build sets that env var
+    // to 2020-01-01T00:00:00Z (playwright.config.ts), which formats to this
+    // exact vi-VN string.
+    await expect(page.getByText("1 tháng 1, 2020", { exact: true })).toBeVisible();
     await expect(
       page.getByText("Âu Cơ Art Center", { exact: true }),
     ).toBeVisible();
@@ -202,10 +207,11 @@ test.describe("Homepage content (authless)", () => {
   }) => {
     await page.goto("/");
 
-    const bell = page.getByRole("button", { name: "Notifications" });
+    // No locale cookie set here → default "vi" render (`shared.a11y.notifications`).
+    const bell = page.getByRole("button", { name: "Thông báo" });
     await bell.click();
 
-    const panel = page.getByRole("status", { name: "Notifications" });
+    const panel = page.getByRole("status", { name: "Thông báo" });
     await expect(panel).toBeVisible();
     await expect(panel).toHaveText("Chưa có thông báo");
 
@@ -239,7 +245,8 @@ test.describe("Homepage content (authless)", () => {
   test("widget button toggles aria-expanded on click", async ({ page }) => {
     await page.goto("/");
 
-    const widget = page.getByRole("button", { name: "Quick actions" });
+    // No locale cookie set here → default "vi" render (`shared.a11y.quickActions`).
+    const widget = page.getByRole("button", { name: "Thao tác nhanh" });
     await expect(widget).toHaveAttribute("aria-expanded", "false");
 
     await widget.click();
@@ -252,9 +259,10 @@ test.describe("Homepage content (authless)", () => {
   test("clicking outside an open menu closes it", async ({ page }) => {
     await page.goto("/");
 
-    const bell = page.getByRole("button", { name: "Notifications" });
+    // No locale cookie set here → default "vi" render (`shared.a11y.notifications`).
+    const bell = page.getByRole("button", { name: "Thông báo" });
     await bell.click();
-    const panel = page.getByRole("status", { name: "Notifications" });
+    const panel = page.getByRole("status", { name: "Thông báo" });
     await expect(panel).toBeVisible();
 
     // Top-left corner: outside the sticky header's interactive content and
@@ -263,7 +271,7 @@ test.describe("Homepage content (authless)", () => {
     await expect(panel).not.toBeVisible();
   });
 
-  test("awards grid uses 3 columns at desktop width and 2 columns at tablet width", async ({
+  test("awards grid stays a flat 3-column layout at both desktop and tablet width (desktop-only design, no reflow)", async ({
     page,
   }) => {
     await page.setViewportSize({ width: 1512, height: 900 });
@@ -279,7 +287,8 @@ test.describe("Homepage content (authless)", () => {
       if (!box) throw new Error("expected award card bounding box");
       return box;
     });
-    // 3-column grid (lg:grid-cols-3): first 3 cards share a row.
+    // 3-column grid (`grid-cols-3`, flat — no `lg:` breakpoint prefix): first
+    // 3 cards share a row.
     expect(Math.abs(d0.y - d1.y)).toBeLessThan(2);
     expect(Math.abs(d1.y - d2.y)).toBeLessThan(2);
 
@@ -294,10 +303,11 @@ test.describe("Homepage content (authless)", () => {
       if (!box) throw new Error("expected award card bounding box");
       return box;
     });
-    // 2-column grid (grid-cols-2 below lg): first 2 cards share a row, the
-    // 3rd wraps to the next row (strictly lower).
+    // Desktop-only design (plans/260709-0724-desktop-only-banner-overlay-fix):
+    // the grid never reflows below `lg` — `grid-cols-3` stays a flat class,
+    // so the 3rd card shares the SAME row at tablet width too, not a new one.
     expect(Math.abs(t0.y - t1.y)).toBeLessThan(2);
-    expect(t2.y).toBeGreaterThan(t0.y + 10);
+    expect(Math.abs(t1.y - t2.y)).toBeLessThan(2);
   });
 
   test("language selector opens with VN and EN options", async ({ page }) => {

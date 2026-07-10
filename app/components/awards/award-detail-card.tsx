@@ -83,7 +83,7 @@ export function AwardDetailCard({
           alt={title}
           fill
           sizes="336px"
-          className="object-cover object-center"
+          className="object-cover object-center transition-transform duration-300 ease-out hover:scale-110"
         />
       </div>
 
@@ -94,10 +94,12 @@ export function AwardDetailCard({
       <div className="flex w-full flex-col items-start gap-8">
         <div className="flex w-full flex-col items-start gap-6">
           <div className="flex w-full items-center gap-4">
-            <img
+            <Image
               src="/awards-saa/Icon-Target.svg"
               alt=""
               aria-hidden="true"
+              width={24}
+              height={24}
               className="h-6 w-6 shrink-0"
             />
             <h3 className="font-montserrat text-[24px] leading-[32px] font-bold text-[#FFEA9E]">
@@ -112,10 +114,12 @@ export function AwardDetailCard({
         <div className="h-px w-full bg-[#2E3940]" />
 
         <div className="flex flex-wrap items-center gap-4">
-          <img
+          <Image
             src="/awards-saa/Icon-Diamond.svg"
             alt=""
             aria-hidden="true"
+            width={24}
+            height={24}
             className="h-6 w-6 shrink-0"
           />
           <span className="font-montserrat text-[24px] leading-[32px] font-bold text-[#FFEA9E]">

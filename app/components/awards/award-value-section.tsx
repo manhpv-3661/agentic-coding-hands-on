@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { AwardMetric, AwardValueVariant } from "./award-detail-types";
 
 interface AwardValueSectionProps {
@@ -49,10 +50,12 @@ function ValueBlock({
   return (
     <div className="flex w-full flex-col items-start gap-4">
       <div className="flex items-center gap-4">
-        <img
+        <Image
           src="/awards-saa/Icon-License.svg"
           alt=""
           aria-hidden="true"
+          width={24}
+          height={24}
           className="h-6 w-6 shrink-0"
         />
         <span className="font-montserrat text-[24px] leading-[32px] font-bold text-[#FFEA9E]">

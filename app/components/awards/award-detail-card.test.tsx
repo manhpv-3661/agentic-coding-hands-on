@@ -136,7 +136,7 @@ describe("AwardDetailCard", () => {
     expect(screen.queryByText(/HOẶC/)).not.toBeInTheDocument();
   });
 
-  it("defaults to image-left (no `lg:flex-row-reverse`) when `imageSide` is omitted", () => {
+  it("defaults to image-left (no `flex-row-reverse`) when `imageSide` is omitted", () => {
     const quantityLabel = viDictionary.awards.detail.quantityLabel;
     const valueLabel = viDictionary.awards.detail.valueLabel;
     const { container } = render(
@@ -148,10 +148,10 @@ describe("AwardDetailCard", () => {
     );
 
     const card = container.querySelector(`[data-award-slug="${sampleEntry.slug}"]`);
-    expect(card?.className).not.toContain("lg:flex-row-reverse");
+    expect(card?.className).not.toContain("flex-row-reverse");
   });
 
-  it('applies `lg:flex-row-reverse` (image right) when `imageSide="right"` (D.2/D.4/D.6)', () => {
+  it('applies `flex-row-reverse` (image right) when `imageSide="right"` (D.2/D.4/D.6)', () => {
     const quantityLabel = viDictionary.awards.detail.quantityLabel;
     const valueLabel = viDictionary.awards.detail.valueLabel;
     const { container } = render(
@@ -164,10 +164,10 @@ describe("AwardDetailCard", () => {
     );
 
     const card = container.querySelector(`[data-award-slug="${sampleEntry.slug}"]`);
-    expect(card?.className).toContain("lg:flex-row-reverse");
+    expect(card?.className).toContain("flex-row-reverse");
   });
 
-  it('does not add `lg:flex-row-reverse` when `imageSide="left"` is explicit (D.1/D.3/D.5)', () => {
+  it('does not add `flex-row-reverse` when `imageSide="left"` is explicit (D.1/D.3/D.5)', () => {
     const quantityLabel = viDictionary.awards.detail.quantityLabel;
     const valueLabel = viDictionary.awards.detail.valueLabel;
     const { container } = render(
@@ -180,7 +180,7 @@ describe("AwardDetailCard", () => {
     );
 
     const card = container.querySelector(`[data-award-slug="${sampleEntry.slug}"]`);
-    expect(card?.className).not.toContain("lg:flex-row-reverse");
+    expect(card?.className).not.toContain("flex-row-reverse");
   });
 });
 

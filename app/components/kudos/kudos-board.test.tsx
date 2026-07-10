@@ -1,6 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ refresh: vi.fn() }),
+}));
+
 import { KudosBoard } from "./kudos-board";
 import { vi as viDictionary } from "@/lib/i18n/dictionaries/vi";
 import type { KudosPerson, KudosPost } from "@/lib/kudos/kudos-types";
@@ -121,12 +126,14 @@ describe("KudosBoard", () => {
     const content = gutter?.firstElementChild as HTMLElement | null;
 
     expect(gutter).not.toBeNull();
-    expect(gutter?.className).toContain("lg:px-36");
+    // Desktop-only fix (plans/260709-0724-desktop-only-banner-overlay-fix):
+    // PageGutter's 144px gutter is now flat at every width, no `lg:` prefix.
+    expect(gutter?.className).toContain("px-36");
     expect(gutter?.className).not.toContain("max-w-[1152px]");
 
     expect(content).not.toBeNull();
     expect(content?.className).toContain("max-w-[1152px]");
-    expect(content?.className).not.toContain("lg:px-36");
+    expect(content?.className).not.toContain("px-36");
   });
 
   it("forwards likedIds/currentUser so a likeable post renders an interactive heart button (F008)", () => {

@@ -44,7 +44,7 @@ export function LoginButton({
         onClick={onLogin}
         disabled={isDisabled}
         aria-busy={loading}
-        className="font-montserrat flex items-center gap-2 rounded-lg bg-[#FFEA9E] px-6 py-4 text-[22px] leading-7 font-bold text-[#00101A] transition-shadow duration-200 ease-out hover:shadow-[0_8px_24px_rgba(255,234,158,0.35)] disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none"
+        className="font-montserrat flex items-center gap-2 rounded-lg bg-[#FFEA9E] px-6 py-4 text-[22px] leading-7 font-bold text-[#00101A] transition-all duration-200 ease-out hover:scale-[1.03] hover:shadow-[0_8px_24px_rgba(255,234,158,0.35)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none disabled:hover:scale-100"
       >
         {loading ? (
           <>
@@ -62,7 +62,7 @@ export function LoginButton({
         )}
       </button>
       {error && (
-        <p role="alert" className="font-montserrat text-sm font-semibold text-red-400">
+        <p role="alert" className="animate-fade-in font-montserrat text-sm font-semibold text-red-400">
           {error}
         </p>
       )}

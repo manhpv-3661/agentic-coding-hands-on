@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 export interface UseScrollSpyOptions {
   /** Passed through to `IntersectionObserver`. Defaults to a center band so
@@ -39,17 +39,20 @@ export function useScrollSpy(
   // changes. The effect closes over `ids` itself (not the key) — that
   // closure is guaranteed fresh on the render where `idsKey` changed, which
   // is the only render that re-runs the effect.
+  // Render-phase reset (same pattern as `hooks/use-carousel.ts` /
+  // `compose-dialog.tsx`'s discard-on-close): a plain `useState` mirror of
+  // `idsKey`, compared and corrected during render rather than via a ref +
+  // effect-based `setState` — React re-renders immediately on a render-phase
+  // state update, so `activeId` is already reset by the time this hook
+  // returns on the render where `idsKey` changed.
   const idsKey = ids.join("|");
-  const resolvedKeyRef = useRef(idsKey);
-  const idsChanged = idsKey !== resolvedKeyRef.current;
-  const visibleActiveId = idsChanged ? null : activeId;
+  const [resolvedKey, setResolvedKey] = useState(idsKey);
+  if (idsKey !== resolvedKey) {
+    setResolvedKey(idsKey);
+    setActiveId(null);
+  }
 
   useEffect(() => {
-    if (idsChanged) {
-      resolvedKeyRef.current = idsKey;
-      setActiveId(null);
-    }
-
     if (typeof IntersectionObserver === "undefined") return undefined;
 
     const nodes = ids
@@ -83,7 +86,7 @@ export function useScrollSpy(
     // depending on `ids` directly would re-run this effect on every render
     // (most callers pass a fresh array literal each time).
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [idsChanged, idsKey, rootMargin, threshold]);
+  }, [idsKey, rootMargin, threshold]);
 
-  return visibleActiveId;
+  return activeId;
 }

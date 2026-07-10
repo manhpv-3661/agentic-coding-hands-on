@@ -3,7 +3,7 @@ import {
   VIEWPORTS,
   TOLERANCE_PX,
   HEIGHT_TOLERANCE_PX,
-  expectedGutterForWidth,
+  EXPECTED_GUTTER_PX,
   measureBox,
   expectClose,
   expectNeverExceeds,
@@ -186,9 +186,8 @@ test.describe("Layout contract — Home (1512-only design)", () => {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await page.goto("/");
 
-      const expectedGutter = expectedGutterForWidth(viewport.width);
       const header = await measureBox(page, "header");
-      expectClose(header.paddingLeft, expectedGutter, TOLERANCE_PX, `home header gutter @${viewport.name}`);
+      expectClose(header.paddingLeft, EXPECTED_GUTTER_PX, TOLERANCE_PX, `home header gutter @${viewport.name}`);
 
       const hero = await measureBox(page, 'main > :nth-child(1) [class*="max-w-[1224px]"]');
       expectNeverExceeds(hero.width, 1224, `home hero @${viewport.name}`);

@@ -76,9 +76,9 @@ describe("AwardsCatalog", () => {
 
       const expectsReversed = index % 2 === 1;
       if (expectsReversed) {
-        expect(card?.className).toContain("lg:flex-row-reverse");
+        expect(card?.className).toContain("flex-row-reverse");
       } else {
-        expect(card?.className).not.toContain("lg:flex-row-reverse");
+        expect(card?.className).not.toContain("flex-row-reverse");
       }
     });
   });

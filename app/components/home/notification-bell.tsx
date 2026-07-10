@@ -72,7 +72,7 @@ export function NotificationBell({ empty, ariaLabel = "Notifications" }: Notific
         type="button"
         aria-label={ariaLabel}
         {...triggerProps}
-        className="flex h-10 w-10 items-center justify-center rounded-[4px] bg-transparent text-white transition-colors duration-200 ease-out hover:bg-white/10"
+        className="flex h-10 w-10 items-center justify-center rounded-[4px] bg-transparent text-white transition-all duration-200 ease-out hover:scale-110 hover:bg-white/10"
       >
         <BellIcon />
       </button>
