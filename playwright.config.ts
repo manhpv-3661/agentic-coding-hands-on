@@ -41,7 +41,16 @@ export default defineConfig({
   testDir: "./e2e",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
+  // All 3 webServers below run their own cold `next build` concurrently
+  // (see file header — builds can't be shared). On a cold cache that
+  // triple-build competes for CPU with the already-started servers' request
+  // handling, occasionally pushing a `/login` or `/kudos` navigation past
+  // Playwright's 30s default and failing the test outright — not an app
+  // bug (same tests pass 100% once builds are warm or run in isolation).
+  // A local retry gives the same headroom CI's `retries: 2` already exists
+  // for, and the raised timeout covers the rest.
+  retries: process.env.CI ? 2 : 1,
+  timeout: 60_000,
   workers: process.env.CI ? 1 : undefined,
   reporter: "html",
   use: {
