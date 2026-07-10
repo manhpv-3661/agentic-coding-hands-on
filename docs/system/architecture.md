@@ -130,41 +130,34 @@ các file đó, không xoá.
   có quyền Dashboard chạy tay file này, app vẫn hành xử y hệt trước pivot (mock
   fallback toàn phần), đúng theo thiết kế của nhánh `isSupabaseConfigured()` ở trên.
 
-## Content tables (awards / event / kudos gifts) — Lớp dữ liệu Supabase (mở rộng ngoài Kudos)
+## Content tables (awards / event / kudos gifts) — thực tế đã xác minh (2026-07-10)
 
-Mở rộng nhánh `isSupabaseConfigured()` (mục trên) ra ngoài phạm vi Kudos posts/likes/compose,
-sang dữ liệu cấu trúc/số của Awards, thông tin sự kiện Homepage, và các số liệu trang trí của
-Kudos — full plan: `plans/260709-0822-supabase-dynamic-data-all-screens/` (phase 1–4 đã triển
-khai; phase 5 là đồng bộ docs này).
+> **Đã sửa sau code review pre-submission** — mục này từng mô tả 1 migration Postgres đầy đủ cho
+> Awards/Event (xem `docs/project-changelog.md`, mục "2026-07-09"); review trực tiếp code hiện
+> tại phát hiện phần Awards/Event của migration đó **không tồn tại trong code** — đã sửa lại đây
+> cho khớp thực tế, chi tiết + lý do xem đúng mục changelog "2026-07-10 — Correction" ở trên.
 
-- **3 bảng nội dung chỉ-đọc mới** (`supabase/schema.sql`, cùng file với 3 bảng Kudos ở trên):
-  `award_categories` (PK `slug`, `sort_order`, `thumbnail_src`, `quantity_number`,
-  `value_amount_vnd`, `individual_amount_vnd`, `collective_amount_vnd`), `event_settings` (bảng
-  singleton, `id smallint primary key default 1 check (id = 1)`, `event_name`, `venue_name`),
-  `kudos_gifts` (`id`, `unique(sort_order)`, `recipient_name`, `gift_text`).
-- **RLS**: cả 3 bảng đều enable RLS, chỉ có policy SELECT cấp cho CẢ `anon` VÀ `authenticated`
-  (khác 3 bảng Kudos ở trên — vốn chỉ cấp `authenticated`, vì Awards/Homepage render trước khi
-  đăng nhập) — KHÔNG có policy INSERT/UPDATE/DELETE nào trên bất kỳ bảng nào trong 3 bảng này:
-  đây là nội dung chỉ-đọc, sửa duy nhất qua SQL editor, không có admin CRUD UI (quyết định có chủ
-  đích, không phải thiếu sót — cùng tinh thần `profiles.department`/`stars` ở trên). Seed một lần
-  qua `supabase/seed.sql` (idempotent, `on conflict do nothing`).
-- **Nhánh `isSupabaseConfigured()` mở rộng ra 3 repo mới** — cùng hợp đồng "không throw, log lỗi
-  rồi fallback về static" như `kudos-repository.ts`:
-  - `lib/awards/award-categories-repository.ts` (`getAwardCategories()`) — fallback:
-    `award-categories-fallback.ts` (mirror verbatim `seed.sql`). Dùng bởi CẢ `/awards` (F004) và
-    lưới giải thưởng Homepage (F002) — trước đây là 2 danh sách hard-code riêng biệt (từng lệch
-    nhau — tên hạng mục MVP ngắn/dài), nay 1 nguồn duy nhất.
-  - `lib/event/event-settings-repository.ts` (`getEventSettings()`) — fallback nội tuyến
-    `EVENT_SETTINGS_FALLBACK`. Dùng bởi thông tin sự kiện Homepage (F002, `event-info.tsx`).
-  - `lib/kudos/kudos-aggregates-repository.ts` (`getKudosSidebarStats`, `getSpotlightTotal`,
-    `getSpotlightNames`, `getGiftRecipients`) — tách riêng khỏi `kudos-repository.ts` (chủ sở hữu
-    file khác nhau) vì đây là dữ liệu TRANG TRÍ (sidebar/spotlight/top-10-quà), không phải
-    posts/likes. **Đảo ngược** quyết định "Dữ liệu trang trí không đổi" ở mục trên — xem bullet
-    riêng ngay dưới.
-- **Biên giới i18n/DB**: cấu trúc locale-agnostic (slug, số, thứ tự) nằm trong Postgres; văn bản
-  đã dịch (title/description/unit-caption) VẪN nằm trong `lib/i18n/dictionaries/{en,vi}.ts`, join
-  bằng `slug` lúc render (`app/components/awards/award-detail-data.ts`) — i18n KHÔNG migrate sang
-  DB (quyết định phạm vi có chủ đích, không phải thiếu sót).
+- **KHÔNG có 3 bảng `award_categories`/`event_settings`/`kudos_gifts`** — không xuất hiện trong
+  `supabase/schema.sql`, không có migration nào tạo chúng, và `supabase/seed.sql` không hề nhắc
+  tới. Awards + thông tin sự kiện Homepage vẫn nằm hard-code trong source, đúng như scope ghi rõ
+  ở đầu `supabase/schema.sql`.
+  - `lib/awards/award-categories-repository.ts` (`getAwardCategories()`) — hard-code thuần
+    (comment trong file: *"Awards content is in the agreed hardcode scope for this mock
+    project"*), không gọi Supabase. Vẫn là 1 nguồn duy nhất dùng chung bởi CẢ `/awards` (F004)
+    và lưới giải thưởng Homepage (F002) — phần dedup 2 danh sách hard-code cũ (từng lệch tên MVP
+    ngắn/dài) là thật, chỉ là nguồn hợp nhất vẫn ở code, không phải Postgres.
+  - `lib/event/event-settings-repository.ts` (`getEventSettings()`) — hard-code thuần (comment:
+    *"Homepage event facts stay in the agreed hardcode scope"*), không gọi Supabase.
+- **`lib/kudos/kudos-aggregates-repository.ts` — phần NÀY thật, đã xác minh trực tiếp**:
+  `getKudosSidebarStats`/`getGiftRecipients` là `COUNT`/`SELECT` query thật lên 3 bảng gốc đã có
+  sẵn từ pivot Kudos 2026-07-08 (`kudos`, `kudos_likes`, `gift_logs`) — KHÔNG cần bảng mới nào.
+  `getSpotlightTotal`/`getSpotlightNames` là hard-code (đúng như file tự ghi chú: "Spotlight
+  Board: hardcoded local content, not DB-backed") — chưa từng đổi.
+- **Biên giới i18n/dữ liệu Awards**: cấu trúc locale-agnostic (slug, số, thứ tự) nằm trong
+  `lib/awards/award-categories-fallback.ts` (hard-code, KHÔNG phải Postgres — xem sửa lại ở trên);
+  văn bản đã dịch (title/description/unit-caption) nằm trong
+  `lib/i18n/dictionaries/{en,vi}.ts`, join bằng `slug` lúc render
+  (`app/components/awards/award-detail-data.ts`).
 - **Quyết định env-var-vs-DB cho mốc sự kiện** (không đổi, ghi lại để không bị hỏi lại lần sau):
   ngày hiển thị trên Homepage (`lib/event/format-event-date.ts`, `formatEventDate()`) derive qua
   `Intl.DateTimeFormat` từ CÙNG env var `NEXT_PUBLIC_EVENT_START_AT` đang gate `proxy.ts` (mục
@@ -174,22 +167,20 @@ khai; phase 5 là đồng bộ docs này).
   có chủ đích, KHÔNG PHẢI thiếu sót — không cần re-litigate. Việc này đồng thời sửa 1 bug thật
   đang tồn tại: env var, dict `en.ts` ("December 26, 2025"), và dict `vi.ts` ("26/12/2025") là 3
   giá trị được gõ tay độc lập, lệch nhau — nay chỉ còn 1 nguồn sự thật.
-- **[Đảo ngược 2026-07-09] Dữ liệu trang trí Kudos nay là thật** (đảo ngược mục "Dữ liệu trang
-  trí không đổi" ở trên — `KUDOS_STATS`, bộ đếm Spotlight, top-10 nhận quà): sidebar
-  sent/received/hearts (FR-18 F006) nay tính bằng `COUNT` query thật scoped theo `auth.uid()`;
-  tổng "{n} KUDOS" của Spotlight Board (FR-10 F006) nay là COUNT thật của `kudos`; tên
-  trong word-cloud Spotlight nay là `receiver.full_name` thật từ dữ liệu post (bù thêm từ mock
-  nếu ít hơn số slot cố định — không vỡ layout geometry); top-10 Sunner nhận quà (FR-20 F006)
-  nay đọc bảng `gift_logs`. **Secret Box đã mở/chưa mở cũng không còn là mock thuần**:
-  dựa trên rule nghiệp vụ đang hiện trong Community Standards copy, cứ mỗi 5 tim nhận được trên
-  Kudos bạn gửi sẽ mở khoá 1 box; `gift_logs` lưu số box đã mở; từ đó suy ra `opened`/`unopened`
-  ở sidebar và khi bấm mở box.
-- **Không phá build e2e authless**: mọi repo mới đều mirror nhánh fallback y hệt
-  `kudos-repository.ts` — chế độ chưa cấu hình trả đúng hằng số mock hiện có, không đổi gì cho
-  `e2e/layout-contract.spec.ts` (cổng 3100). Riêng `e2e/homepage-content.spec.ts:91` (assert
-  chuỗi ngày cũ `"26/12/2025"`) SẼ fail sau thay đổi ngày ở trên — hậu quả đúng/cố ý của việc sửa
-  bug lệch ngày, chưa sửa test ở phiên này (theo standing preference hoãn cập nhật test tới 1
-  pass riêng) — xem `docs/project-changelog.md`, mục 2026-07-09.
+- **Dữ liệu trang trí Kudos — MỘT PHẦN thật, đã xác minh trực tiếp** (sửa lại 2026-07-10: bullet
+  gốc lẫn cả phần thật lẫn phần chưa từng thật): sidebar sent/received/hearts (FR-18 F006) VÀ
+  top-10 Sunner nhận quà (FR-20 F006, đọc bảng `gift_logs`) là `COUNT`/`SELECT` query thật, scoped
+  theo `auth.uid()` — xác nhận đúng. Ngược lại, tổng "{n} KUDOS" của Spotlight Board (FR-10) và
+  tên trong word-cloud Spotlight VẪN là hard-code (`SPOTLIGHT_TOTAL`, `SPOTLIGHT_NAMES` trong
+  `lib/kudos/kudos-data.ts`) — KHÔNG phải COUNT/`receiver.full_name` thật như bullet gốc từng ghi;
+  `kudos-aggregates-repository.ts` tự chú thích rõ điều này ("Spotlight Board: hardcoded local
+  content, not DB-backed"). Secret Box đã mở/chưa mở đọc thật từ `gift_logs`, dựa trên rule "mỗi
+  5 tim nhận được trên Kudos bạn gửi mở khoá 1 box" — xác nhận đúng.
+- **e2e authless**: mọi repo mới đều mirror nhánh fallback y hệt `kudos-repository.ts` — chế độ
+  chưa cấu hình trả đúng hằng số mock hiện có, không đổi gì cho `e2e/layout-contract.spec.ts`
+  (cổng 3100). `e2e/homepage-content.spec.ts` đã được cập nhật khớp `Intl.DateTimeFormat` (xem
+  comment ngay trong file) — claim "sẽ fail, chưa sửa" ở bản ghi 2026-07-09 đã lỗi thời; toàn bộ
+  suite hiện xanh (635/635, xác nhận lúc review 2026-07-10).
 
 ## Câu hỏi mở
 

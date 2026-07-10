@@ -2,7 +2,40 @@
 
 Running record of significant changes, features, and fixes. Newest entries first.
 
+## 2026-07-10 — Correction: `award_categories`/`event_settings`/`kudos_gifts` were never actually created
+
+Pre-submission code review (see `plans/reports/`) found that the 2026-07-09 entry below
+overclaims: `lib/awards/award-categories-repository.ts` and `lib/event/event-settings-repository.ts`
+are pure hardcoded functions today (each carries its own doc comment: *"...is in the agreed
+hardcode scope for this mock project"*), and neither `supabase/schema.sql` nor any migration
+defines `award_categories`, `event_settings`, or `kudos_gifts` — `supabase/seed.sql` has zero
+references to any of the three. `schema.sql`'s own header comment states the real, current scope
+plainly: *"Homepage / Awards / i18n / countdown config / Spotlight content stay in source code,
+not in DB."* Whether this was a deliberate later reversal of the 2026-07-09 plan or content that
+was written up as a plan and never actually implemented is unclear from history — flagging it
+here rather than re-litigating which.
+
+**What IS actually real** (verified directly against `lib/kudos/kudos-aggregates-repository.ts`
+and the original 4-table schema from the 2026-07-08 Kudos pivot): sidebar `sent`/`received`/
+`hearts` stats and the top-10 gift-recipient list are genuine `COUNT`/`SELECT` queries against the
+pre-existing `kudos`, `kudos_likes`, and `gift_logs` tables — no new tables needed for those. The
+homepage event date (`lib/event/format-event-date.ts`, `Intl.DateTimeFormat` off
+`NEXT_PUBLIC_EVENT_START_AT`) also genuinely shipped, and `e2e/homepage-content.spec.ts` was
+updated to match it — the "will fail, deferred" note in the 2026-07-09 entry below is itself
+stale; the full suite is currently green (635/635, verified during this review).
+
+**What is NOT real**, despite the 2026-07-09 entry's claims: `/awards` does not read from
+Postgres; the homepage award grid does not read from Postgres; `event_settings` does not back
+venue/event name (it's a hardcoded constant); Spotlight name-cloud/totals were always hardcoded
+(this part the 2026-07-09 entry itself already scoped correctly). `docs/system/architecture.md`'s
+"Content tables" section is corrected in place to match.
+
 ## 2026-07-09 — Supabase dynamic data: awards, event info, Kudos aggregates (F002/F004/F006/F007/F008)
+
+> **See the 2026-07-10 correction above** — the `award_categories`/`event_settings`/
+> `kudos_gifts` tables and the Awards/homepage-grid Postgres reads described below were not
+> actually present in the codebase as of this review; the Kudos-aggregates and event-date
+> portions were.
 
 Extends the Kudos-only Supabase pivot (2026-07-08 entry, below) to the remaining
 structural/numeric data across Awards, the Homepage award grid, homepage event info, and the
