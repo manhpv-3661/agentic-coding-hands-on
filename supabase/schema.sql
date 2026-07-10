@@ -36,7 +36,8 @@ create table if not exists public.kudos (
   anonymous_name text,
   hashtags text[] not null default '{}',
   created_at timestamptz not null default now(),
-  constraint kudos_image_urls_max_5 check (coalesce(array_length(image_urls, 1), 0) <= 5)
+  constraint kudos_image_urls_max_5 check (coalesce(array_length(image_urls, 1), 0) <= 5),
+  constraint kudos_hashtags_max_5 check (coalesce(array_length(hashtags, 1), 0) <= 5)
 );
 
 create table if not exists public.kudos_likes (
@@ -197,9 +198,22 @@ create trigger on_auth_user_created
   for each row
   execute function public.handle_new_user();
 
-insert into storage.buckets (id, name, public)
-values ('kudos-images', 'kudos-images', true)
-on conflict (id) do nothing;
+-- file_size_limit (5MB/file) + allowed_mime_types are enforced by Supabase
+-- Storage itself on every upload — review finding (Medium): the client
+-- only gated file type via `accept="image/*"` (trivially bypassable), with
+-- no server-side check. These bucket-level constraints are the real
+-- server-side gate.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values (
+  'kudos-images',
+  'kudos-images',
+  true,
+  5242880,
+  array['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+)
+on conflict (id) do update set
+  file_size_limit = excluded.file_size_limit,
+  allowed_mime_types = excluded.allowed_mime_types;
 
 drop policy if exists "kudos_images_public_read" on storage.objects;
 create policy "kudos_images_public_read"
